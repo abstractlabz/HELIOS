@@ -1,69 +1,23 @@
 package utils
 
-// Improving Security: Encrypt sensitive fields like SASLUsername, SASLPassword, or use a secure secret management solution.
-// Certificate Validation: Consider additional validation for the certificates (e.g., expiration dates).
-// Timeouts: Add timeout configurations for network operations to prevent indefinite hanging in edge cases.
-
 import (
-	"crypto/tls"
-	"crypto/x509"
-	"fmt"
-	"io/ioutil"
 	"log"
-
-	"github.com/Shopify/sarama"
+	"fmt"
+	"github.com/IBM/sarama"
 )
 
 // KafkaConfig holds credentials (configuration) for connecting to the Kafka cluster
 // can make structs under a file in utils folder to change it in one place and can be used in other files !!
 type KafkaConfig struct {
 	BootstrapServers string //string containing the kafka bootstrap servers/broker addresses (host1:port1,host2:port2,host3:port3)
-	SASLUsername     string //string containing the sasl username (should be encrypted)	(SASL = Simple Authentication and Security Layer)
-	SASLPassword     string //string containing the sasl password (should be encrypted) (SASL = Simple Authentication and Security Layer)
-	// CAPath           string //string containing the path to the ca certificate
-	// CertPath         string //string containing the path to the client certificate
-	// KeyPath          string //string containing the path to the client key	
+	SASLUsername     string //string containing the sasl username
+	SASLPassword     string //string containing the sasl password
 }
 
-// LoadKafkaConfig initializes Kafka producer with TLS and SASL authentication
-// takes a KafkaConfig struct as input and returns a sarama.Config struct and an error	
+// LoadKafkaConfig initializes Kafka producer with SASL authentication
 func LoadKafkaConfig(cfg KafkaConfig) (*sarama.Config, error) {
-	// Load the CA certificate
-	caCert, err := ioutil.ReadFile(cfg.CAPath)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read CA certificate: %v", err)
-	}
-	caCertPool := x509.NewCertPool()
-	caCertPool.AppendCertsFromPEM(caCert)
-
-	// Load the user certificate and key
-	cert, err := tls.LoadX509KeyPair(cfg.CertPath, cfg.KeyPath)
-	if err != nil {
-		return nil, fmt.Errorf("failed to load certificate and key: %v", err)
-	}
-
-	// The & creates a pointer to a new tls.Config struct
-	// Similar to C++, but Go handles memory management automatically
-	// We need a pointer here because the Kafka client expects a *tls.Config (pointer)
-	tlsConfig := &tls.Config{
-		// Certificates: Your client's ID documents (like your passport)
-		Certificates: []tls.Certificate{cert},
-
-		// RootCAs: List of trusted certificate authorities
-		RootCAs:      caCertPool,
-		// Later, when establishing a connection:
-		// 1. Server asks: "Show me your ID (certificate)"
-		// 2. Server checks: "Is this ID issuer in my trusted list (RootCAs)?"
-		// 3. If yes -> connection allowed, if no -> connection rejected
-	}	
-
 	// Initialize Sarama configuration with default settings
 	config := sarama.NewConfig()
-	
-	// Enable TLS (Transport Layer Security) for encrypted network communication
-	config.Net.TLS.Enable = true
-	// Apply our custom TLS configuration (certificates and keys)
-	config.Net.TLS.Config = tlsConfig
 	
 	// Enable SASL (Simple Authentication and Security Layer) for authentication
 	config.Net.SASL.Enable = true
@@ -75,9 +29,11 @@ func LoadKafkaConfig(cfg KafkaConfig) (*sarama.Config, error) {
 	config.Net.SASL.Handshake = true
 	// Set the SASL mechanism to plaintext (username/password authentication)
 	config.Net.SASL.Mechanism = sarama.SASLTypePlaintext
+
+	// Enable TLS as it's required for SASL
+	config.Net.TLS.Enable = true
 	
 	// Make the producer wait for acknowledgment that messages were received
-	// When true, the producer will return an error if the message wasn't successfully delivered
 	config.Producer.Return.Successes = true
 
 	return config, nil

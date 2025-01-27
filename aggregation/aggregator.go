@@ -3,20 +3,19 @@ package aggregation
 import (
 	"fmt"
 	"github.com/0xPCDefenders/HELIOS/utils"
-	"github.com/Shopify/sarama"
+	"github.com/IBM/sarama"
 	"os"
 )
 
-// CreateKafkaTopic dynamically creates a Kafka topic
+// CreateKafkaTopic dynamically creates a Kafka topic by attempting to publish a test message to it.
+// If the topic doesn't exist and auto.create.topics.enable is true in Kafka, the topic will be created.
+// Returns an error if topic creation/message sending fails.
 func CreateKafkaTopic(topicName string) error {
 	// Load Kafka configuration from environment variables
 	kafkaConfig := utils.KafkaConfig{
 		BootstrapServers: os.Getenv("KAFKA_BOOTSTRAP_SERVERS"),
-		SASLUsername:     os.Getenv("KAFKA_SASL_USERNAME"),
-		SASLPassword:     os.Getenv("KAFKA_SASL_PASSWORD"),
-		// CAPath:           os.Getenv("KAFKA_CA_CERT_PATH"),
-		// CertPath:         os.Getenv("KAFKA_CERT_PATH"),
-		// KeyPath:          os.Getenv("KAFKA_KEY_PATH"),
+		SASLUsername:     os.Getenv("KAFKA_KEY"),           // using KAFKA_KEY as username
+		SASLPassword:     os.Getenv("KAFKA_SECRET"),        // using KAFKA_SECRET as password
 	}
 
 	// Initialize Kafka producer
