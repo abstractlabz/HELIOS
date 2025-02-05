@@ -20,6 +20,7 @@ func main() {
         SASLUsername:     os.Getenv("KAFKA_KEY"),
         SASLPassword:     os.Getenv("KAFKA_SECRET"),
     }
+    fmt.Println("step 1")
     
     // 2. Create the topic first
     topicName := "test_topic"

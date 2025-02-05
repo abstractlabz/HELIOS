@@ -5,6 +5,7 @@ import (
 	"github.com/0xPCDefenders/HELIOS/utils"
 	"github.com/IBM/sarama"
 	"os"
+	"log"
 )
 
 // CreateKafkaTopic dynamically creates a Kafka topic by attempting to publish a test message to it.
@@ -17,6 +18,9 @@ func CreateKafkaTopic(topicName string) error {
 		SASLUsername:     os.Getenv("KAFKA_KEY"),           // using KAFKA_KEY as username
 		SASLPassword:     os.Getenv("KAFKA_SECRET"),        // using KAFKA_SECRET as password
 	}
+
+	// Debug log
+	log.Printf("Creating Kafka topic: %s\n", topicName)
 
 	// Initialize Kafka producer
 	producer, err := utils.CreateKafkaProducer(kafkaConfig)

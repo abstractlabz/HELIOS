@@ -36,6 +36,10 @@ func LoadKafkaConfig(cfg KafkaConfig) (*sarama.Config, error) {
 	// Make the producer wait for acknowledgment that messages were received
 	config.Producer.Return.Successes = true
 
+	// Debug logs
+	log.Printf("Kafka Config: BootstrapServers=%s, SASLUsername=%s, SASLPassword=%s\n", cfg.BootstrapServers, cfg.SASLUsername, cfg.SASLPassword)
+	log.Printf("SASL Enabled: %v, TLS Enabled: %v\n", config.Net.SASL.Enable, config.Net.TLS.Enable)
+
 	return config, nil
 }
 
@@ -45,6 +49,9 @@ func CreateKafkaProducer(cfg KafkaConfig) (sarama.SyncProducer, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to load Kafka configuration: %v", err)
 	}
+
+	// Debug log
+	log.Println("Attempting to create Kafka producer...")
 
 	// Create the producer
 	producer, err := sarama.NewSyncProducer([]string{cfg.BootstrapServers}, config)
