@@ -1,13 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 
 	"github.com/0xPCDefenders/HELIOS/aggregation"
-	"github.com/0xPCDefenders/HELIOS/utils"
-	"github.com/IBM/sarama"
+	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
 
@@ -27,43 +25,23 @@ func main() {
 	KAFKA_BOOTSTRAP_SERVERS := os.Getenv("KAFKA_BOOTSTRAP_SERVERS")
 	KAFKA_KEY := os.Getenv("KAFKA_KEY")
 	KAFKA_SECRET := os.Getenv("KAFKA_SECRET")
+	HELIOS_API_KEY := os.Getenv("HELIOS_API_KEY")
+	log.Printf("Loaded API Key: %s", HELIOS_API_KEY)
 
 	// Validate environment variables
-	if KAFKA_BOOTSTRAP_SERVERS == "" || KAFKA_KEY == "" || KAFKA_SECRET == "" {
+	if KAFKA_BOOTSTRAP_SERVERS == "" || KAFKA_KEY == "" || KAFKA_SECRET == "" || HELIOS_API_KEY == "" {
 		log.Fatal("One or more required environment variables are not set.")
 	}
 
-	cfg := utils.KafkaConfig{
-		BootstrapServers: KAFKA_BOOTSTRAP_SERVERS,
-		SASLUsername:     KAFKA_KEY,
-		SASLPassword:     KAFKA_SECRET,
+	// Initialize Gin router
+	router := gin.Default()
+
+	// Setup the topic management endpoint with API key
+	aggregation.SetupEndpoints(router, HELIOS_API_KEY)
+
+	// Start the server
+	log.Println("Starting server on :8080")
+	if err := router.Run(":8080"); err != nil {
+		log.Fatal("Failed to start server:", err)
 	}
-
-	// 2. Create the topic first
-
-	topicName := "des-10"
-	err = aggregation.CreateKafkaTopic(topicName)
-	if err != nil {
-		panic(err)
-	}
-
-	// 3. Create the producer using the config
-	producer, err := utils.CreateKafkaProducer(cfg)
-	if err != nil {
-		panic(err)
-	}
-
-	defer producer.Close()
-
-	// 4. Send a message
-	message := &sarama.ProducerMessage{
-		Topic: topicName,
-		Value: sarama.StringEncoder("Hello, World!"),
-	}
-	partition, offset, err := producer.SendMessage(message)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("Message sent to partition %d at offset %d\n", partition, offset)
-
 }
