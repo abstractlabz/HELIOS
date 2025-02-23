@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strings"
+	"time"
 
 	"github.com/0xPCDefenders/HELIOS/utils"
 	"github.com/PuerkitoBio/goquery"
@@ -17,33 +19,109 @@ type NewsRequest struct {
 	SegmentTargets []string `json:"segment_targets"`
 }
 
-func ProcessNewsRequests(buffer chan kafka.Message) {
-	for msg := range buffer {
-		// Parse the incoming Kafka message
-		var request NewsRequest
-		if err := json.Unmarshal(msg.Value, &request); err != nil {
-			log.Printf("Error unmarshaling message: %v", err)
-			continue
-		}
+type ProcessorConfig struct {
+	Topic    string `json:"topic"`
+	Segment  string `json:"segment"`
+	DataList string `json:"data_list"`
+}
 
-		// Process each segment target (ticker)
-		for _, ticker := range request.SegmentTargets {
-			ticker, tag := removePrefixSuffix(ticker)
+type DataList []struct {
+	Value string `json:"value"`
+	Label string `json:"label"`
+}
 
-			// Scrape news for the ticker
-			scrapeTickerURL := "https://news.google.com/search?q=" + strings.ToUpper(ticker) + "-news" + tag + "&hl=en-US&gl=US&ceid=US%3Aen"
+func processNewsItem(job interface{}) interface{} {
+	ticker := job.(string)
+	ticker, tag := removePrefixSuffix(ticker)
+	scrapeTickerURL := "https://news.google.com/search?q=" + strings.ToUpper(ticker) + "-news" + tag + "&hl=en-US&gl=US&ceid=US%3Aen"
 
-			news, err := scrapeTextFromDiv(scrapeTickerURL, 5)
-			if err != nil {
-				log.Printf("Failed to scrape news for ticker %s: %v", ticker, err)
+	news, err := scrapeTextFromDiv(scrapeTickerURL, 5)
+	if err != nil {
+		log.Printf("Failed to scrape news for ticker %s: %v", ticker, err)
+		return nil
+	}
+
+	return map[string]interface{}{
+		"ticker": ticker,
+		"data":   news,
+	}
+}
+
+func StartNewsProcessor() error {
+	// Load processor config
+	config, err := loadProcessorConfig("config.json")
+	if err != nil {
+		return fmt.Errorf("failed to load processor config: %v", err)
+	}
+
+	// Load data list
+	dataList, err := loadDataList(config.DataList)
+	if err != nil {
+		return fmt.Errorf("failed to load data list: %v", err)
+	}
+
+	// Create worker pool with the number of items in the data list
+	workerPool := utils.NewWorkerPool(5, len(dataList), processNewsItem)
+	workerPool.Start()
+
+	// Listen for alerts from data aggregator
+	alertBuffer := make(chan kafka.Message)
+	go utils.ConsumeToBuffer(alertBuffer, "alert_financials", "news-processor-group", "../../.env")
+
+	// Process alerts and distribute work
+	go func() {
+		for msg := range alertBuffer {
+			var request NewsRequest
+			if err := json.Unmarshal(msg.Value, &request); err != nil {
+				log.Printf("Error unmarshaling alert message: %v", err)
 				continue
 			}
 
-			// Log successful scrape
-			log.Printf("Successfully scraped news for ticker: %s", ticker)
-			fmt.Printf("News data: %s\n", news)
+			// Check if any of the segment targets match our configured segment
+			segmentMatch := false
+			for _, target := range request.SegmentTargets {
+				if target == config.Segment {
+					segmentMatch = true
+					break
+				}
+			}
+
+			// If no segment match, skip processing
+			if !segmentMatch {
+				continue
+			}
+
+			// Process all tickers from our data list
+			log.Printf("Processing news for all tickers, triggered by segment: %s", config.Segment)
+			for _, item := range dataList {
+				workerPool.Submit(item.Value)
+			}
+		}
+	}()
+
+	// Process results
+	inference_topic := "alert_llm"
+	for result := range workerPool.ResultsChan {
+		if result == nil {
+			continue
+		}
+
+		newsData := result.(map[string]interface{})
+		message := map[string]interface{}{
+			"topic":     inference_topic,
+			"segment":   config.Segment,
+			"ticker":    newsData["ticker"],
+			"data":      newsData["data"],
+			"timestamp": time.Now().Unix(),
+		}
+
+		messageBytes, _ := json.Marshal(message)
+		if err := utils.ProduceMessage(string(messageBytes), inference_topic); err != nil {
+			log.Printf("Error sending result to RAG system: %v", err)
 		}
 	}
+
+	return nil
 }
 
 // scrapeTextFromDiv scrapes the text from Google's top news section
@@ -87,18 +165,67 @@ func removePrefixSuffix(ticker string) (string, string) {
 	return ticker, "-stock"
 }
 
-func StartNewsProcessor() {
-	// Create a buffer channel for Kafka messages
-	buffer := make(chan kafka.Message)
+func loadProcessorConfig(path string) (ProcessorConfig, error) {
+	var configs []ProcessorConfig
 
-	// Start the Kafka consumer
-	go utils.ConsumeToBuffer(buffer, "alert_financials", "news-processor-group", "../../.env")
+	// Read the config file
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return ProcessorConfig{}, fmt.Errorf("error reading config file: %v", err)
+	}
 
-	// Start processing messages
-	ProcessNewsRequests(buffer)
+	// Parse JSON into slice of ProcessorConfig
+	if err := json.Unmarshal(data, &configs); err != nil {
+		return ProcessorConfig{}, fmt.Errorf("error parsing config JSON: %v", err)
+	}
+
+	// Validate we have at least one config
+	if len(configs) == 0 {
+		return ProcessorConfig{}, fmt.Errorf("no processor configs found in file")
+	}
+
+	// Use the first config (since we only need one for this processor)
+	config := configs[0]
+
+	// Validate required fields
+	if config.Topic == "" {
+		return ProcessorConfig{}, fmt.Errorf("topic is required in config")
+	}
+	if config.Segment == "" {
+		return ProcessorConfig{}, fmt.Errorf("segment is required in config")
+	}
+	if config.DataList == "" {
+		return ProcessorConfig{}, fmt.Errorf("data_list path is required in config")
+	}
+
+	return config, nil
+}
+
+func loadDataList(path string) (DataList, error) {
+	var dataList DataList
+
+	// Read the data list file
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("error reading data list file: %v", err)
+	}
+
+	// Parse JSON into DataList struct
+	if err := json.Unmarshal(data, &dataList); err != nil {
+		return nil, fmt.Errorf("error parsing data list JSON: %v", err)
+	}
+
+	// Validate that we have at least one item
+	if len(dataList) == 0 {
+		return nil, fmt.Errorf("data list must contain at least one item")
+	}
+
+	return dataList, nil
 }
 
 func main() {
 	log.Println("Starting News Processor...")
-	StartNewsProcessor()
+	if err := StartNewsProcessor(); err != nil {
+		log.Fatalf("Error starting news processor: %v", err)
+	}
 }

@@ -1,0 +1,4298 @@
+[
+    {
+      "value": "a",
+      "label": "Agilent Technologies Inc ($A)"
+    },
+    {
+      "value": "aap",
+      "label": "Advance Auto Parts Inc ($AAP)"
+    },
+    {
+      "value": "aapl",
+      "label": "Apple Inc ($AAPL)"
+    },
+    {
+      "value": "abbv",
+      "label": "Abbvie Inc ($ABBV)"
+    },
+    {
+      "value": "abc",
+      "label": "Amerisourcebergen Corp ($ABC)"
+    },
+    {
+      "value": "abmd",
+      "label": "Abiomed Inc ($ABMD)"
+    },
+    {
+      "value": "abt",
+      "label": "Abbott Laboratories ($ABT)"
+    },
+    {
+      "value": "acn",
+      "label": "Accenture Plc ($ACN)"
+    },
+    {
+      "value": "adbe",
+      "label": "Adobe Inc ($ADBE)"
+    },
+    {
+      "value": "adi",
+      "label": "Analog Devices Inc ($ADI)"
+    },
+    {
+      "value": "adm",
+      "label": "Archer-Daniels-Midland Co ($ADM)"
+    },
+    {
+      "value": "adp",
+      "label": "Automatic Data Processing Inc ($ADP)"
+    },
+    {
+      "value": "adsk",
+      "label": "Autodesk Inc ($ADSK)"
+    },
+    {
+      "value": "aee",
+      "label": "Ameren Corp ($AEE)"
+    },
+    {
+      "value": "aep",
+      "label": "American Electric Power Co Inc ($AEP)"
+    },
+    {
+      "value": "aes",
+      "label": "AES Corp ($AES)"
+    },
+    {
+      "value": "afl",
+      "label": "Aflac Inc ($AFL)"
+    },
+    {
+      "value": "aig",
+      "label": "American International Group Inc ($AIG)"
+    },
+    {
+      "value": "aiz",
+      "label": "Assurant Inc ($AIZ)"
+    },
+    {
+      "value": "ajg",
+      "label": "Arthur J Gallagher & Co ($AJG)"
+    },
+    {
+      "value": "akam",
+      "label": "Akamai Technologies Inc ($AKAM)"
+    },
+    {
+      "value": "alb",
+      "label": "Albemarle Corp ($ALB)"
+    },
+    {
+      "value": "algn",
+      "label": "Align Technology Inc ($ALGN)"
+    },
+    {
+      "value": "all",
+      "label": "Allstate Corp ($ALL)"
+    },
+    {
+      "value": "alle",
+      "label": "Allegion Plc ($ALLE)"
+    },
+    {
+      "value": "amat",
+      "label": "Applied Materials Inc ($AMAT)"
+    },
+    {
+      "value": "amcr",
+      "label": "Amcor Plc ($AMCR)"
+    },
+    {
+      "value": "amd",
+      "label": "Advanced Micro Devices Inc ($AMD)"
+    },
+    {
+      "value": "ame",
+      "label": "Ametek Inc ($AME)"
+    },
+    {
+      "value": "amgn",
+      "label": "Amgen Inc ($AMGN)"
+    },
+    {
+      "value": "amp",
+      "label": "Ameriprise Financial Inc ($AMP)"
+    },
+    {
+      "value": "amt",
+      "label": "American Tower Corp ($AMT)"
+    },
+    {
+      "value": "amzn",
+      "label": "Amazon.com Inc ($AMZN)"
+    },
+    {
+      "value": "anet",
+      "label": "Arista Networks Inc ($ANET)"
+    },
+    {
+      "value": "anss",
+      "label": "ANSYS Inc ($ANSS)"
+    },
+    {
+      "value": "aon",
+      "label": "Aon Plc ($AON)"
+    },
+    {
+      "value": "aos",
+      "label": "A O Smith Corp ($AOS)"
+    },
+    {
+      "value": "apa",
+      "label": "APA Corp ($APA)"
+    },
+    {
+      "value": "apd",
+      "label": "Air Products & Chemicals Inc ($APD)"
+    },
+    {
+      "value": "aph",
+      "label": "Amphenol Corp ($APH)"
+    },
+    {
+      "value": "aptv",
+      "label": "Aptiv Plc ($APTV)"
+    },
+    {
+      "value": "are",
+      "label": "Alexandria Real Estate Equities Inc ($ARE)"
+    },
+    {
+      "value": "arm",
+      "label": "ARM Holdings PLC ADR ($ARM)"
+    },
+    {
+      "value": "asml",
+      "label": "ASML Holding NV ($ASML)"
+    },
+    {
+      "value": "ato",
+      "label": "Atmos Energy Corp ($ATO)"
+    },
+    {
+      "value": "avb",
+      "label": "AvalonBay Communities Inc ($AVB)"
+    },
+    {
+      "value": "avgo",
+      "label": "Broadcom Inc ($AVGO)"
+    },
+    {
+      "value": "avy",
+      "label": "Avery Dennison Corp ($AVY)"
+    },
+    {
+      "value": "awk",
+      "label": "American Water Works Co Inc ($AWK)"
+    },
+    {
+      "value": "axon",
+      "label": "Axon Enterprise Inc ($AXON)"
+    },
+    {
+      "value": "axp",
+      "label": "American Express Co ($AXP)"
+    },
+    {
+      "value": "azo",
+      "label": "AutoZone Inc ($AZO)"
+    },
+    {
+      "value": "azn",
+      "label": "AstraZeneca PLC ADR ($AZN)"
+    },
+    {
+      "value": "ba",
+      "label": "Boeing Co ($BA)"
+    },
+    {
+      "value": "bac",
+      "label": "Bank of America Corp ($BAC)"
+    },
+    {
+      "value": "ball",
+      "label": "Ball Corp ($BALL)"
+    },
+    {
+      "value": "bax",
+      "label": "Baxter International Inc ($BAX)"
+    },
+    {
+      "value": "bbwi",
+      "label": "Bath & Body Works Inc ($BBWI)"
+    },
+    {
+      "value": "bby",
+      "label": "Best Buy Co Inc ($BBY)"
+    },
+    {
+      "value": "ben",
+      "label": "Franklin Resources Inc ($BEN)"
+    },
+    {
+      "value": "bf.b",
+      "label": "Brown-Forman Corp Class B ($BF.B)"
+    },
+    {
+      "value": "biib",
+      "label": "Biogen Inc ($BIIB)"
+    },
+    {
+      "value": "bio",
+      "label": "Bio-Rad Laboratories Inc ($BIO)"
+    },
+    {
+      "value": "bk",
+      "label": "Bank of New York Mellon Corp ($BK)"
+    },
+    {
+      "value": "bkng",
+      "label": "Booking Holdings Inc ($BKNG)"
+    },
+    {
+      "value": "bkr",
+      "label": "Baker Hughes Co ($BKR)"
+    },
+    {
+      "value": "blk",
+      "label": "BlackRock Inc ($BLK)"
+    },
+    {
+      "value": "bmy",
+      "label": "Bristol-Myers Squibb Co ($BMY)"
+    },
+    {
+      "value": "br",
+      "label": "Broadridge Financial Solutions Inc ($BR)"
+    },
+    {
+      "value": "brk.b",
+      "label": "Berkshire Hathaway Inc Class B ($BRK.B)"
+    },
+    {
+      "value": "bro",
+      "label": "Brown & Brown Inc ($BRO)"
+    },
+    {
+      "value": "bsx",
+      "label": "Boston Scientific Corp ($BSX)"
+    },
+    {
+      "value": "bwa",
+      "label": "BorgWarner Inc ($BWA)"
+    },
+    {
+      "value": "bx",
+      "label": "Blackstone Inc ($BX)"
+    },
+    {
+      "value": "bxp",
+      "label": "Boston Properties Inc ($BXP)"
+    },
+    {
+      "value": "c",
+      "label": "Citigroup Inc ($C)"
+    },
+    {
+      "value": "cag",
+      "label": "Conagra Brands Inc ($CAG)"
+    },
+    {
+      "value": "cat",
+      "label": "Caterpillar Inc ($CAT)"
+    },
+    {
+      "value": "cb",
+      "label": "Chubb Ltd ($CB)"
+    },
+    {
+      "value": "cboe",
+      "label": "Cboe Global Markets Inc ($CBOE)"
+    },
+    {
+      "value": "cbre",
+      "label": "CBRE Group Inc ($CBRE)"
+    },
+    {
+      "value": "cci",
+      "label": "Crown Castle Inc ($CCI)"
+    },
+    {
+      "value": "ccl",
+      "label": "Carnival Corp ($CCL)"
+    },
+    {
+      "value": "cdns",
+      "label": "Cadence Design Systems Inc ($CDNS)"
+    },
+    {
+      "value": "cdw",
+      "label": "CDW Corp ($CDW)"
+    },
+    {
+      "value": "ce",
+      "label": "Celanese Corp ($CE)"
+    },
+    {
+      "value": "ceg",
+      "label": "Constellation Energy Corp ($CEG)"
+    },
+    {
+      "value": "chd",
+      "label": "Church & Dwight Co Inc ($CHD)"
+    },
+    {
+      "value": "chrw",
+      "label": "C.H. Robinson Worldwide Inc ($CHRW)"
+    },
+    {
+      "value": "chtr",
+      "label": "Charter Communications Inc ($CHTR)"
+    },
+    {
+      "value": "ci",
+      "label": "Cigna Group ($CI)"
+    },
+    {
+      "value": "cinf",
+      "label": "Cincinnati Financial Corp ($CINF)"
+    },
+    {
+      "value": "cl",
+      "label": "Colgate-Palmolive Co ($CL)"
+    },
+    {
+      "value": "clx",
+      "label": "Clorox Co ($CLX)"
+    },
+    {
+      "value": "cma",
+      "label": "Comerica Inc ($CMA)"
+    },
+    {
+      "value": "cmcsa",
+      "label": "Comcast Corp ($CMCSA)"
+    },
+    {
+      "value": "cme",
+      "label": "CME Group Inc ($CME)"
+    },
+    {
+      "value": "cmg",
+      "label": "Chipotle Mexican Grill Inc ($CMG)"
+    },
+    {
+      "value": "cmi",
+      "label": "Cummins Inc ($CMI)"
+    },
+    {
+      "value": "cms",
+      "label": "CMS Energy Corp ($CMS)"
+    },
+    {
+      "value": "cnc",
+      "label": "Centene Corp ($CNC)"
+    },
+    {
+      "value": "cnp",
+      "label": "CenterPoint Energy Inc ($CNP)"
+    },
+    {
+      "value": "cof",
+      "label": "Capital One Financial Corp ($COF)"
+    },
+    {
+      "value": "coo",
+      "label": "Cooper Companies Inc ($COO)"
+    },
+    {
+      "value": "cop",
+      "label": "ConocoPhillips ($COP)"
+    },
+    {
+      "value": "cost",
+      "label": "Costco Wholesale Corp ($COST)"
+    },
+    {
+      "value": "cpt",
+      "label": "Camden Property Trust ($CPT)"
+    },
+    {
+      "value": "crm",
+      "label": "Salesforce Inc ($CRM)"
+    },
+    {
+      "value": "csco",
+      "label": "Cisco Systems Inc ($CSCO)"
+    },
+    {
+      "value": "csgp",
+      "label": "CoStar Group Inc ($CSGP)"
+    },
+    {
+      "value": "csx",
+      "label": "CSX Corp ($CSX)"
+    },
+    {
+      "value": "ctas",
+      "label": "Cintas Corp ($CTAS)"
+    },
+    {
+      "value": "ctlt",
+      "label": "Catalent Inc ($CTLT)"
+    },
+    {
+      "value": "ctsh",
+      "label": "Cognizant Technology Solutions Corp ($CTSH)"
+    },
+    {
+      "value": "ctva",
+      "label": "Corteva Inc ($CTVA)"
+    },
+    {
+      "value": "cvs",
+      "label": "CVS Health Corp ($CVS)"
+    },
+    {
+      "value": "cvx",
+      "label": "Chevron Corp ($CVX)"
+    },
+    {
+      "value": "czr",
+      "label": "Caesars Entertainment Inc ($CZR)"
+    },
+    {
+      "value": "d",
+      "label": "Dominion Energy Inc ($D)"
+    },
+    {
+      "value": "dal",
+      "label": "Delta Air Lines Inc ($DAL)"
+    },
+    {
+      "value": "dash",
+      "label": "DoorDash Inc ($DASH)"
+    },
+    {
+      "value": "day",
+      "label": "Dayforce Inc ($DAY)"
+    },
+    {
+      "value": "dd",
+      "label": "DuPont de Nemours Inc ($DD)"
+    },
+    {
+      "value": "de",
+      "label": "Deere & Co ($DE)"
+    },
+    {
+      "value": "dfs",
+      "label": "Discover Financial Services ($DFS)"
+    },
+    {
+      "value": "dg",
+      "label": "Dollar General Corp ($DG)"
+    },
+    {
+      "value": "dgx",
+      "label": "Quest Diagnostics Inc ($DGX)"
+    },
+    {
+      "value": "dhi",
+      "label": "D.R. Horton Inc ($DHI)"
+    },
+    {
+      "value": "dhr",
+      "label": "Danaher Corp ($DHR)"
+    },
+    {
+      "value": "dis",
+      "label": "Walt Disney Co ($DIS)"
+    },
+    {
+      "value": "dlr",
+      "label": "Digital Realty Trust Inc ($DLR)"
+    },
+    {
+      "value": "dltr",
+      "label": "Dollar Tree Inc ($DLTR)"
+    },
+    {
+      "value": "doc",
+      "label": "Healthpeak Properties Inc ($DOC)"
+    },
+    {
+      "value": "dow",
+      "label": "Dow Inc ($DOW)"
+    },
+    {
+      "value": "dpz",
+      "label": "Domino's Pizza Inc ($DPZ)"
+    },
+    {
+      "value": "dri",
+      "label": "Darden Restaurants Inc ($DRI)"
+    },
+    {
+      "value": "dte",
+      "label": "DTE Energy Co ($DTE)"
+    },
+    {
+      "value": "duk",
+      "label": "Duke Energy Corp ($DUK)"
+    },
+    {
+      "value": "dva",
+      "label": "DaVita Inc ($DVA)"
+    },
+    {
+      "value": "dxcm",
+      "label": "Dexcom Inc ($DXCM)"
+    },
+    {
+      "value": "ea",
+      "label": "Electronic Arts Inc ($EA)"
+    },
+    {
+      "value": "ebay",
+      "label": "eBay Inc ($EBAY)"
+    },
+    {
+      "value": "ecl",
+      "label": "Ecolab Inc ($ECL)"
+    },
+    {
+      "value": "ed",
+      "label": "Consolidated Edison Inc ($ED)"
+    },
+    {
+      "value": "efx",
+      "label": "Equifax Inc ($EFX)"
+    },
+    {
+      "value": "eg",
+      "label": "Everest Group Ltd ($EG)"
+    },
+    {
+      "value": "eix",
+      "label": "Edison International ($EIX)"
+    },
+    {
+      "value": "el",
+      "label": "Estee Lauder Companies Inc ($EL)"
+    },
+    {
+      "value": "elv",
+      "label": "Elevance Health Inc ($ELV)"
+    },
+    {
+      "value": "emn",
+      "label": "Eastman Chemical Co ($EMN)"
+    },
+    {
+      "value": "emr",
+      "label": "Emerson Electric Co ($EMR)"
+    },
+    {
+      "value": "enph",
+      "label": "Enphase Energy Inc ($ENPH)"
+    },
+    {
+      "value": "eog",
+      "label": "EOG Resources Inc ($EOG)"
+    },
+    {
+      "value": "epam",
+      "label": "EPAM Systems Inc ($EPAM)"
+    },
+    {
+      "value": "eqix",
+      "label": "Equinix Inc ($EQIX)"
+    },
+    {
+      "value": "eqr",
+      "label": "Equity Residential ($EQR)"
+    },
+    {
+      "value": "es",
+      "label": "Eversource Energy ($ES)"
+    },
+    {
+      "value": "ess",
+      "label": "Essex Property Trust Inc ($ESS)"
+    },
+    {
+      "value": "etn",
+      "label": "Eaton Corp PLC ($ETN)"
+    },
+    {
+      "value": "etr",
+      "label": "Entergy Corp ($ETR)"
+    },
+    {
+      "value": "etsy",
+      "label": "Etsy Inc ($ETSY)"
+    },
+    {
+      "value": "evrg",
+      "label": "Evergy Inc ($EVRG)"
+    },
+    {
+      "value": "ew",
+      "label": "Edwards Lifesciences Corp ($EW)"
+    },
+    {
+      "value": "exc",
+      "label": "Exelon Corp ($EXC)"
+    },
+    {
+      "value": "expd",
+      "label": "Expeditors International of Washington Inc ($EXPD)"
+    },
+    {
+      "value": "exr",
+      "label": "Extra Space Storage Inc ($EXR)"
+    },
+    {
+      "value": "f",
+      "label": "Ford Motor Co ($F)"
+    },
+    {
+      "value": "fast",
+      "label": "Fastenal Co ($FAST)"
+    },
+    {
+      "value": "fbhs",
+      "label": "Fortune Brands Home & Security Inc ($FBHS)"
+    },
+    {
+      "value": "fcx",
+      "label": "Freeport-McMoRan Inc ($FCX)"
+    },
+    {
+      "value": "fds",
+      "label": "FactSet Research Systems Inc ($FDS)"
+    },
+    {
+      "value": "fdx",
+      "label": "FedEx Corp ($FDX)"
+    },
+    {
+      "value": "fe",
+      "label": "FirstEnergy Corp ($FE)"
+    },
+    {
+      "value": "ffiv",
+      "label": "F5 Inc ($FFIV)"
+    },
+    {
+      "value": "fis",
+      "label": "Fidelity National Information Services Inc ($FIS)"
+    },
+    {
+      "value": "fisv",
+      "label": "Fiserv Inc ($FISV)"
+    },
+    {
+      "value": "fitb",
+      "label": "Fifth Third Bancorp ($FITB)"
+    },
+    {
+      "value": "flt",
+      "label": "FleetCor Technologies Inc ($FLT)"
+    },
+    {
+      "value": "fmc",
+      "label": "FMC Corp ($FMC)"
+    },
+    {
+      "value": "fox",
+      "label": "Fox Corp Class B ($FOX)"
+    },
+    {
+      "value": "foxa",
+      "label": "Fox Corp Class A ($FOXA)"
+    },
+    {
+      "value": "frc",
+      "label": "First Republic Bank ($FRC)"
+    },
+    {
+      "value": "frt",
+      "label": "Federal Realty Investment Trust ($FRT)"
+    },
+    {
+      "value": "ftnt",
+      "label": "Fortinet Inc ($FTNT)"
+    },
+    {
+      "value": "fts",
+      "label": "Fortis Inc ($FTS)"
+    },
+    {
+      "value": "gd",
+      "label": "General Dynamics Corp ($GD)"
+    },
+    {
+      "value": "ge",
+      "label": "General Electric Co ($GE)"
+    },
+    {
+      "value": "gehc",
+      "label": "GE HealthCare Technologies Inc ($GEHC)"
+    },
+    {
+      "value": "gfs",
+      "label": "GlobalFoundries Inc ($GFS)"
+    },
+    {
+      "value": "gild",
+      "label": "Gilead Sciences Inc ($GILD)"
+    },
+    {
+      "value": "gis",
+      "label": "General Mills Inc ($GIS)"
+    },
+    {
+      "value": "gl",
+      "label": "Globe Life Inc ($GL)"
+    },
+    {
+      "value": "glw",
+      "label": "Corning Inc ($GLW)"
+    },
+    {
+      "value": "gm",
+      "label": "General Motors Co ($GM)"
+    },
+    {
+      "value": "gnrc",
+      "label": "Generac Holdings Inc ($GNRC)"
+    },
+    {
+      "value": "goog",
+      "label": "Alphabet Inc Class C ($GOOG)"
+    },
+    {
+      "value": "googl",
+      "label": "Alphabet Inc Class A ($GOOGL)"
+    },
+    {
+      "value": "gpc",
+      "label": "Genuine Parts Co ($GPC)"
+    },
+    {
+      "value": "gpn",
+      "label": "Global Payments Inc ($GPN)"
+    },
+    {
+      "value": "grmn",
+      "label": "Garmin Ltd ($GRMN)"
+    },
+    {
+      "value": "gs",
+      "label": "Goldman Sachs Group Inc ($GS)"
+    },
+    {
+      "value": "gww",
+      "label": "W.W. Grainger Inc ($GWW)"
+    },
+    {
+      "value": "hal",
+      "label": "Halliburton Co ($HAL)"
+    },
+    {
+      "value": "has",
+      "label": "Hasbro Inc ($HAS)"
+    },
+    {
+      "value": "hban",
+      "label": "Huntington Bancshares Inc ($HBAN)"
+    },
+    {
+      "value": "hca",
+      "label": "HCA Healthcare Inc ($HCA)"
+    },
+    {
+      "value": "hd",
+      "label": "Home Depot Inc ($HD)"
+    },
+    {
+      "value": "hes",
+      "label": "Hess Corp ($HES)"
+    },
+    {
+      "value": "hig",
+      "label": "Hartford Financial Services Group Inc ($HIG)"
+    },
+    {
+      "value": "hii",
+      "label": "Huntington Ingalls Industries Inc ($HII)"
+    },
+    {
+      "value": "hlt",
+      "label": "Hilton Worldwide Holdings Inc ($HLT)"
+    },
+    {
+      "value": "hog",
+      "label": "Harley-Davidson Inc ($HOG)"
+    },
+    {
+      "value": "holx",
+      "label": "Hologic Inc ($HOLX)"
+    },
+    {
+      "value": "hon",
+      "label": "Honeywell International Inc ($HON)"
+    },
+    {
+      "value": "hpe",
+      "label": "Hewlett Packard Enterprise Co ($HPE)"
+    },
+    {
+      "value": "hpq",
+      "label": "HP Inc ($HPQ)"
+    },
+    {
+      "value": "hrl",
+      "label": "Hormel Foods Corp ($HRL)"
+    },
+    {
+      "value": "hsic",
+      "label": "Henry Schein Inc ($HSIC)"
+    },
+    {
+      "value": "hst",
+      "label": "Host Hotels & Resorts Inc ($HST)"
+    },
+    {
+      "value": "hsy",
+      "label": "Hershey Co ($HSY)"
+    },
+    {
+      "value": "hum",
+      "label": "Humana Inc ($HUM)"
+    },
+    {
+      "value": "hwm",
+      "label": "Howmet Aerospace Inc ($HWM)"
+    },
+    {
+      "value": "ibm",
+      "label": "International Business Machines Corp ($IBM)"
+    },
+    {
+      "value": "ice",
+      "label": "Intercontinental Exchange Inc ($ICE)"
+    },
+    {
+      "value": "idxx",
+      "label": "IDEXX Laboratories Inc ($IDXX)"
+    },
+    {
+      "value": "iex",
+      "label": "IDEX Corp ($IEX)"
+    },
+    {
+      "value": "iff",
+      "label": "International Flavors & Fragrances Inc ($IFF)"
+    },
+    {
+      "value": "ilmn",
+      "label": "Illumina Inc ($ILMN)"
+    },
+    {
+      "value": "incy",
+      "label": "Incyte Corp ($INCY)"
+    },
+    {
+      "value": "intc",
+      "label": "Intel Corp ($INTC)"
+    },
+    {
+      "value": "intu",
+      "label": "Intuit Inc ($INTU)"
+    },
+    {
+      "value": "ip",
+      "label": "International Paper Co ($IP)"
+    },
+    {
+      "value": "ipg",
+      "label": "Interpublic Group of Companies Inc ($IPG)"
+    },
+    {
+      "value": "ipgp",
+      "label": "IPG Photonics Corp ($IPGP)"
+    },
+    {
+      "value": "iqv",
+      "label": "IQVIA Holdings Inc ($IQV)"
+    },
+    {
+      "value": "ir",
+      "label": "Ingersoll Rand Inc ($IR)"
+    },
+    {
+      "value": "irm",
+      "label": "Iron Mountain Inc ($IRM)"
+    },
+    {
+      "value": "isrg",
+      "label": "Intuitive Surgical Inc ($ISRG)"
+    },
+    {
+      "value": "it",
+      "label": "Gartner Inc ($IT)"
+    },
+    {
+      "value": "itw",
+      "label": "Illinois Tool Works Inc ($ITW)"
+    },
+    {
+      "value": "ivz",
+      "label": "Invesco Ltd ($IVZ)"
+    },
+    {
+      "value": "j",
+      "label": "Jacobs Solutions Inc ($J)"
+    },
+    {
+      "value": "jbht",
+      "label": "J.B. Hunt Transport Services Inc ($JBHT)"
+    },
+    {
+      "value": "jci",
+      "label": "Johnson Controls International plc ($JCI)"
+    },
+    {
+      "value": "jd",
+      "label": "JD.com Inc ADR ($JD)"
+    },
+    {
+      "value": "jkhy",
+      "label": "Jack Henry & Associates Inc ($JKHY)"
+    },
+    {
+      "value": "jnj",
+      "label": "Johnson & Johnson ($JNJ)"
+    },
+    {
+      "value": "jpm",
+      "label": "JPMorgan Chase & Co ($JPM)"
+    },
+    {
+      "value": "k",
+      "label": "Kellogg Co ($K)"
+    },
+    {
+      "value": "key",
+      "label": "KeyCorp ($KEY)"
+    },
+    {
+      "value": "keys",
+      "label": "Keysight Technologies Inc ($KEYS)"
+    },
+    {
+      "value": "khc",
+      "label": "Kraft Heinz Co ($KHC)"
+    },
+    {
+      "value": "kim",
+      "label": "Kimco Realty Corp ($KIM)"
+    },
+    {
+      "value": "klac",
+      "label": "KLA Corp ($KLAC)"
+    },
+    {
+      "value": "kmb",
+      "label": "Kimberly-Clark Corp ($KMB)"
+    },
+    {
+      "value": "kmi",
+      "label": "Kinder Morgan Inc ($KMI)"
+    },
+    {
+      "value": "kmx",
+      "label": "CarMax Inc ($KMX)"
+    },
+    {
+      "value": "ko",
+      "label": "Coca-Cola Co ($KO)"
+    },
+    {
+      "value": "kr",
+      "label": "Kroger Co ($KR)"
+    },
+    {
+      "value": "l",
+      "label": "Loews Corp ($L)"
+    },
+    {
+      "value": "ldos",
+      "label": "Leidos Holdings Inc ($LDOS)"
+    },
+    {
+      "value": "len",
+      "label": "Lennar Corp ($LEN)"
+    },
+    {
+      "value": "lh",
+      "label": "Laboratory Corp of America Holdings ($LH)"
+    },
+    {
+      "value": "lin",
+      "label": "Linde plc ($LIN)"
+    },
+    {
+      "value": "lkq",
+      "label": "LKQ Corp ($LKQ)"
+    },
+    {
+      "value": "lly",
+      "label": "Eli Lilly & Co ($LLY)"
+    },
+    {
+      "value": "lmt",
+      "label": "Lockheed Martin Corp ($LMT)"
+    },
+    {
+      "value": "lnc",
+      "label": "Lincoln National Corp ($LNC)"
+    },
+    {
+      "value": "lnt",
+      "label": "Alliant Energy Corp ($LNT)"
+    },
+    {
+      "value": "low",
+      "label": "Lowe's Companies Inc ($LOW)"
+    },
+    {
+      "value": "lrcx",
+      "label": "Lam Research Corp ($LRCX)"
+    },
+    {
+      "value": "lumn",
+      "label": "Lumen Technologies Inc ($LUMN)"
+    },
+    {
+      "value": "luv",
+      "label": "Southwest Airlines Co ($LUV)"
+    },
+    {
+      "value": "lvs",
+      "label": "Las Vegas Sands Corp ($LVS)"
+    },
+    {
+      "value": "lw",
+      "label": "Lamb Weston Holdings Inc ($LW)"
+    },
+    {
+      "value": "lyb",
+      "label": "LyondellBasell Industries NV ($LYB)"
+    },
+    {
+      "value": "lyv",
+      "label": "Live Nation Entertainment Inc ($LYV)"
+    },
+    {
+      "value": "ma",
+      "label": "Mastercard Inc ($MA)"
+    },
+    {
+      "value": "maa",
+      "label": "Mid-America Apartment Communities Inc ($MAA)"
+    },
+    {
+      "value": "mar",
+      "label": "Marriott International Inc ($MAR)"
+    },
+    {
+      "value": "mas",
+      "label": "Masco Corp ($MAS)"
+    },
+    {
+      "value": "mcd",
+      "label": "McDonald's Corp ($MCD)"
+    },
+    {
+      "value": "mchp",
+      "label": "Microchip Technology Inc ($MCHP)"
+    },
+    {
+      "value": "mck",
+      "label": "McKesson Corp ($MCK)"
+    },
+    {
+      "value": "mco",
+      "label": "Moody's Corp ($MCO)"
+    },
+    {
+      "value": "mdlz",
+      "label": "Mondelez International Inc ($MDLZ)"
+    },
+    {
+      "value": "mdt",
+      "label": "Medtronic Plc ($MDT)"
+    },
+    {
+      "value": "met",
+      "label": "MetLife Inc ($MET)"
+    },
+    {
+      "value": "meta",
+      "label": "Meta Platforms Inc ($META)"
+    },
+    {
+      "value": "mgm",
+      "label": "MGM Resorts International ($MGM)"
+    },
+    {
+      "value": "mhk",
+      "label": "Mohawk Industries Inc ($MHK)"
+    },
+    {
+      "value": "mkc",
+      "label": "McCormick & Co Inc ($MKC)"
+    },
+    {
+      "value": "mktx",
+      "label": "MarketAxess Holdings Inc ($MKTX)"
+    },
+    {
+      "value": "mlm",
+      "label": "Martin Marietta Materials Inc ($MLM)"
+    },
+    {
+      "value": "mmc",
+      "label": "Marsh & McLennan Companies Inc ($MMC)"
+    },
+    {
+      "value": "mmm",
+      "label": "3M Co ($MMM)"
+    },
+    {
+      "value": "mnst",
+      "label": "Monster Beverage Corp ($MNST)"
+    },
+    {
+      "value": "mo",
+      "label": "Altria Group Inc ($MO)"
+    },
+    {
+      "value": "moh",
+      "label": "Molina Healthcare Inc ($MOH)"
+    },
+    {
+      "value": "mos",
+      "label": "Mosaic Co ($MOS)"
+    },
+    {
+      "value": "mpc",
+      "label": "Marathon Petroleum Corp ($MPC)"
+    },
+    {
+      "value": "mrk",
+      "label": "Merck & Co Inc ($MRK)"
+    },
+    {
+      "value": "mrna",
+      "label": "Moderna Inc ($MRNA)"
+    },
+    {
+      "value": "mro",
+      "label": "Marathon Oil Corp ($MRO)"
+    },
+    {
+      "value": "ms",
+      "label": "Morgan Stanley ($MS)"
+    },
+    {
+      "value": "msci",
+      "label": "MSCI Inc ($MSCI)"
+    },
+    {
+      "value": "msft",
+      "label": "Microsoft Corp ($MSFT)"
+    },
+    {
+      "value": "msi",
+      "label": "Motorola Solutions Inc ($MSI)"
+    },
+    {
+      "value": "mtb",
+      "label": "M&T Bank Corp ($MTB)"
+    },
+    {
+      "value": "mtch",
+      "label": "Match Group Inc ($MTCH)"
+    },
+    {
+      "value": "mtd",
+      "label": "Mettler-Toledo International Inc ($MTD)"
+    },
+    {
+      "value": "mu",
+      "label": "Micron Technology Inc ($MU)"
+    },
+    {
+      "value": "nclh",
+      "label": "Norwegian Cruise Line Holdings Ltd ($NCLH)"
+    },
+    {
+      "value": "ndaq",
+      "label": "Nasdaq Inc ($NDAQ)"
+    },
+    {
+      "value": "nee",
+      "label": "NextEra Energy Inc ($NEE)"
+    },
+    {
+      "value": "nem",
+      "label": "Newmont Corp ($NEM)"
+    },
+    {
+      "value": "nflx",
+      "label": "Netflix Inc ($NFLX)"
+    },
+    {
+      "value": "ni",
+      "label": "NiSource Inc ($NI)"
+    },
+    {
+      "value": "nke",
+      "label": "Nike Inc ($NKE)"
+    },
+    {
+      "value": "nlok",
+      "label": "NortonLifeLock Inc ($NLOK)"
+    },
+    {
+      "value": "noc",
+      "label": "Northrop Grumman Corp ($NOC)"
+    },
+    {
+      "value": "now",
+      "label": "ServiceNow Inc ($NOW)"
+    },
+    {
+      "value": "nrg",
+      "label": "NRG Energy Inc ($NRG)"
+    },
+    {
+      "value": "nsc",
+      "label": "Norfolk Southern Corp ($NSC)"
+    },
+    {
+      "value": "ntap",
+      "label": "NetApp Inc ($NTAP)"
+    },
+    {
+      "value": "ntrs",
+      "label": "Northern Trust Corp ($NTRS)"
+    },
+    {
+      "value": "nue",
+      "label": "Nucor Corp ($NUE)"
+    },
+    {
+      "value": "nvda",
+      "label": "NVIDIA Corp ($NVDA)"
+    },
+    {
+      "value": "nvr",
+      "label": "NVR Inc ($NVR)"
+    },
+    {
+      "value": "nwl",
+      "label": "Newell Brands Inc ($NWL)"
+    },
+    {
+      "value": "nws",
+      "label": "News Corp Class B ($NWS)"
+    },
+    {
+      "value": "nwsa",
+      "label": "News Corp Class A ($NWSA)"
+    },
+    {
+      "value": "nxpi",
+      "label": "NXP Semiconductors NV ($NXPI)"
+    },
+    {
+      "value": "o",
+      "label": "Realty Income Corp ($O)"
+    },
+    {
+      "value": "odfl",
+      "label": "Old Dominion Freight Line Inc ($ODFL)"
+    },
+    {
+      "value": "oke",
+      "label": "ONEOK Inc ($OKE)"
+    },
+    {
+      "value": "omc",
+      "label": "Omnicom Group Inc ($OMC)"
+    },
+    {
+      "value": "on",
+      "label": "ON Semiconductor Corp ($ON)"
+    },
+    {
+      "value": "orcl",
+      "label": "Oracle Corp ($ORCL)"
+    },
+    {
+      "value": "orly",
+      "label": "O'Reilly Automotive Inc ($ORLY)"
+    },
+    {
+      "value": "otis",
+      "label": "Otis Worldwide Corp ($OTIS)"
+    },
+    {
+      "value": "oxy",
+      "label": "Occidental Petroleum Corp ($OXY)"
+    },
+    {
+      "value": "panw",
+      "label": "Palo Alto Networks Inc ($PANW)"
+    },
+    {
+      "value": "para",
+      "label": "Paramount Global Class B ($PARA)"
+    },
+    {
+      "value": "payc",
+      "label": "Paycom Software Inc ($PAYC)"
+    },
+    {
+      "value": "payx",
+      "label": "Paychex Inc ($PAYX)"
+    },
+    {
+      "value": "pcar",
+      "label": "PACCAR Inc ($PCAR)"
+    },
+    {
+      "value": "peg",
+      "label": "Public Service Enterprise Group Inc ($PEG)"
+    },
+    {
+      "value": "pep",
+      "label": "PepsiCo Inc ($PEP)"
+    },
+    {
+      "value": "pfg",
+      "label": "Principal Financial Group Inc ($PFG)"
+    },
+    {
+      "value": "pfe",
+      "label": "Pfizer Inc ($PFE)"
+    },
+    {
+      "value": "pg",
+      "label": "Procter & Gamble Co ($PG)"
+    },
+    {
+      "value": "pgr",
+      "label": "Progressive Corp ($PGR)"
+    },
+    {
+      "value": "ph",
+      "label": "Parker-Hannifin Corp ($PH)"
+    },
+    {
+      "value": "phm",
+      "label": "PulteGroup Inc ($PHM)"
+    },
+    {
+      "value": "pkg",
+      "label": "Packaging Corp of America ($PKG)"
+    },
+    {
+      "value": "pld",
+      "label": "Prologis Inc ($PLD)"
+    },
+    {
+      "value": "pm",
+      "label": "Philip Morris International Inc ($PM)"
+    },
+    {
+      "value": "pnc",
+      "label": "PNC Financial Services Group Inc ($PNC)"
+    },
+    {
+      "value": "pnr",
+      "label": "Pentair PLC ($PNR)"
+    },
+    {
+      "value": "pnw",
+      "label": "Pinnacle West Capital Corp ($PNW)"
+    },
+    {
+      "value": "pool",
+      "label": "Pool Corp ($POOL)"
+    },
+    {
+      "value": "ppg",
+      "label": "PPG Industries Inc ($PPG)"
+    },
+    {
+      "value": "ppl",
+      "label": "PPL Corp ($PPL)"
+    },
+    {
+      "value": "pru",
+      "label": "Prudential Financial Inc ($PRU)"
+    },
+    {
+      "value": "psa",
+      "label": "Public Storage ($PSA)"
+    },
+    {
+      "value": "psx",
+      "label": "Phillips 66 ($PSX)"
+    },
+    {
+      "value": "ptc",
+      "label": "PTC Inc ($PTC)"
+    },
+    {
+      "value": "pvh",
+      "label": "PVH Corp ($PVH)"
+    },
+    {
+      "value": "pwr",
+      "label": "Quanta Services Inc ($PWR)"
+    },
+    {
+      "value": "pxd",
+      "label": "Pioneer Natural Resources Co ($PXD)"
+    },
+    {
+      "value": "pypl",
+      "label": "PayPal Holdings Inc ($PYPL)"
+    },
+    {
+      "value": "qcom",
+      "label": "QUALCOMM Inc ($QCOM)"
+    },
+    {
+      "value": "qrvo",
+      "label": "Qorvo Inc ($QRVO)"
+    },
+    {
+      "value": "rbl",
+      "label": "Rubblestone Inc ($RBL)"
+    },
+    {
+      "value": "rcl",
+      "label": "Royal Caribbean Group ($RCL)"
+    },
+    {
+      "value": "reg",
+      "label": "Regency Centers Corp ($REG)"
+    },
+    {
+      "value": "regn",
+      "label": "Regeneron Pharmaceuticals Inc ($REGN)"
+    },
+    {
+      "value": "rf",
+      "label": "Regions Financial Corp ($RF)"
+    },
+    {
+      "value": "rhi",
+      "label": "Robert Half International Inc ($RHI)"
+    },
+    {
+      "value": "rjf",
+      "label": "Raymond James Financial Inc ($RJF)"
+    },
+    {
+      "value": "rl",
+      "label": "Ralph Lauren Corp ($RL)"
+    },
+    {
+      "value": "rmd",
+      "label": "ResMed Inc ($RMD)"
+    },
+    {
+      "value": "rok",
+      "label": "Rockwell Automation Inc ($ROK)"
+    },
+    {
+      "value": "rol",
+      "label": "Rollins Inc ($ROL)"
+    },
+    {
+      "value": "rop",
+      "label": "Roper Technologies Inc ($ROP)"
+    },
+    {
+      "value": "rost",
+      "label": "Ross Stores Inc ($ROST)"
+    },
+    {
+      "value": "rsg",
+      "label": "Republic Services Inc ($RSG)"
+    },
+    {
+      "value": "rtx",
+      "label": "Raytheon Technologies Corp ($RTX)"
+    },
+    {
+      "value": "sbac",
+      "label": "SBA Communications Corp ($SBAC)"
+    },
+    {
+      "value": "sbux",
+      "label": "Starbucks Corp ($SBUX)"
+    },
+    {
+      "value": "schw",
+      "label": "Charles Schwab Corp ($SCHW)"
+    },
+    {
+      "value": "sedg",
+      "label": "SolarEdge Technologies Inc ($SEDG)"
+    },
+    {
+      "value": "see",
+      "label": "Sealed Air Corp ($SEE)"
+    },
+    {
+      "value": "shw",
+      "label": "Sherwin-Williams Co ($SHW)"
+    },
+    {
+      "value": "sivb",
+      "label": "SVB Financial Group ($SIVB)"
+    },
+    {
+      "value": "sjm",
+      "label": "JM Smucker Co ($SJM)"
+    },
+    {
+      "value": "slb",
+      "label": "Schlumberger NV ($SLB)"
+    },
+    {
+      "value": "sna",
+      "label": "Snap-on Inc ($SNA)"
+    },
+    {
+      "value": "snps",
+      "label": "Synopsys Inc ($SNPS)"
+    },
+    {
+      "value": "so",
+      "label": "Southern Co ($SO)"
+    },
+    {
+      "value": "spg",
+      "label": "Simon Property Group Inc ($SPG)"
+    },
+    {
+      "value": "spgi",
+      "label": "S&P Global Inc ($SPGI)"
+    },
+    {
+      "value": "sre",
+      "label": "Sempra Energy ($SRE)"
+    },
+    {
+      "value": "ste",
+      "label": "STERIS plc ($STE)"
+    },
+    {
+      "value": "stt",
+      "label": "State Street Corp ($STT)"
+    },
+    {
+      "value": "stx",
+      "label": "Seagate Technology Holdings PLC ($STX)"
+    },
+    {
+      "value": "stz",
+      "label": "Constellation Brands Inc ($STZ)"
+    },
+    {
+      "value": "swk",
+      "label": "Stanley Black & Decker Inc ($SWK)"
+    },
+    {
+      "value": "swks",
+      "label": "Skyworks Solutions Inc ($SWKS)"
+    },
+    {
+      "value": "syf",
+      "label": "Synchrony Financial ($SYF)"
+    },
+    {
+      "value": "syk",
+      "label": "Stryker Corp ($SYK)"
+    },
+    {
+      "value": "syy",
+      "label": "Sysco Corp ($SYY)"
+    },
+    {
+      "value": "t",
+      "label": "AT&T Inc ($T)"
+    },
+    {
+      "value": "tap",
+      "label": "Molson Coors Beverage Co ($TAP)"
+    },
+    {
+      "value": "tdg",
+      "label": "TransDigm Group Inc ($TDG)"
+    },
+    {
+      "value": "tdy",
+      "label": "Teledyne Technologies Inc ($TDY)"
+    },
+    {
+      "value": "tel",
+      "label": "TE Connectivity Ltd ($TEL)"
+    },
+    {
+      "value": "tfc",
+      "label": "Truist Financial Corp ($TFC)"
+    },
+    {
+      "value": "tfx",
+      "label": "Teleflex Inc ($TFX)"
+    },
+    {
+      "value": "tgt",
+      "label": "Target Corp ($TGT)"
+    },
+    {
+      "value": "tjx",
+      "label": "TJX Companies Inc ($TJX)"
+    },
+    {
+      "value": "tmo",
+      "label": "Thermo Fisher Scientific Inc ($TMO)"
+    },
+    {
+      "value": "tmus",
+      "label": "T-Mobile US Inc ($TMUS)"
+    },
+    {
+      "value": "tpr",
+      "label": "Tapestry Inc ($TPR)"
+    },
+    {
+      "value": "trmb",
+      "label": "Trimble Inc ($TRMB)"
+    },
+    {
+      "value": "trow",
+      "label": "T Rowe Price Group Inc ($TROW)"
+    },
+    {
+      "value": "trv",
+      "label": "Travelers Companies Inc ($TRV)"
+    },
+    {
+      "value": "tsco",
+      "label": "Tractor Supply Co ($TSCO)"
+    },
+    {
+      "value": "tsla",
+      "label": "Tesla Inc ($TSLA)"
+    },
+    {
+      "value": "tsn",
+      "label": "Tyson Foods Inc ($TSN)"
+    },
+    {
+      "value": "tt",
+      "label": "Trane Technologies PLC ($TT)"
+    },
+    {
+      "value": "ttwo",
+      "label": "Take-Two Interactive Software Inc ($TTWO)"
+    },
+    {
+      "value": "txn",
+      "label": "Texas Instruments Inc ($TXN)"
+    },
+    {
+      "value": "txt",
+      "label": "Textron Inc ($TXT)"
+    },
+    {
+      "value": "tyl",
+      "label": "Tyler Technologies Inc ($TYL)"
+    },
+    {
+      "value": "ua",
+      "label": "Under Armour Inc Class C ($UA)"
+    },
+    {
+      "value": "uaa",
+      "label": "Under Armour Inc Class A ($UAA)"
+    },
+    {
+      "value": "ual",
+      "label": "United Airlines Holdings Inc ($UAL)"
+    },
+    {
+      "value": "udr",
+      "label": "UDR Inc ($UDR)"
+    },
+    {
+      "value": "uhs",
+      "label": "Universal Health Services Inc ($UHS)"
+    },
+    {
+      "value": "ulta",
+      "label": "Ulta Beauty Inc ($ULTA)"
+    },
+    {
+      "value": "unh",
+      "label": "UnitedHealth Group Inc ($UNH)"
+    },
+    {
+      "value": "unp",
+      "label": "Union Pacific Corp ($UNP)"
+    },
+    {
+      "value": "ups",
+      "label": "United Parcel Service Inc ($UPS)"
+    },
+    {
+      "value": "uri",
+      "label": "United Rentals Inc ($URI)"
+    },
+    {
+      "value": "usb",
+      "label": "U.S. Bancorp ($USB)"
+    },
+    {
+      "value": "v",
+      "label": "Visa Inc ($V)"
+    },
+    {
+      "value": "vfc",
+      "label": "VF Corp ($VFC)"
+    },
+    {
+      "value": "vlo",
+      "label": "Valero Energy Corp ($VLO)"
+    },
+    {
+      "value": "vmc",
+      "label": "Vulcan Materials Co ($VMC)"
+    },
+    {
+      "value": "vno",
+      "label": "Vornado Realty Trust ($VNO)"
+    },
+    {
+      "value": "vrsk",
+      "label": "Verisk Analytics Inc ($VRSK)"
+    },
+    {
+      "value": "vrsn",
+      "label": "VeriSign Inc ($VRSN)"
+    },
+    {
+      "value": "vrtx",
+      "label": "Vertex Pharmaceuticals Inc ($VRTX)"
+    },
+    {
+      "value": "vtr",
+      "label": "Ventas Inc ($VTR)"
+    },
+    {
+      "value": "vz",
+      "label": "Verizon Communications Inc ($VZ)"
+    },
+    {
+      "value": "wab",
+      "label": "Westinghouse Air Brake Technologies Corp ($WAB)"
+    },
+    {
+      "value": "wba",
+      "label": "Walgreens Boots Alliance Inc ($WBA)"
+    },
+    {
+      "value": "wdc",
+      "label": "Western Digital Corp ($WDC)"
+    },
+    {
+      "value": "wec",
+      "label": "WEC Energy Group Inc ($WEC)"
+    },
+    {
+      "value": "well",
+      "label": "Welltower Inc ($WELL)"
+    },
+    {
+      "value": "wfc",
+      "label": "Wells Fargo & Co ($WFC)"
+    },
+    {
+      "value": "whr",
+      "label": "Whirlpool Corp ($WHR)"
+    },
+    {
+      "value": "wm",
+      "label": "Waste Management Inc ($WM)"
+    },
+    {
+      "value": "wmb",
+      "label": "Williams Cos Inc ($WMB)"
+    },
+    {
+      "value": "wmt",
+      "label": "Walmart Inc ($WMT)"
+    },
+    {
+      "value": "wrb",
+      "label": "W.R. Berkley Corp ($WRB)"
+    },
+    {
+      "value": "wrk",
+      "label": "WestRock Co ($WRK)"
+    },
+    {
+      "value": "wst",
+      "label": "West Pharmaceutical Services Inc ($WST)"
+    },
+    {
+      "value": "wtw",
+      "label": "Willis Towers Watson PLC ($WTW)"
+    },
+    {
+      "value": "wy",
+      "label": "Weyerhaeuser Co ($WY)"
+    },
+    {
+      "value": "wynn",
+      "label": "Wynn Resorts Ltd ($WYNN)"
+    },
+    {
+      "value": "x",
+      "label": "United States Steel Corp ($X)"
+    },
+    {
+      "value": "xel",
+      "label": "Xcel Energy Inc ($XEL)"
+    },
+    {
+      "value": "xl",
+      "label": "XL Fleet Corp ($XL)"
+    },
+    {
+      "value": "xlnx",
+      "label": "Xilinx Inc ($XLNX)"
+    },
+    {
+      "value": "xom",
+      "label": "Exxon Mobil Corp ($XOM)"
+    },
+    {
+      "value": "xray",
+      "label": "DENTSPLY SIRONA Inc ($XRAY)"
+    },
+    {
+      "value": "xyl",
+      "label": "Xylem Inc ($XYL)"
+    },
+    {
+      "value": "yum",
+      "label": "Yum! Brands Inc ($YUM)"
+    },
+    {
+      "value": "zbh",
+      "label": "Zimmer Biomet Holdings Inc ($ZBH)"
+    },
+    {
+      "value": "zbra",
+      "label": "Zebra Technologies Corp ($ZBRA)"
+    },
+    {
+      "value": "zion",
+      "label": "Zions Bancorp NA ($ZION)"
+    },
+    {
+      "value": "zts",
+      "label": "Zoetis Inc ($ZTS)"
+    },
+    {
+      "value": "wbd",
+      "label": "Warner Bros Discovery Inc ($WBD)"
+    },
+    {
+      "value": "zs",
+      "label": "Zscaler Inc ($ZS)"
+    },
+    {
+      "value": "app",
+      "label": "AppLovin Corp ($APP)"
+    },
+    {
+      "value": "ccep",
+      "label": "Coca-Cola Europacific Partners PLC ($CCEP)"
+    },
+    {
+      "value": "crwd",
+      "label": "Crowdstrike Holdings Inc ($CRWD)"
+    },
+    {
+      "value": "ddog",
+      "label": "Datadog Inc ($DDOG)"
+    },
+    {
+      "value": "fang",
+      "label": "Diamondback Energy Inc ($FANG)"
+    },
+    {
+      "value": "fi",
+      "label": "Fiserv Inc ($FI)"
+    },
+    {
+      "value": "gev",
+      "label": "GE Vernova Inc ($GEV)"
+    },
+    {
+      "value": "ionq",
+      "label": "IonQ Inc ($IONQ)"
+    },
+    {
+      "value": "lulu",
+      "label": "Lululemon Athletica Inc ($LULU)"
+    },
+    {
+      "value": "mdb",
+      "label": "MongoDB Inc ($MDB)"
+    },
+    {
+      "value": "meli",
+      "label": "MercadoLibre Inc ($MELI)"
+    },
+    {
+      "value": "pdd",
+      "label": "PDD Holdings Inc ADR ($PDD)"
+    },
+    {
+      "value": "pltr",
+      "label": "Palantir Technologies Inc ($PLTR)"
+    },
+    {
+      "value": "rgti",
+      "label": "Rigetti Computing Inc ($RGTI)"
+    },
+    {
+      "value": "team",
+      "label": "Atlassian Corp ($TEAM)"
+    },
+    {
+      "value": "ttd",
+      "label": "Trade Desk Inc ($TTD)"
+    },
+    {
+      "value": "wday",
+      "label": "Workday Inc ($WDAY)"
+    },
+    {
+      "value": "snow",
+      "label": "Snowflake Inc ($SNOW)"
+    },
+    {
+      "value": "coin",
+      "label": "Coinbase Global Inc ($COIN)"
+    },
+    {
+      "value": "net",
+      "label": "Cloudflare Inc ($NET)"
+    },
+    {
+      "value": "lcid",
+      "label": "Lucid Group Inc ($LCID)"
+    },
+    {
+      "value": "rivn",
+      "label": "Rivian Automotive Inc ($RIVN)"
+    },
+    {
+      "value": "abnb",
+      "label": "Airbnb Inc ($ABNB)"
+    },
+    {
+      "value": "dkng",
+      "label": "DraftKings Inc ($DKNG)"
+    },
+    {
+      "value": "cvna",
+      "label": "Carvana Co ($CVNA)"
+    },
+    {
+      "value": "roku",
+      "label": "Roku Inc ($ROKU)"
+    },
+    {
+      "value": "shop",
+      "label": "Shopify Inc ($SHOP)"
+    },
+    {
+      "value": "afrm",
+      "label": "Affirm Holdings Inc ($AFRM)"
+    },
+    {
+      "value": "sofi",
+      "label": "SoFi Technologies Inc ($SOFI)"
+    },
+    {
+      "value": "hood",
+      "label": "Robinhood Markets Inc ($HOOD)"
+    },
+    {
+      "value": "u",
+      "label": "Unity Software Inc ($U)"
+    },
+    {
+      "value": "rblx",
+      "label": "Roblox Corp ($RBLX)"
+    },
+    {
+      "value": "upst",
+      "label": "Upstart Holdings Inc ($UPST)"
+    },
+    {
+      "value": "pton",
+      "label": "Peloton Interactive Inc ($PTON)"
+    },
+    {
+      "value": "ai",
+      "label": "C3.ai Inc ($AI)"
+    },
+    {
+      "value": "path",
+      "label": "UiPath Inc ($PATH)"
+    },
+    {
+      "value": "dna",
+      "label": "Ginkgo Bioworks Holdings Inc ($DNA)"
+    },
+    {
+      "value": "spce",
+      "label": "Virgin Galactic Holdings Inc ($SPCE)"
+    },
+    {
+      "value": "nkla",
+      "label": "Nikola Corp ($NKLA)"
+    },
+    {
+      "value": "plug",
+      "label": "Plug Power Inc ($PLUG)"
+    },
+    {
+      "value": "chpt",
+      "label": "ChargePoint Holdings Inc ($CHPT)"
+    },
+    {
+      "value": "mstr",
+      "label": "MicroStrategy Inc ($MSTR)"
+    },
+    {
+      "value": "riot",
+      "label": "Riot Platforms Inc ($RIOT)"
+    },
+    {
+      "value": "mara",
+      "label": "Marathon Digital Holdings Inc ($MARA)"
+    },
+    {
+      "value": "gme",
+      "label": "GameStop Corp ($GME)"
+    },
+    {
+      "value": "amc",
+      "label": "AMC Entertainment Holdings Inc ($AMC)"
+    },
+    {
+      "value": "bb",
+      "label": "BlackBerry Ltd ($BB)"
+    },
+    {
+      "value": "wish",
+      "label": "ContextLogic Inc ($WISH)"
+    },
+    {
+      "value": "bynd",
+      "label": "Beyond Meat Inc ($BYND)"
+    },
+    {
+      "value": "tlry",
+      "label": "Tilray Brands Inc ($TLRY)"
+    },
+    {
+      "value": "sndl",
+      "label": "SNDL Inc ($SNDL)"
+    },
+    {
+      "value": "clov",
+      "label": "Clover Health Investments Corp ($CLOV)"
+    },
+    {
+      "value": "fubo",
+      "label": "FuboTV Inc ($FUBO)"
+    },
+    {
+      "value": "sklz",
+      "label": "Skillz Inc ($SKLZ)"
+    },
+    {
+      "value": "didi",
+      "label": "DiDi Global Inc ($DIDI)"
+    },
+    {
+      "value": "nio",
+      "label": "NIO Inc ($NIO)"
+    },
+    {
+      "value": "xpev",
+      "label": "XPeng Inc ($XPEV)"
+    },
+    {
+      "value": "li",
+      "label": "Li Auto Inc ($LI)"
+    },
+    {
+      "value": "baba",
+      "label": "Alibaba Group Holding Ltd ($BABA)"
+    },
+    {
+      "value": "bili",
+      "label": "Bilibili Inc ($BILI)"
+    },
+    {
+      "value": "bntx",
+      "label": "BioNTech SE ($BNTX)"
+    },
+    {
+      "value": "nvax",
+      "label": "Novavax Inc ($NVAX)"
+    },
+    {
+      "value": "snap",
+      "label": "Snap Inc ($SNAP)"
+    },
+    {
+      "value": "pins",
+      "label": "Pinterest Inc ($PINS)"
+    },
+    {
+      "value": "twlo",
+      "label": "Twilio Inc ($TWLO)"
+    },
+    {
+      "value": "zm",
+      "label": "Zoom Video Communications Inc ($ZM)"
+    },
+    {
+      "value": "docu",
+      "label": "DocuSign Inc ($DOCU)"
+    },
+    {
+      "value": "okta",
+      "label": "Okta Inc ($OKTA)"
+    },
+    {
+      "value": "hut",
+      "label": "Hut 8 Mining Corp ($HUT)"
+    },
+    {
+      "value": "bitf",
+      "label": "Bitfarms Ltd ($BITF)"
+    },
+    {
+      "value": "clsk",
+      "label": "CleanSpark Inc ($CLSK)"
+    },
+    {
+      "value": "sq",
+      "label": "Block Inc ($SQ)"
+    },
+    {
+      "value": "se",
+      "label": "Sea Ltd ($SE)"
+    },
+    {
+      "value": "grab",
+      "label": "Grab Holdings Ltd ($GRAB)"
+    },
+    {
+      "value": "dks",
+      "label": "Dick's Sporting Goods Inc ($DKS)"
+    },
+    {
+      "value": "chwy",
+      "label": "Chewy Inc ($CHWY)"
+    },
+    {
+      "value": "w",
+      "label": "Wayfair Inc ($W)"
+    },
+    {
+      "value": "asan",
+      "label": "Asana Inc ($ASAN)"
+    },
+    {
+      "value": "crsr",
+      "label": "Corsair Gaming Inc ($CRSR)"
+    },
+    {
+      "value": "plby",
+      "label": "PLBY Group Inc ($PLBY)"
+    },
+    {
+      "value": "soxl",
+      "label": "Direxion Daily Semiconductor Bull 3X ($SOXL)"
+    },
+    {
+      "value": "tqqq",
+      "label": "ProShares UltraPro QQQ ($TQQQ)"
+    },
+    {
+      "value": "spxl",
+      "label": "Direxion Daily S&P 500 Bull 3X ($SPXL)"
+    },
+    {
+      "value": "arkk",
+      "label": "ARK Innovation ETF ($ARKK)"
+    },
+    {
+      "value": "qqq",
+      "label": "Invesco QQQ Trust ($QQQ)"
+    },
+    {
+      "value": "spy",
+      "label": "SPDR S&P 500 ETF Trust ($SPY)"
+    },
+    {
+      "value": "voo",
+      "label": "Vanguard S&P 500 ETF ($VOO)"
+    },
+    {
+      "value": "x:btcusd",
+      "label": "Bitcoin ($BTC)"
+    },
+    {
+      "value": "x:ethusd",
+      "label": "Ethereum ($ETH)"
+    },
+    {
+      "value": "x:usdtusd",
+      "label": "Tether ($USDT)"
+    },
+    {
+      "value": "x:xrpusd",
+      "label": "XRP ($XRP)"
+    },
+    {
+      "value": "x:solusd",
+      "label": "Solana ($SOL)"
+    },
+    {
+      "value": "x:bnbusd",
+      "label": "BNB ($BNB)"
+    },
+    {
+      "value": "x:dogeusd",
+      "label": "Dogecoin ($DOGE)"
+    },
+    {
+      "value": "x:usdcusd",
+      "label": "USDC ($USDC)"
+    },
+    {
+      "value": "x:adausd",
+      "label": "Cardano ($ADA)"
+    },
+    {
+      "value": "x:stethusd",
+      "label": "Lido Staked Ether ($STETH)"
+    },
+    {
+      "value": "x:trxusd",
+      "label": "TRON ($TRX)"
+    },
+    {
+      "value": "x:avaxusd",
+      "label": "Avalanche ($AVAX)"
+    },
+    {
+      "value": "x:linkusd",
+      "label": "Chainlink ($LINK)"
+    },
+    {
+      "value": "x:wstethusd",
+      "label": "Wrapped stETH ($WSTETH)"
+    },
+    {
+      "value": "x:shibusd",
+      "label": "Shiba Inu ($SHIB)"
+    },
+    {
+      "value": "x:tonusd",
+      "label": "Toncoin ($TON)"
+    },
+    {
+      "value": "x:wbtcusd",
+      "label": "Wrapped Bitcoin ($WBTC)"
+    },
+    {
+      "value": "x:suiusd",
+      "label": "Sui ($SUI)"
+    },
+    {
+      "value": "x:dotusd",
+      "label": "Polkadot ($DOT)"
+    },
+    {
+      "value": "x:xlmusd",
+      "label": "Stellar ($XLM)"
+    },
+    {
+      "value": "x:hbarusd",
+      "label": "Hedera ($HBAR)"
+    },
+    {
+      "value": "x:wethusd",
+      "label": "WETH ($WETH)"
+    },
+    {
+      "value": "x:bchusd",
+      "label": "Bitcoin Cash ($BCH)"
+    },
+    {
+      "value": "x:uniusd",
+      "label": "Uniswap ($UNI)"
+    },
+    {
+      "value": "x:pepeusd",
+      "label": "Pepe ($PEPE)"
+    },
+    {
+      "value": "x:leousd",
+      "label": "LEO Token ($LEO)"
+    },
+    {
+      "value": "x:ltcusd",
+      "label": "Litecoin ($LTC)"
+    },
+    {
+      "value": "x:nearusd",
+      "label": "NEAR Protocol ($NEAR)"
+    },
+    {
+      "value": "x:hypeusd",
+      "label": "Hyperliquid ($HYPE)"
+    },
+    {
+      "value": "x:aptusd",
+      "label": "Aptos ($APT)"
+    },
+    {
+      "value": "x:weethusd",
+      "label": "Wrapped eETH ($WEETH)"
+    },
+    {
+      "value": "x:icpusd",
+      "label": "Internet Computer ($ICP)"
+    },
+    {
+      "value": "x:usdeusd",
+      "label": "Ethena USDe ($USDE)"
+    },
+    {
+      "value": "x:aaveusd",
+      "label": "Aave ($AAVE)"
+    },
+    {
+      "value": "x:usdsusd",
+      "label": "USDS ($USDS)"
+    },
+    {
+      "value": "x:polusd",
+      "label": "POL ($ex-MATIC) ($POL)"
+    },
+    {
+      "value": "x:etcusd",
+      "label": "Ethereum Classic ($ETC)"
+    },
+    {
+      "value": "x:crousd",
+      "label": "Cronos ($CRO)"
+    },
+    {
+      "value": "x:rndrusd",
+      "label": "Render ($RENDER)"
+    },
+    {
+      "value": "x:vetusd",
+      "label": "VeChain ($VET)"
+    },
+    {
+      "value": "x:fetusd",
+      "label": "Artificial Superintelligence Alliance ($FET)"
+    },
+    {
+      "value": "x:bgbusd",
+      "label": "Bitget Token ($BGB)"
+    },
+    {
+      "value": "x:mntusd",
+      "label": "Mantle ($MNT)"
+    },
+    {
+      "value": "x:taousd",
+      "label": "Bittensor ($TAO)"
+    },
+    {
+      "value": "x:arbusd",
+      "label": "Arbitrum ($ARB)"
+    },
+    {
+      "value": "x:kasusd",
+      "label": "Kaspa ($KAS)"
+    },
+    {
+      "value": "x:filusd",
+      "label": "Filecoin ($FIL)"
+    },
+    {
+      "value": "x:xmrusd",
+      "label": "Monero ($XMR)"
+    },
+    {
+      "value": "x:omusd",
+      "label": "MANTRA ($OM)"
+    },
+    {
+      "value": "x:wbtusd",
+      "label": "WhiteBIT Coin ($WBT)"
+    },
+    {
+      "value": "x:daiusd",
+      "label": "Dai ($DAI)"
+    },
+    {
+      "value": "x:ftmusd",
+      "label": "Fantom ($FTM)"
+    },
+    {
+      "value": "x:atomusd",
+      "label": "Cosmos Hub ($ATOM)"
+    },
+    {
+      "value": "x:algousd",
+      "label": "Algorand ($ALGO)"
+    },
+    {
+      "value": "x:stxusd",
+      "label": "Stacks ($STX)"
+    },
+    {
+      "value": "x:okbusd",
+      "label": "OKB ($OKB)"
+    },
+    {
+      "value": "x:enausd",
+      "label": "Ethena ($ENA)"
+    },
+    {
+      "value": "x:tiausd",
+      "label": "Celestia ($TIA)"
+    },
+    {
+      "value": "x:imxusd",
+      "label": "Immutable ($IMX)"
+    },
+    {
+      "value": "x:opusd",
+      "label": "Optimism ($OP)"
+    },
+    {
+      "value": "x:wifusd",
+      "label": "dogwifhat ($WIF)"
+    },
+    {
+      "value": "x:bonkusd",
+      "label": "Bonk ($BONK)"
+    },
+    {
+      "value": "x:injusd",
+      "label": "Injective ($INJ)"
+    },
+    {
+      "value": "x:ondousd",
+      "label": "Ondo ($ONDO)"
+    },
+    {
+      "value": "x:thetausd",
+      "label": "Theta Network ($THETA)"
+    },
+    {
+      "value": "x:grtusd",
+      "label": "The Graph ($GRT)"
+    },
+    {
+      "value": "x:sosusd",
+      "label": "Solana Swap ($SOS)"
+    },
+    {
+      "value": "x:virtualusd",
+      "label": "Virtuals Protocol ($VIRTUAL)"
+    },
+    {
+      "value": "x:flokiusd",
+      "label": "FLOKI ($FLOKI)"
+    },
+    {
+      "value": "x:weth-busd",
+      "label": "Binance-Peg WETH ($WETH)"
+    },
+    {
+      "value": "x:seiusd",
+      "label": "Sei ($SEI)"
+    },
+    {
+      "value": "x:wldusd",
+      "label": "Worldcoin ($WLD)"
+    },
+    {
+      "value": "x:jasmyusd",
+      "label": "JasmyCoin ($JASMY)"
+    },
+    {
+      "value": "x:runeusd",
+      "label": "THORChain ($RUNE)"
+    },
+    {
+      "value": "x:cbbtcusd",
+      "label": "Coinbase Wrapped BTC ($CBBTC)"
+    },
+    {
+      "value": "x:fdusdusd",
+      "label": "First Digital USD ($FDUSD)"
+    },
+    {
+      "value": "x:galausd",
+      "label": "GALA ($GALA)"
+    },
+    {
+      "value": "x:qntusd",
+      "label": "Quant ($QNT)"
+    },
+    {
+      "value": "x:rethusd",
+      "label": "Rocket Pool ETH ($RETH)"
+    },
+    {
+      "value": "x:ldousd",
+      "label": "Lido DAO ($LDO)"
+    },
+    {
+      "value": "x:rsethusd",
+      "label": "Kelp DAO Restaked ETH ($RSETH)"
+    },
+    {
+      "value": "x:beamusd",
+      "label": "Beam ($BEAM)"
+    },
+    {
+      "value": "x:methusd",
+      "label": "Mantle Staked Ether ($METH)"
+    },
+    {
+      "value": "x:sandusd",
+      "label": "The Sandbox ($SAND)"
+    },
+    {
+      "value": "x:mkrusd",
+      "label": "Maker ($MKR)"
+    },
+    {
+      "value": "x:gtusd",
+      "label": "Gate ($GT)"
+    },
+    {
+      "value": "x:brettusd",
+      "label": "Brett ($BRETT)"
+    },
+    {
+      "value": "x:flrusd",
+      "label": "Flare ($FLR)"
+    },
+    {
+      "value": "x:kaiausd",
+      "label": "Kaia ($KAIA)"
+    },
+    {
+      "value": "x:kcsusd",
+      "label": "KuCoin ($KCS)"
+    },
+    {
+      "value": "x:hntusd",
+      "label": "Helium ($HNT)"
+    },
+    {
+      "value": "x:eosusd",
+      "label": "EOS ($EOS)"
+    },
+    {
+      "value": "x:pythusd",
+      "label": "Pyth Network ($PYTH)"
+    },
+    {
+      "value": "x:rayusd",
+      "label": "Raydium ($RAY)"
+    },
+    {
+      "value": "x:ezethusd",
+      "label": "Renzo Restaked ETH ($EZETH)"
+    },
+    {
+      "value": "x:tkxusd",
+      "label": "Tokenize Xchange ($TKX)"
+    },
+    {
+      "value": "x:dydxusd",
+      "label": "dYdX ($DYDX)"
+    },
+    {
+      "value": "x:solvbtcusd",
+      "label": "Solv Protocol SolvBTC ($SOLVBTC)"
+    },
+    {
+      "value": "x:nexousd",
+      "label": "NEXO ($NEXO)"
+    },
+    {
+      "value": "x:jupusd",
+      "label": "Jupiter ($JUP)"
+    },
+    {
+      "value": "x:crvusd",
+      "label": "Curve DAO ($CRV)"
+    },
+    {
+      "value": "x:flowusd",
+      "label": "Flow ($FLOW)"
+    },
+    {
+      "value": "x:lbtcusd",
+      "label": "Lombard Staked BTC ($LBTC)"
+    },
+    {
+      "value": "x:xtzusd",
+      "label": "Tezos ($XTZ)"
+    },
+    {
+      "value": "x:aerousd",
+      "label": "Aerodrome Finance ($AERO)"
+    },
+    {
+      "value": "x:arusd",
+      "label": "Arweave ($AR)"
+    },
+    {
+      "value": "x:ftnusd",
+      "label": "Fasttoken ($FTN)"
+    },
+    {
+      "value": "x:strkusd",
+      "label": "Starknet ($STRK)"
+    },
+    {
+      "value": "x:moveusd",
+      "label": "Movement ($MOVE)"
+    },
+    {
+      "value": "x:iotausd",
+      "label": "IOTA ($IOTA)"
+    },
+    {
+      "value": "x:ensusd",
+      "label": "Ethereum Name Service ($ENS)"
+    },
+    {
+      "value": "x:stauusd",
+      "label": "STAU ($STAU)"
+    },
+    {
+      "value": "x:bsvusd",
+      "label": "Bitcoin SV ($BSV)"
+    },
+    {
+      "value": "x:egldusd",
+      "label": "MultiversX ($EGLD)"
+    },
+    {
+      "value": "x:bttusd",
+      "label": "BitTorrent ($BTT)"
+    },
+    {
+      "value": "x:coreusd",
+      "label": "Core ($CORE)"
+    },
+    {
+      "value": "x:neousd",
+      "label": "NEO ($NEO)"
+    },
+    {
+      "value": "x:bnsolusd",
+      "label": "Binance Staked SOL ($BNSOL)"
+    },
+    {
+      "value": "x:msolusd",
+      "label": "Marinade Staked SOL ($MSOL)"
+    },
+    {
+      "value": "x:aiozusd",
+      "label": "AIOZ Network ($AIOZ)"
+    },
+    {
+      "value": "x:xdcusd",
+      "label": "XDC Network ($XDC)"
+    },
+    {
+      "value": "x:axsusd",
+      "label": "Axie Infinity ($AXS)"
+    },
+    {
+      "value": "x:maticusd",
+      "label": "Polygon ($MATIC)"
+    },
+    {
+      "value": "x:pnutusd",
+      "label": "Peanut the Squirrel ($PNUT)"
+    },
+    {
+      "value": "x:mogusd",
+      "label": "Mog Coin ($MOG)"
+    },
+    {
+      "value": "x:manausd",
+      "label": "Decentraland ($MANA)"
+    },
+    {
+      "value": "x:apeusd",
+      "label": "ApeCoin ($APE)"
+    },
+    {
+      "value": "x:eethusd",
+      "label": "ether.fi Staked ETH ($EETH)"
+    },
+    {
+      "value": "x:cmethusd",
+      "label": "Mantle Restaked ETH ($CMETH)"
+    },
+    {
+      "value": "x:popcatusd",
+      "label": "Popcat ($POPCAT)"
+    },
+    {
+      "value": "x:solvbtc.bbnusd",
+      "label": "Solv Protocol SolvBTC.BBN ($SOLVBTC.BBN)"
+    },
+    {
+      "value": "x:chzusd",
+      "label": "Chiliz ($CHZ)"
+    },
+    {
+      "value": "x:jtousd",
+      "label": "Jito ($JTO)"
+    },
+    {
+      "value": "x:snxusd",
+      "label": "Synthetix Network ($SNX)"
+    },
+    {
+      "value": "x:eigenusd",
+      "label": "Eigenlayer ($EIGEN)"
+    },
+    {
+      "value": "x:cfxusd",
+      "label": "Conflux ($CFX)"
+    },
+    {
+      "value": "x:minausd",
+      "label": "Mina Protocol ($MINA)"
+    },
+    {
+      "value": "x:pendleusd",
+      "label": "Pendle ($PENDLE)"
+    },
+    {
+      "value": "x:compusd",
+      "label": "Compound ($COMP)"
+    },
+    {
+      "value": "x:ethdydxusd",
+      "label": "dYdX ETHDYDX ($ETHDYDX)"
+    },
+    {
+      "value": "x:cakeusd",
+      "label": "PancakeSwap ($CAKE)"
+    },
+    {
+      "value": "x:aktusd",
+      "label": "Akash Network ($AKT)"
+    },
+    {
+      "value": "x:wbtc_arbusd",
+      "label": "Arbitrum Bridged WBTC ($Arbitrum One) ($WBTC)"
+    },
+    {
+      "value": "x:zecusd",
+      "label": "Zcash ($ZEC)"
+    },
+    {
+      "value": "x:superusd",
+      "label": "SuperVerse ($SUPER)"
+    },
+    {
+      "value": "x:jupsolusd",
+      "label": "Jupiter Staked SOL ($JUPSOL)"
+    },
+    {
+      "value": "x:wusd",
+      "label": "Wormhole ($W)"
+    },
+    {
+      "value": "x:weth_l2usd",
+      "label": "L2 Standard Bridged WETH ($Base) ($WETH)"
+    },
+    {
+      "value": "x:xecusd",
+      "label": "eCash ($XEC)"
+    },
+    {
+      "value": "x:dogusd",
+      "label": "DOG\u2022GO\u2022TO\u2022THE\u2022MOON ($Runes) ($DOG)"
+    },
+    {
+      "value": "x:usd0usd",
+      "label": "Usual USD ($USD0)"
+    },
+    {
+      "value": "x:weth_arbusd",
+      "label": "Arbitrum Bridged WETH ($Arbitrum One) ($WETH)"
+    },
+    {
+      "value": "x:doge_bnbusd",
+      "label": "Binance-Peg Dogecoin ($DOGE)"
+    },
+    {
+      "value": "x:zkusd",
+      "label": "ZKsync ($ZK)"
+    },
+    {
+      "value": "x:blurusd",
+      "label": "Blur ($BLUR)"
+    },
+    {
+      "value": "x:ampusd",
+      "label": "Amp ($AMP)"
+    },
+    {
+      "value": "x:ai16zusd",
+      "label": "ai16z ($AI16Z)"
+    },
+    {
+      "value": "x:notusd",
+      "label": "Notcoin ($NOT)"
+    },
+    {
+      "value": "x:goatusd",
+      "label": "Goatseus Maximus ($GOAT)"
+    },
+    {
+      "value": "x:ronusd",
+      "label": "Ronin ($RON)"
+    },
+    {
+      "value": "x:axlusd",
+      "label": "Axelar ($AXL)"
+    },
+    {
+      "value": "x:grassusd",
+      "label": "Grass ($GRASS)"
+    },
+    {
+      "value": "x:turbousd",
+      "label": "Turbo ($TURBO)"
+    },
+    {
+      "value": "x:usddusd",
+      "label": "USDD ($USDD)"
+    },
+    {
+      "value": "x:rsrusd",
+      "label": "Reserve Rights ($RSR)"
+    },
+    {
+      "value": "x:gnousd",
+      "label": "Gnosis ($GNO)"
+    },
+    {
+      "value": "x:roseusd",
+      "label": "Oasis ($ROSE)"
+    },
+    {
+      "value": "x:ordiusd",
+      "label": "ORDI ($ORDI)"
+    },
+    {
+      "value": "x:babydogeusd",
+      "label": "Baby Doge Coin ($BABYDOGE)"
+    },
+    {
+      "value": "x:primeusd",
+      "label": "Echelon Prime ($PRIME)"
+    },
+    {
+      "value": "x:luncusd",
+      "label": "Terra Luna Classic ($LUNC)"
+    },
+    {
+      "value": "x:cbethusd",
+      "label": "Coinbase Wrapped Staked ETH ($CBETH)"
+    },
+    {
+      "value": "x:zrousd",
+      "label": "LayerZero ($ZRO)"
+    },
+    {
+      "value": "x:mewusd",
+      "label": "cat in a dogs world ($MEW)"
+    },
+    {
+      "value": "x:ebtcusd",
+      "label": "Ether.fi Staked BTC ($EBTC)"
+    },
+    {
+      "value": "x:neirousd",
+      "label": "Neiro ($NEIRO)"
+    },
+    {
+      "value": "x:1inchusd",
+      "label": "1inch ($1INCH)"
+    },
+    {
+      "value": "x:xautusd",
+      "label": "Tether Gold ($XAUT)"
+    },
+    {
+      "value": "x:fraxusd",
+      "label": "Frax ($FRAX)"
+    },
+    {
+      "value": "x:chexusd",
+      "label": "CHEX Token ($CHEX)"
+    },
+    {
+      "value": "x:superoethbusd",
+      "label": "Super OETH ($SUPEROETHB)"
+    },
+    {
+      "value": "x:fartcoinusd",
+      "label": "Fartcoin ($FARTCOIN)"
+    },
+    {
+      "value": "x:spxusd",
+      "label": "SPX6900 ($SPX)"
+    },
+    {
+      "value": "x:ckbusd",
+      "label": "Nervos Network ($CKB)"
+    },
+    {
+      "value": "x:safeusd",
+      "label": "Safe ($SAFE)"
+    },
+    {
+      "value": "x:arkmusd",
+      "label": "Arkham ($ARKM)"
+    },
+    {
+      "value": "x:gigausd",
+      "label": "Gigachad ($GIGA)"
+    },
+    {
+      "value": "x:kavausd",
+      "label": "Kava ($KAVA)"
+    },
+    {
+      "value": "x:ksmusd",
+      "label": "Kusama ($KSM)"
+    },
+    {
+      "value": "x:lptusd",
+      "label": "Livepeer ($LPT)"
+    },
+    {
+      "value": "x:nftusd",
+      "label": "APENFT ($NFT)"
+    },
+    {
+      "value": "x:frxethusd",
+      "label": "Frax Ether ($FRXETH)"
+    },
+    {
+      "value": "x:btcbusd",
+      "label": "Avalanche Bridged BTC ($Avalanche) ($BTC.B)"
+    },
+    {
+      "value": "x:weth_posusd",
+      "label": "Polygon PoS Bridged WETH ($Polygon POS) ($WETH)"
+    },
+    {
+      "value": "x:agentfunusd",
+      "label": "AgentFun.AI ($AGENTFUN)"
+    },
+    {
+      "value": "x:twtusd",
+      "label": "Trust Wallet ($TWT)"
+    },
+    {
+      "value": "x:actusd",
+      "label": "Act I The AI Prophecy ($ACT)"
+    },
+    {
+      "value": "x:dashusd",
+      "label": "Dash ($DASH)"
+    },
+    {
+      "value": "x:telusd",
+      "label": "Telcoin ($TEL)"
+    },
+    {
+      "value": "x:bomeusd",
+      "label": "BOOK OF MEME ($BOME)"
+    },
+    {
+      "value": "x:dexeusd",
+      "label": "DeXe ($DEXE)"
+    },
+    {
+      "value": "x:bdxusd",
+      "label": "Beldex ($BDX)"
+    },
+    {
+      "value": "x:hotusd",
+      "label": "Holo ($HOT)"
+    },
+    {
+      "value": "x:ctcusd",
+      "label": "Creditcoin ($CTC)"
+    },
+    {
+      "value": "x:astrusd",
+      "label": "Astar ($ASTR)"
+    },
+    {
+      "value": "x:enjusd",
+      "label": "Enjin Coin ($ENJ)"
+    },
+    {
+      "value": "x:ethfiusd",
+      "label": "Ether.fi ($ETHFI)"
+    },
+    {
+      "value": "x:paxgusd",
+      "label": "PAX Gold ($PAXG)"
+    },
+    {
+      "value": "x:tfuelusd",
+      "label": "Theta Fuel ($TFUEL)"
+    },
+    {
+      "value": "x:zrxusd",
+      "label": "0x Protocol ($ZRX)"
+    },
+    {
+      "value": "x:zilusd",
+      "label": "Zilliqa ($ZIL)"
+    },
+    {
+      "value": "x:woousd",
+      "label": "WOO ($WOO)"
+    },
+    {
+      "value": "x:swethusd",
+      "label": "Swell Ethereum ($SWETH)"
+    },
+    {
+      "value": "x:gmtusd",
+      "label": "GMT ($GMT)"
+    },
+    {
+      "value": "x:iocusd",
+      "label": "io.net ($IO)"
+    },
+    {
+      "value": "x:meusd",
+      "label": "Magic Eden ($ME)"
+    },
+    {
+      "value": "x:tusdusd",
+      "label": "TrueUSD ($TUSD)"
+    },
+    {
+      "value": "x:snekusd",
+      "label": "Snek ($SNEK)"
+    },
+    {
+      "value": "x:ethxusd",
+      "label": "Stader ETHx ($ETHX)"
+    },
+    {
+      "value": "x:cvxusd",
+      "label": "Convex Finance ($CVX)"
+    },
+    {
+      "value": "x:pyusdusd",
+      "label": "PayPal USD ($PYUSD)"
+    },
+    {
+      "value": "x:tbtcusd",
+      "label": "tBTC ($TBTC)"
+    },
+    {
+      "value": "x:qubicusd",
+      "label": "Qubic ($QUBIC)"
+    },
+    {
+      "value": "x:savaxusd",
+      "label": "BENQI Liquid Staked AVAX ($SAVAX)"
+    },
+    {
+      "value": "x:vrscusd",
+      "label": "Verus ($VRSC)"
+    },
+    {
+      "value": "x:satsusd",
+      "label": "SATS ($Ordinals) ($SATS)"
+    },
+    {
+      "value": "x:dymusd",
+      "label": "Dymension ($DYM)"
+    },
+    {
+      "value": "x:celousd",
+      "label": "Celo ($CELO)"
+    },
+    {
+      "value": "x:usdyusd",
+      "label": "Ondo US Dollar Yield ($USDY)"
+    },
+    {
+      "value": "x:wemixusd",
+      "label": "WEMIX ($WEMIX)"
+    },
+    {
+      "value": "x:ankrusd",
+      "label": "Ankr Network ($ANKR)"
+    },
+    {
+      "value": "x:tracusd",
+      "label": "OriginTrail ($TRAC)"
+    },
+    {
+      "value": "x:ethwusd",
+      "label": "EthereumPoW ($ETHW)"
+    },
+    {
+      "value": "x:sfrxethusd",
+      "label": "Staked Frax Ether ($SFRXETH)"
+    },
+    {
+      "value": "x:memeusd",
+      "label": "Memecoin ($MEME)"
+    },
+    {
+      "value": "x:jstusd",
+      "label": "JUST ($JST)"
+    },
+    {
+      "value": "x:osmousd",
+      "label": "Osmosis ($OSMO)"
+    },
+    {
+      "value": "x:iotxusd",
+      "label": "IoTeX ($IOTX)"
+    },
+    {
+      "value": "x:zerebrousd",
+      "label": "Zerebro ($ZEREBRO)"
+    },
+    {
+      "value": "x:weth-l2blastusd",
+      "label": "L2 Standard Bridged WETH ($Blast) ($WETH)"
+    },
+    {
+      "value": "x:aevousd",
+      "label": "Aevo ($AEVO)"
+    },
+    {
+      "value": "x:qaiusd",
+      "label": "QuantixAI ($QAI)"
+    },
+    {
+      "value": "x:lsethusd",
+      "label": "Liquid Staked ETH ($LSETH)"
+    },
+    {
+      "value": "x:batusd",
+      "label": "Basic Attention ($BAT)"
+    },
+    {
+      "value": "x:glmusd",
+      "label": "Golem ($GLM)"
+    },
+    {
+      "value": "x:qtumusd",
+      "label": "Qtum ($QTUM)"
+    },
+    {
+      "value": "x:aleousd",
+      "label": "ALEO ($ALEO)"
+    },
+    {
+      "value": "x:usdbusd",
+      "label": "USDB ($USDB)"
+    },
+    {
+      "value": "x:morphousd",
+      "label": "Morpho ($MORPHO)"
+    },
+    {
+      "value": "x:athusd",
+      "label": "Aethir ($ATH)"
+    },
+    {
+      "value": "x:mantausd",
+      "label": "Manta Network ($MANTA)"
+    },
+    {
+      "value": "x:usycusd",
+      "label": "Hashnote USYC ($USYC)"
+    },
+    {
+      "value": "x:galusd",
+      "label": "Galxe ($GAL)"
+    },
+    {
+      "value": "x:sushiusd",
+      "label": "Sushi ($SUSHI)"
+    },
+    {
+      "value": "x:zetausd",
+      "label": "ZetaChain ($ZETA)"
+    },
+    {
+      "value": "x:usdc.eusd",
+      "label": "Bridged USDC ($Polygon PoS Bridge) ($USDC.E)"
+    },
+    {
+      "value": "x:oneusd",
+      "label": "Harmony ($ONE)"
+    },
+    {
+      "value": "x:pepecoinusd",
+      "label": "PepeCoin ($PEPECOIN)"
+    },
+    {
+      "value": "x:ilvusd",
+      "label": "Illuvium ($ILV)"
+    },
+    {
+      "value": "x:cpoolusd",
+      "label": "Clearpool ($CPOOL)"
+    },
+    {
+      "value": "x:rvnusd",
+      "label": "Ravencoin ($RVN)"
+    },
+    {
+      "value": "x:maskusd",
+      "label": "Mask Network ($MASK)"
+    },
+    {
+      "value": "x:scusd",
+      "label": "Siacoin ($SC)"
+    },
+    {
+      "value": "x:kdausd",
+      "label": "Kadena ($KDA)"
+    },
+    {
+      "value": "x:btgusd",
+      "label": "Bitcoin Gold ($BTG)"
+    },
+    {
+      "value": "x:polyxusd",
+      "label": "Polymesh ($POLYX)"
+    },
+    {
+      "value": "x:xchusd",
+      "label": "Chia ($XCH)"
+    },
+    {
+      "value": "x:elfusd",
+      "label": "aelf ($ELF)"
+    },
+    {
+      "value": "x:busd-bnbusd",
+      "label": "Binance-Peg BUSD ($BUSD)"
+    },
+    {
+      "value": "x:altusd",
+      "label": "AltLayer ($ALT)"
+    },
+    {
+      "value": "x:lunausd",
+      "label": "Terra ($LUNA)"
+    },
+    {
+      "value": "x:cwbtcusd",
+      "label": "cWBTC ($CWBTC)"
+    },
+    {
+      "value": "x:shirousd",
+      "label": "Shiro Neko ($SHIRO)"
+    },
+    {
+      "value": "x:gmxusd",
+      "label": "GMX ($GMX)"
+    },
+    {
+      "value": "x:mxusd",
+      "label": "MX ($MX)"
+    },
+    {
+      "value": "x:dogsusd",
+      "label": "Dogs ($DOGS)"
+    },
+    {
+      "value": "x:peaqusd",
+      "label": "peaq ($PEAQ)"
+    },
+    {
+      "value": "x:mrsusd",
+      "label": "Metars Genesis ($MRS)"
+    },
+    {
+      "value": "x:wbtc_posusd",
+      "label": "Polygon Bridged WBTC ($Polygon POS) ($WBTC)"
+    },
+    {
+      "value": "x:gasusd",
+      "label": "Gas ($GAS)"
+    },
+    {
+      "value": "x:yfiusd",
+      "label": "yearn.finance ($YFI)"
+    },
+    {
+      "value": "x:xyousd",
+      "label": "XYO Network ($XYO)"
+    },
+    {
+      "value": "x:moodengusd",
+      "label": "Moo Deng ($MOODENG)"
+    },
+    {
+      "value": "x:corgiaiusd",
+      "label": "CorgiAI ($CORGIAI)"
+    },
+    {
+      "value": "x:borgusd",
+      "label": "SwissBorg ($BORG)"
+    },
+    {
+      "value": "x:xrdusd",
+      "label": "Radix ($XRD)"
+    },
+    {
+      "value": "x:dcrusd",
+      "label": "Decred ($DCR)"
+    },
+    {
+      "value": "x:instusd",
+      "label": "Instadapp ($INST)"
+    },
+    {
+      "value": "x:eth-starkgateusd",
+      "label": "Bridged Ether ($StarkGate) ($ETH)"
+    },
+    {
+      "value": "x:ohmusd",
+      "label": "Olympus ($OHM)"
+    },
+    {
+      "value": "x:sfpusd",
+      "label": "SafePal ($SFP)"
+    },
+    {
+      "value": "x:0x0usd",
+      "label": "0x0.ai: AI Smart Contract ($0X0)"
+    },
+    {
+      "value": "x:acxusd",
+      "label": "Across Protocol ($ACX)"
+    },
+    {
+      "value": "x:pumpbtcusd",
+      "label": "pumpBTC ($PUMPBTC)"
+    },
+    {
+      "value": "x:amaptusd",
+      "label": "Amnis Aptos ($AMAPT)"
+    },
+    {
+      "value": "x:sklusd",
+      "label": "SKALE ($SKL)"
+    },
+    {
+      "value": "x:bicousd",
+      "label": "Biconomy ($BICO)"
+    },
+    {
+      "value": "x:driftusd",
+      "label": "Drift Protocol ($DRIFT)"
+    },
+    {
+      "value": "x:metisusd",
+      "label": "Metis ($METIS)"
+    },
+    {
+      "value": "x:nosusd",
+      "label": "Nosana ($NOS)"
+    },
+    {
+      "value": "x:lrcusd",
+      "label": "Loopring ($LRC)"
+    },
+    {
+      "value": "x:mwcusd",
+      "label": "MimbleWimbleCoin ($MWC)"
+    },
+    {
+      "value": "x:tusd",
+      "label": "Threshold Network ($T)"
+    },
+    {
+      "value": "x:kmnousd",
+      "label": "Kamino ($KMNO)"
+    },
+    {
+      "value": "x:npcusd",
+      "label": "Non-Playable Coin ($NPC)"
+    },
+    {
+      "value": "x:griffainusd",
+      "label": "GRIFFAIN ($GRIFFAIN)"
+    },
+    {
+      "value": "x:rlbusd",
+      "label": "Rollbit Coin ($RLB)"
+    },
+    {
+      "value": "x:chillguyusd",
+      "label": "Just a chill guy ($CHILLGUY)"
+    },
+    {
+      "value": "x:rplusd",
+      "label": "Rocket Pool ($RPL)"
+    },
+    {
+      "value": "x:purrusd",
+      "label": "Purr ($PURR)"
+    },
+    {
+      "value": "x:fidausd",
+      "label": "Solana Name Service ($FIDA)"
+    },
+    {
+      "value": "x:wildusd",
+      "label": "Wilder World ($WILD)"
+    },
+    {
+      "value": "x:skiusd",
+      "label": "Ski Mask Dog ($SKI)"
+    },
+    {
+      "value": "x:availusd",
+      "label": "Avail ($AVAIL)"
+    },
+    {
+      "value": "x:fxsusd",
+      "label": "Frax Share ($FXS)"
+    },
+    {
+      "value": "x:umausd",
+      "label": "UMA ($UMA)"
+    },
+    {
+      "value": "x:tribeusd",
+      "label": "Tribe ($TRIBE)"
+    },
+    {
+      "value": "x:wbethusd",
+      "label": "Wrapped Beacon ETH ($WBETH)"
+    },
+    {
+      "value": "x:fwogusd",
+      "label": "Fwog ($FWOG)"
+    },
+    {
+      "value": "x:peopleusd",
+      "label": "ConstitutionDAO ($PEOPLE)"
+    },
+    {
+      "value": "x:bzrusd",
+      "label": "Bazaars ($BZR)"
+    },
+    {
+      "value": "x:cotiusd",
+      "label": "COTI ($COTI)"
+    },
+    {
+      "value": "x:vthousd",
+      "label": "VeThor ($VTHO)"
+    },
+    {
+      "value": "x:honeyusd",
+      "label": "Hivemapper ($HONEY)"
+    },
+    {
+      "value": "x:bandusd",
+      "label": "Band Protocol ($BAND)"
+    },
+    {
+      "value": "x:glmrusd",
+      "label": "Moonbeam ($GLMR)"
+    },
+    {
+      "value": "x:andyusd",
+      "label": "ANDY ETH ($ANDY)"
+    },
+    {
+      "value": "x:apuusd",
+      "label": "Apu Apustaja ($APU)"
+    },
+    {
+      "value": "x:xemusd",
+      "label": "NEM ($XEM)"
+    },
+    {
+      "value": "x:paalusd",
+      "label": "PAAL AI ($PAAL)"
+    },
+    {
+      "value": "x:weth_mantleusd",
+      "label": "Wrapped Ether ($Mantle Bridge) ($WETH)"
+    },
+    {
+      "value": "x:ssolusd",
+      "label": "Solayer Staked SOL ($SSOL)"
+    },
+    {
+      "value": "x:dgbusd",
+      "label": "DigiByte ($DGB)"
+    },
+    {
+      "value": "x:fluxusd",
+      "label": "Flux ($FLUX)"
+    },
+    {
+      "value": "x:yggusd",
+      "label": "Yield Guild Games ($YGG)"
+    },
+    {
+      "value": "x:catusd",
+      "label": "Simon's Cat ($CAT)"
+    },
+    {
+      "value": "x:xvgusd",
+      "label": "Verge ($XVG)"
+    },
+    {
+      "value": "x:vanryusd",
+      "label": "Vanar Chain ($VANRY)"
+    },
+    {
+      "value": "x:cetusd",
+      "label": "CoinEx ($CET)"
+    },
+    {
+      "value": "x:tethusd",
+      "label": "Treehouse ETH ($TETH)"
+    },
+    {
+      "value": "x:orcausd",
+      "label": "Orca ($ORCA)"
+    },
+    {
+      "value": "x:agiusd",
+      "label": "Delysium ($AGI)"
+    },
+    {
+      "value": "x:wellusd",
+      "label": "Moonwell ($WELL)"
+    },
+    {
+      "value": "x:nxmusd",
+      "label": "Nexus Mutual ($NXM)"
+    },
+    {
+      "value": "x:chrusd",
+      "label": "Chromia ($CHR)"
+    },
+    {
+      "value": "x:dagusd",
+      "label": "Constellation ($DAG)"
+    },
+    {
+      "value": "x:lcxusd",
+      "label": "LCX ($LCX)"
+    },
+    {
+      "value": "x:blastusd",
+      "label": "Blast ($BLAST)"
+    },
+    {
+      "value": "x:degenusd",
+      "label": "Degen ($Base) ($DEGEN)"
+    },
+    {
+      "value": "x:audiousd",
+      "label": "Audius ($AUDIO)"
+    },
+    {
+      "value": "x:cethusd",
+      "label": "cETH ($CETH)"
+    },
+    {
+      "value": "x:api3usd",
+      "label": "API3 ($API3)"
+    },
+    {
+      "value": "x:agixusd",
+      "label": "SingularityNET ($AGIX)"
+    },
+    {
+      "value": "x:ontusd",
+      "label": "Ontology ($ONT)"
+    },
+    {
+      "value": "x:csprusd",
+      "label": "Casper Network ($CSPR)"
+    },
+    {
+      "value": "x:ponkeusd",
+      "label": "PONKE ($PONKE)"
+    },
+    {
+      "value": "x:cultusd",
+      "label": "Milady Cult Coin ($CULT)"
+    },
+    {
+      "value": "x:gusd",
+      "label": "Gravity ($G)"
+    },
+    {
+      "value": "x:amplusd",
+      "label": "Ampleforth ($AMPL)"
+    },
+    {
+      "value": "x:bitcoinusd",
+      "label": "HarryPotterObamaSonic10Inu ($ETH) ($BITCOIN)"
+    },
+    {
+      "value": "x:rezusd",
+      "label": "Renzo ($REZ)"
+    },
+    {
+      "value": "x:xnousd",
+      "label": "Nano ($XNO)"
+    },
+    {
+      "value": "x:cetususd",
+      "label": "Cetus Protocol ($CETUS)"
+    },
+    {
+      "value": "x:sunusd",
+      "label": "Sun Token ($SUN)"
+    },
+    {
+      "value": "x:deepusd",
+      "label": "DeepBook ($DEEP)"
+    },
+    {
+      "value": "x:usdt_mantleusd",
+      "label": "Mantle Bridged USDT ($Mantle) ($USDT)"
+    },
+    {
+      "value": "x:aixbtusd",
+      "label": "aixbt by Virtuals ($AIXBT)"
+    },
+    {
+      "value": "x:mplxusd",
+      "label": "Metaplex ($MPLX)"
+    },
+    {
+      "value": "x:zenusd",
+      "label": "Horizen ($ZEN)"
+    },
+    {
+      "value": "x:xaiusd",
+      "label": "Xai ($XAI)"
+    },
+    {
+      "value": "x:heartusd",
+      "label": "Humans.ai ($HEART)"
+    },
+    {
+      "value": "x:icxusd",
+      "label": "ICON ($ICX)"
+    },
+    {
+      "value": "x:sxpusd",
+      "label": "Solar ($SXP)"
+    },
+    {
+      "value": "x:qgoldusd",
+      "label": "Quorium ($QGOLD)"
+    },
+    {
+      "value": "x:pinusd",
+      "label": "PinLink ($PIN)"
+    },
+    {
+      "value": "x:bigtimeusd",
+      "label": "Big Time ($BIGTIME)"
+    },
+    {
+      "value": "x:gominingusd",
+      "label": "GoMining Token ($GOMINING)"
+    },
+    {
+      "value": "x:lqtyusd",
+      "label": "Liquity ($LQTY)"
+    },
+    {
+      "value": "x:idusd",
+      "label": "SPACE ID ($ID)"
+    },
+    {
+      "value": "x:alphusd",
+      "label": "Alephium ($ALPH)"
+    },
+    {
+      "value": "x:vvsusd",
+      "label": "VVS Finance ($VVS)"
+    },
+    {
+      "value": "x:hmstrusd",
+      "label": "Hamster Kombat ($HMSTR)"
+    },
+    {
+      "value": "x:stbtcusd",
+      "label": "Lorenzo stBTC ($STBTC)"
+    },
+    {
+      "value": "x:abtcusd",
+      "label": "aBTC ($ABTC)"
+    },
+    {
+      "value": "x:sntusd",
+      "label": "Status ($SNT)"
+    },
+    {
+      "value": "x:sgbusd",
+      "label": "Songbird ($SGB)"
+    },
+    {
+      "value": "x:oktusd",
+      "label": "OKT Chain ($OKT)"
+    },
+    {
+      "value": "x:sagausd",
+      "label": "Saga ($SAGA)"
+    },
+    {
+      "value": "x:velousd",
+      "label": "Velodrome Finance ($VELO)"
+    },
+    {
+      "value": "x:kubusd",
+      "label": "Bitkub Coin ($KUB)"
+    },
+    {
+      "value": "x:cfgusd",
+      "label": "Centrifuge ($CFG)"
+    },
+    {
+      "value": "x:ctxcusd",
+      "label": "Cortex ($CTXC)"
+    },
+    {
+      "value": "x:specusd",
+      "label": "Spectral ($SPEC)"
+    },
+    {
+      "value": "x:insuranceusd",
+      "label": "INSURANCE ($INSURANCE)"
+    },
+    {
+      "value": "x:balusd",
+      "label": "Balancer ($BAL)"
+    },
+    {
+      "value": "x:eth+usd",
+      "label": "ETHPlus ($ETH+)"
+    },
+    {
+      "value": "x:zigusd",
+      "label": "Zignaly ($ZIG)"
+    },
+    {
+      "value": "x:basedaiusd",
+      "label": "BasedAI ($BASEDAI)"
+    },
+    {
+      "value": "x:wolfusd",
+      "label": "LandWolf ($WOLF)"
+    },
+    {
+      "value": "x:velousd2",
+      "label": "Velo ($VELO)"
+    },
+    {
+      "value": "x:usdxusd",
+      "label": "usdx.money USDX ($USDX)"
+    },
+    {
+      "value": "x:ultimausd",
+      "label": "Ultima ($ULTIMA)"
+    },
+    {
+      "value": "x:bbusd",
+      "label": "BounceBit ($BB)"
+    },
+    {
+      "value": "x:joeusd",
+      "label": "JOE ($JOE)"
+    },
+    {
+      "value": "x:ssvusd",
+      "label": "SSV Network ($SSV)"
+    },
+    {
+      "value": "x:slpusd",
+      "label": "Smooth Love Potion ($SLP)"
+    },
+    {
+      "value": "x:hfunusd",
+      "label": "Hypurr Fun ($HFUN)"
+    },
+    {
+      "value": "x:trbusd",
+      "label": "Tellor Tributes ($TRB)"
+    },
+    {
+      "value": "x:wavesusd",
+      "label": "Waves ($WAVES)"
+    },
+    {
+      "value": "x:oethusd",
+      "label": "Origin Ether ($OETH)"
+    },
+    {
+      "value": "x:gfiusd",
+      "label": "Goldfinch ($GFI)"
+    },
+    {
+      "value": "x:solousd",
+      "label": "Sologenic ($SOLO)"
+    },
+    {
+      "value": "x:deusdusd",
+      "label": "Elixir deUSD ($DEUSD)"
+    },
+    {
+      "value": "x:cdtusd",
+      "label": "Blox ($CDT)"
+    },
+    {
+      "value": "x:pondusd",
+      "label": "Marlin ($POND)"
+    },
+    {
+      "value": "x:c98usd",
+      "label": "Coin98 ($C98)"
+    },
+    {
+      "value": "x:ousgusd",
+      "label": "OUSG ($OUSG)"
+    },
+    {
+      "value": "x:pzethusd",
+      "label": "Renzo Restaked LST ($PZETH)"
+    },
+    {
+      "value": "x:agethusd",
+      "label": "Kelp Gain ($AGETH)"
+    },
+    {
+      "value": "x:lskusd",
+      "label": "Lisk ($LSK)"
+    },
+    {
+      "value": "x:rlcusd",
+      "label": "iExec RLC ($RLC)"
+    },
+    {
+      "value": "x:pupsusd",
+      "label": "PUPS\u2022WORLD\u2022PEACE ($PUPS)"
+    },
+    {
+      "value": "x:xvsusd",
+      "label": "Venus ($XVS)"
+    },
+    {
+      "value": "x:oraiusd",
+      "label": "Oraichain ($ORAI)"
+    },
+    {
+      "value": "x:iostusd",
+      "label": "IOST ($IOST)"
+    },
+    {
+      "value": "x:lofiusd",
+      "label": "LOFI ($LOFI)"
+    },
+    {
+      "value": "x:waxpusd",
+      "label": "WAX ($WAXP)"
+    },
+    {
+      "value": "x:mythusd",
+      "label": "Mythos ($MYTH)"
+    },
+    {
+      "value": "x:osethusd",
+      "label": "StakeWise Staked ETH ($OSETH)"
+    },
+    {
+      "value": "x:bbsolusd",
+      "label": "Bybit Staked SOL ($BBSOL)"
+    },
+    {
+      "value": "x:cowusd",
+      "label": "CoW Protocol ($COW)"
+    },
+    {
+      "value": "x:zanousd",
+      "label": "Zano ($ZANO)"
+    },
+    {
+      "value": "x:taiusd",
+      "label": "TARS AI ($TAI)"
+    },
+    {
+      "value": "x:bananausd",
+      "label": "Banana Gun ($BANANA)"
+    },
+    {
+      "value": "x:omiusd",
+      "label": "ECOMI ($OMI)"
+    },
+    {
+      "value": "x:iqusd",
+      "label": "IQ ($IQ)"
+    },
+    {
+      "value": "x:rcgeusd",
+      "label": "RCGE ($$RCGE)"
+    },
+    {
+      "value": "x:pixelusd",
+      "label": "Pixels ($PIXEL)"
+    },
+    {
+      "value": "x:osakusd",
+      "label": "Osaka Protocol ($OSAK)"
+    },
+    {
+      "value": "x:alususd",
+      "label": "Alchemix USD ($ALUSD)"
+    },
+    {
+      "value": "x:ctsiusd",
+      "label": "Cartesi ($CTSI)"
+    },
+    {
+      "value": "x:abtusd",
+      "label": "Arcblock ($ABT)"
+    },
+    {
+      "value": "x:nmrusd",
+      "label": "Numeraire ($NMR)"
+    },
+    {
+      "value": "x:borausd",
+      "label": "BORA ($BORA)"
+    },
+    {
+      "value": "x:zentusd",
+      "label": "Zentry ($ZENT)"
+    },
+    {
+      "value": "x:scrusd",
+      "label": "Scroll ($SCR)"
+    },
+    {
+      "value": "x:verumusd",
+      "label": "Verum Coin ($VERUM)"
+    },
+    {
+      "value": "x:synusd",
+      "label": "Synapse ($SYN)"
+    },
+    {
+      "value": "x:taikousd",
+      "label": "Taiko ($TAIKO)"
+    },
+    {
+      "value": "x:magicusd",
+      "label": "Treasure ($MAGIC)"
+    },
+    {
+      "value": "x:olasusd",
+      "label": "Autonolas ($OLAS)"
+    },
+    {
+      "value": "x:usdc.e_arbusd",
+      "label": "Arbitrum Bridged USDC ($Arbitrum) ($USDC.E)"
+    },
+    {
+      "value": "x:oceanusd",
+      "label": "Ocean Protocol ($OCEAN)"
+    },
+    {
+      "value": "x:eduusd",
+      "label": "Open Campus ($EDU)"
+    },
+    {
+      "value": "x:usdausd",
+      "label": "USDa ($USDA)"
+    },
+    {
+      "value": "x:mmxusd",
+      "label": "MMX ($MMX)"
+    },
+    {
+      "value": "x:cheemsusd",
+      "label": "Cheems Token ($CHEEMS)"
+    },
+    {
+      "value": "x:doge_dgeusd",
+      "label": "Department Of Government Efficiency ($DOGE)"
+    },
+    {
+      "value": "x:merlusd",
+      "label": "Merlin Chain ($MERL)"
+    },
+    {
+      "value": "x:ghousd",
+      "label": "GHO ($GHO)"
+    },
+    {
+      "value": "x:cvcusd",
+      "label": "Civic ($CVC)"
+    },
+    {
+      "value": "x:ctfusd",
+      "label": "Crypto Trading Fund ($CTF)"
+    },
+    {
+      "value": "x:nmtusd",
+      "label": "NetMind Token ($NMT)"
+    },
+    {
+      "value": "x:lkyusd",
+      "label": "Luckycoin ($LKY)"
+    },
+    {
+      "value": "x:gpuusd",
+      "label": "NodeAI ($GPU)"
+    },
+    {
+      "value": "x:powrusd",
+      "label": "Powerledger ($POWR)"
+    },
+    {
+      "value": "x:ongusd",
+      "label": "Ontology Gas ($ONG)"
+    },
+    {
+      "value": "x:zrcusd",
+      "label": "Zircuit ($ZRC)"
+    },
+    {
+      "value": "x:dolausd",
+      "label": "DOLA ($DOLA)"
+    },
+    {
+      "value": "x:ntrnusd",
+      "label": "Neutron ($NTRN)"
+    },
+    {
+      "value": "x:truusd",
+      "label": "TrueFi ($TRU)"
+    },
+    {
+      "value": "x:dentusd",
+      "label": "Dent ($DENT)"
+    },
+    {
+      "value": "x:pepebasedusd",
+      "label": "Based Pepe ($PEPE)"
+    },
+    {
+      "value": "x:scrtusd",
+      "label": "Secret ($SCRT)"
+    },
+    {
+      "value": "x:achusd",
+      "label": "Alchemy Pay ($ACH)"
+    },
+    {
+      "value": "x:ergusd",
+      "label": "Ergo ($ERG)"
+    },
+    {
+      "value": "x:anyoneusd",
+      "label": "ANyONe Protocol ($ANYONE)"
+    },
+    {
+      "value": "x:movrusd",
+      "label": "Moonriver ($MOVR)"
+    },
+    {
+      "value": "x:boneusd",
+      "label": "Bone ShibaSwap ($BONE)"
+    },
+    {
+      "value": "x:cgptusd",
+      "label": "ChainGPT ($CGPT)"
+    },
+    {
+      "value": "x:weth_optusd",
+      "label": "L2 Standard Bridged WETH ($Optimism) ($WETH)"
+    },
+    {
+      "value": "x:zeususd",
+      "label": "Zeus Network ($ZEUS)"
+    },
+    {
+      "value": "x:binkusd",
+      "label": "Big Dog Fink ($BINK)"
+    },
+    {
+      "value": "x:lumiausd",
+      "label": "Lumia ($LUMIA)"
+    },
+    {
+      "value": "x:sendusd",
+      "label": "Suilend ($SEND)"
+    },
+    {
+      "value": "x:spellusd",
+      "label": "Spell ($SPELL)"
+    },
+    {
+      "value": "x:hashaiusd",
+      "label": "HashAI ($HASHAI)"
+    },
+    {
+      "value": "x:carvusd",
+      "label": "CARV ($CARV)"
+    },
+    {
+      "value": "x:aurorausd",
+      "label": "Aurora ($AURORA)"
+    },
+    {
+      "value": "x:hiveusd",
+      "label": "Hive ($HIVE)"
+    },
+    {
+      "value": "x:tokenusd",
+      "label": "TokenFi ($TOKEN)"
+    },
+    {
+      "value": "x:cyberusd",
+      "label": "CYBER ($CYBER)"
+    },
+    {
+      "value": "x:orbsusd",
+      "label": "Orbs ($ORBS)"
+    },
+    {
+      "value": "x:titsusd",
+      "label": "We Love Tits ($TITS)"
+    },
+    {
+      "value": "x:coqusd",
+      "label": "Coq Inu ($COQ)"
+    },
+    {
+      "value": "x:ecoinusd",
+      "label": "Ecoin ($ECOIN)"
+    },
+    {
+      "value": "x:shdwusd",
+      "label": "Shadow Token ($SHDW)"
+    },
+    {
+      "value": "x:aliceusd",
+      "label": "My Neighbor Alice ($ALICE)"
+    },
+    {
+      "value": "x:celrusd",
+      "label": "Celer Network ($CELR)"
+    },
+    {
+      "value": "x:prousd",
+      "label": "Propy Token ($PRO)"
+    }
+  ]
