@@ -79,7 +79,7 @@ func processFinancialsItem(job interface{}) interface{} {
 	// Process the financial data
 	targetSubstring := "equity_attributable_to_noncontrolling_interest"
 	index := strings.Index(collection, targetSubstring)
-	if index != -1 {
+	if index > 0 { // Only truncate if the target substring is not at the very beginning
 		collection = collection[:index]
 		collection = deleteNumberBeforeUSD(collection)
 		accumulatedValues, err := accumulateFinancialValues(collection)
@@ -157,11 +157,17 @@ func StartFinancialsProcessor() error {
 		}
 
 		financialsData := result.(map[string]interface{})
+		dataStr, ok := financialsData["data"].(string)
+		if !ok || strings.TrimSpace(dataStr) == "" {
+			log.Printf("Skipping ticker %s due to empty data", financialsData["ticker"])
+			continue
+		}
+
 		message := map[string]interface{}{
 			"topic":     inference_topic,
 			"segment":   config.Segment,
 			"ticker":    financialsData["ticker"],
-			"data":      financialsData["data"],
+			"data":      dataStr,
 			"timestamp": time.Now().Unix(),
 		}
 
@@ -259,20 +265,26 @@ func deleteNumberBeforeUSD(input string) string {
 }
 
 func accumulateFinancialValues(input string) (string, error) {
-	re := regexp.MustCompile(`\b([A-Za-z\s]+)\s+USD\s+([0-9e\+\-\.]+)\s*\}`)
+	// Updated regex to match the formatted financials string.
+	// It looks for "Label:" followed by the account name, then "Order:" (skipping over extra text),
+	// then "Unit:USD" followed by "Value:" and the numerical value.
+	re := regexp.MustCompile(`Label:\s*([^:]+?)\s+Order:.*?Unit:USD\s+Value:([0-9.eE+\-]+)`)
 	matches := re.FindAllStringSubmatch(input, -1)
+
+	if len(matches) == 0 {
+		return "", fmt.Errorf("no financial values found in input")
+	}
 
 	accumulatedValues := make(map[string]float64)
 	for _, match := range matches {
-		account := match[1]
-		value := match[2]
+		account := strings.TrimSpace(match[1])
+		valueStr := match[2]
 
-		// Convert scientific notation to decimal
-		f, _, err := big.ParseFloat(value, 10, 0, big.ToNearestEven)
+		// Convert the number from scientific notation to a float64.
+		f, _, err := big.ParseFloat(valueStr, 10, 64, big.ToNearestEven)
 		if err != nil {
-			return "", fmt.Errorf("error parsing value %s: %v", value, err)
+			return "", fmt.Errorf("error parsing value %s: %v", valueStr, err)
 		}
-
 		floatValue, _ := f.Float64()
 		accumulatedValues[account] += floatValue
 	}
@@ -285,13 +297,12 @@ func accumulateFinancialValues(input string) (string, error) {
 		} else {
 			first = false
 		}
-
-		// Format the currency value
+		// Format the currency value with two decimals.
 		formattedValue := fmt.Sprintf("$%.2f", value)
 		parts := strings.Split(formattedValue, ".")
 		integralPart := parts[0]
 
-		// Add commas to the integral part
+		// Insert commas in the integral part.
 		n := len(integralPart)
 		var integralPartWithCommas strings.Builder
 		for i, ch := range integralPart {
