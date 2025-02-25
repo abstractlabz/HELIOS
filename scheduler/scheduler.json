@@ -1,0 +1,14 @@
+[
+    {
+        "data_collection_file_path": "data/data_tickers.json",
+        "schedule": 1
+    },
+    {
+        "data_collection_file_path": "processors/financials/config.json",
+        "schedule": 7
+    },
+    {
+        "data_collection_file_path": "processors/news/config.json",
+        "schedule": 3
+    }
+]
