@@ -1,0 +1,7 @@
+[
+    {
+        "topic": "alert_financials",
+        "segment": "news",
+        "data_list": "../../data/data_tickers.json"
+    }
+]
