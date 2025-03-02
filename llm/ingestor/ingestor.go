@@ -20,6 +20,10 @@ import (
 
 	// Import the worker pool from utils. Adjust module path to match your project structure.
 	"github.com/0xPCDefenders/HELIOS/utils"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // IngestorMessage matches the shape of JSON your inferencer produced.
@@ -56,19 +60,58 @@ func ingest(data interface{}) interface{} {
 		return nil
 	}
 
-	// For demonstration, let's store "analysis" + "raw_data" in Pinecone
-	// with basic chunking or direct embedding as you prefer:
-	//
-	// Example:
-	//  - We'll call IngestDataFromMsg, which upserts data into Pinecone.
-
-	resp, err := IngestDataFromMsg(msg)
-	if err != nil {
-		log.Printf("[ingest] Error ingesting data: %v", err)
+	// Store in MongoDB first
+	ctx := context.Background()
+	mongoURI := os.Getenv("MONGO_URI")
+	if mongoURI == "" {
+		log.Println("[ingest] MONGO_URI environment variable not set")
 		return nil
 	}
 
-	log.Printf("[ingest] Successfully ingested data for ticker '%s' (segment: %s).", msg.Ticker, msg.Segment)
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(mongoURI))
+	if err != nil {
+		log.Printf("[ingest] Failed to connect to MongoDB: %v", err)
+		return nil
+	}
+	defer client.Disconnect(ctx)
+
+	// Use the topic as the database name and segment as the collection name
+	db := client.Database(msg.Topic)
+	collection := db.Collection(msg.Segment)
+
+	// Create a filter based on the ticker
+	filter := bson.M{"ticker": msg.Ticker}
+
+	// Create an update document
+	update := bson.M{
+		"$set": bson.M{
+			"analysis":  msg.Analysis,
+			"raw_data":  msg.RawData,
+			"segment":   msg.Segment,
+			"ticker":    msg.Ticker,
+			"timestamp": msg.Timestamp,
+			"topic":     msg.Topic,
+		},
+	}
+
+	// Upsert the document (update if exists, insert if not)
+	opts := options.Update().SetUpsert(true)
+	result, err := collection.UpdateOne(ctx, filter, update, opts)
+	if err != nil {
+		log.Printf("[ingest] Error upserting document to MongoDB: %v", err)
+		return nil
+	}
+
+	log.Printf("[ingest] MongoDB upsert successful - Modified: %d, Upserted: %d", result.ModifiedCount, result.UpsertedCount)
+
+	// Continue with Pinecone storage
+	resp, err := IngestDataFromMsg(msg)
+	if err != nil {
+		log.Printf("[ingest] Error ingesting data to Pinecone: %v", err)
+		return nil
+	}
+
+	log.Printf("[ingest] Successfully ingested data for ticker '%s' (segment: %s) to both MongoDB and Pinecone.", msg.Ticker, msg.Segment)
 	return resp
 }
 

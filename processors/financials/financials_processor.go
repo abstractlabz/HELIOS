@@ -25,9 +25,10 @@ type FinancialsRequest struct {
 }
 
 type ProcessorConfig struct {
-	Topic    string `json:"topic"`
-	Segment  string `json:"segment"`
-	DataList string `json:"data_list"`
+	Topic          string `json:"topic"`
+	Segment        string `json:"segment"`
+	DataList       string `json:"data_list"`
+	PromptTemplate string `json:"prompt_template"`
 }
 
 type DataList []struct {
@@ -164,11 +165,12 @@ func StartFinancialsProcessor() error {
 		}
 
 		message := map[string]interface{}{
-			"topic":     inference_topic,
-			"segment":   config.Segment,
-			"ticker":    financialsData["ticker"],
-			"data":      dataStr,
-			"timestamp": time.Now().Unix(),
+			"topic":           config.Topic,
+			"segment":         config.Segment,
+			"prompt_template": config.PromptTemplate,
+			"ticker":          financialsData["ticker"],
+			"data":            dataStr,
+			"timestamp":       time.Now().Unix(),
 		}
 
 		messageBytes, _ := json.Marshal(message)
