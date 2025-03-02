@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chatbot Test Client</title>
+    <style>
+        #chat-container {
+            width: 600px;
+            height: 400px;
+            border: 1px solid #ccc;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+        .message {
+            margin: 5px;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        .user-message {
+            background-color: #e3f2fd;
+            margin-left: 20px;
+        }
+        .bot-message {
+            background-color: #f5f5f5;
+            margin-right: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container"></div>
+    <input type="text" id="message-input" placeholder="Type your message..." style="width: 500px;">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        const chatContainer = document.getElementById('chat-container');
+        const messageInput = document.getElementById('message-input');
+        let ws;
+
+        function connect() {
+            ws = new WebSocket('ws://localhost:8080/chatbot/ws');
+
+            ws.onopen = () => {
+                appendMessage('System', 'Connected to chat server');
+            };
+
+            ws.onmessage = (event) => {
+                const result = JSON.parse(event.data);
+                appendMessage('Bot', result.Content);
+            };
+
+            ws.onclose = () => {
+                appendMessage('System', 'Disconnected from chat server');
+                // Attempt to reconnect after 3 seconds
+                setTimeout(connect, 3000);
+            };
+
+            ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+                appendMessage('System', 'Error: ' + error.message);
+            };
+        }
+
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (message && ws && ws.readyState === WebSocket.OPEN) {
+                appendMessage('You', message);
+                ws.send(JSON.stringify({
+                    prompt: message
+                }));
+                messageInput.value = '';
+            }
+        }
+
+        function appendMessage(sender, message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender === 'You' ? 'user-message' : 'bot-message'}`;
+            messageDiv.textContent = `${sender}: ${message}`;
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Handle Enter key
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Initial connection
+        connect();
+    </script>
+</body>
+</html> 

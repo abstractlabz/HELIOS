@@ -20,9 +20,10 @@ type NewsRequest struct {
 }
 
 type ProcessorConfig struct {
-	Topic    string `json:"topic"`
-	Segment  string `json:"segment"`
-	DataList string `json:"data_list"`
+	Topic          string `json:"topic"`
+	Segment        string `json:"segment"`
+	DataList       string `json:"data_list"`
+	PromptTemplate string `json:"prompt_template"`
 }
 
 type DataList []struct {
@@ -108,11 +109,12 @@ func StartNewsProcessor() error {
 
 		newsData := result.(map[string]interface{})
 		message := map[string]interface{}{
-			"topic":     inference_topic,
-			"segment":   config.Segment,
-			"ticker":    newsData["ticker"],
-			"data":      newsData["data"],
-			"timestamp": time.Now().Unix(),
+			"topic":           config.Topic,
+			"segment":         config.Segment,
+			"prompt_template": config.PromptTemplate,
+			"ticker":          newsData["ticker"],
+			"data":            newsData["data"],
+			"timestamp":       time.Now().Unix(),
 		}
 
 		messageBytes, _ := json.Marshal(message)
