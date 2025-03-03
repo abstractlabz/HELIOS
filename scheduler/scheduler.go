@@ -120,6 +120,19 @@ func StartScheduler(scheduleFilePath string) {
 
 // main is the entry point of the scheduler application.
 func main() {
-	fmt.Println("Starting scheduler...")
-	StartScheduler("scheduler/scheduler.json")
+	// Default file path
+	filePath := "scheduler/scheduler.json"
+
+	// Check if a command-line argument is provided
+	if len(os.Args) > 1 {
+		filePath = os.Args[1] // Use the first argument as the file path
+	}
+
+	// Check if the file exists
+	if _, err := os.Stat(filePath); os.IsNotExist(err) {
+		log.Fatalf("Config file does not exist: %s\n", filePath)
+	}
+
+	fmt.Println("Starting scheduler with config file:", filePath)
+	StartScheduler(filePath)
 }
