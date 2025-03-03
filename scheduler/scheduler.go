@@ -1,5 +1,3 @@
-// Package main implements a simple scheduler that reads a JSON configuration file,
-// checks if a scheduled task should be executed, and triggers an HTTP request if necessary.
 package main
 
 import (
@@ -7,56 +5,58 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
+	"sync"
 	"time"
 )
 
 // ScheduleEntry represents an entry in the scheduling configuration file.
-// It specifies the path to a data collection JSON file and the execution frequency in days.
 type ScheduleEntry struct {
 	DataCollectionFilePath string `json:"data_collection_file_path"` // Path to the data file
 	Schedule              int    `json:"schedule"`                   // Execution interval in days
 }
 
 // lastRunTimes keeps track of when each scheduled task was last executed.
-var lastRunTimes = make(map[string]time.Time)
+// Uses a mutex to protect lastRunTimes
+var (
+	lastRunTimes = make(map[string]time.Time)
+	mu           sync.Mutex
+)
 
 // LoadScheduleConfig reads a JSON file containing scheduled tasks and returns a list of ScheduleEntry.
-// The file should be formatted as an array of objects with `data_collection_file_path` and `schedule` fields.
 func LoadScheduleConfig(filePath string) ([]ScheduleEntry, error) {
-	// Open the configuration file
 	file, err := os.Open(filePath)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to open config file: %w", err)
 	}
 	defer file.Close()
 
-	// Read and parse JSON data
 	data, err := ioutil.ReadAll(file)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to read config file: %w", err)
 	}
 
 	var schedules []ScheduleEntry
-	err = json.Unmarshal(data, &schedules)
-	if err != nil {
-		return nil, err
+	if err := json.Unmarshal(data, &schedules); err != nil {
+		return nil, fmt.Errorf("failed to parse config file: %w", err)
 	}
 
 	return schedules, nil
 }
 
 // ShouldTrigger determines if a given ScheduleEntry should trigger a request based on its schedule.
-// It checks the last execution time and compares it with the current time.
 func ShouldTrigger(entry ScheduleEntry) bool {
-	lastRun, exists := lastRunTimes[entry.DataCollectionFilePath]
+	mu.Lock()
+	defer mu.Unlock()
 
+	lastRun, exists := lastRunTimes[entry.DataCollectionFilePath]
 	if !exists || lastRun.IsZero() {
 		return true // First-time execution
 	}
 
-	nextRun := lastRun.Add(time.Duration(entry.Schedule) * 24 * time.Hour)
+	nextRun := lastRun.Add(time.Duration(entry.Schedule) * 24 * time.Hour
 	return time.Now().After(nextRun)
 }
 
@@ -64,45 +64,61 @@ func ShouldTrigger(entry ScheduleEntry) bool {
 func SendPostRequest(entry ScheduleEntry) error {
 	data, err := ioutil.ReadFile(entry.DataCollectionFilePath)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to read data file: %w", err)
 	}
 
-	resp, err := http.Post("http://localhost:8080/aggregator", "application/json", bytes.NewBuffer(data))
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
+	// Retry mechanism for transient errors
+	maxRetries := 3
+	for i := 0; i < maxRetries; i++ {
+		resp, err := http.Post("http://localhost:8080/aggregator", "application/json", bytes.NewBuffer(data))
+		if err == nil {
+			defer resp.Body.Close()
+			if resp.StatusCode >= 200 && resp.StatusCode < 300 {
+				mu.Lock()
+				lastRunTimes[entry.DataCollectionFilePath] = time.Now()
+				mu.Unlock()
+				fmt.Printf("Triggered request for %s\n", entry.DataCollectionFilePath)
+				return nil
+			}
+			err = fmt.Errorf("received non-200 status code: %d", resp.StatusCode)
+		}
 
-	fmt.Printf("Triggered request for %s\n", entry.DataCollectionFilePath)
-	lastRunTimes[entry.DataCollectionFilePath] = time.Now()
-	return nil
+		if i < maxRetries-1 {
+			// Exponential backoff
+			backoff := time.Duration(i+1) * time.Second * 2
+			log.Printf("Retrying in %v: %v\n", backoff, err)
+			time.Sleep(backoff)
+		}
+	}
+
+	return fmt.Errorf("failed after %d retries: %w", maxRetries, err)
 }
 
-// StartScheduler initializes the scheduling process by loading the JSON configuration file
-// and periodically checking whether any tasks need to be triggered.
+// StartScheduler initializes the scheduling process.
 func StartScheduler(scheduleFilePath string) {
 	schedules, err := LoadScheduleConfig(scheduleFilePath)
 	if err != nil {
-		fmt.Println("Error loading schedule:", err)
-		return
+		// Exit on critical error
+		log.Fatalf("Error loading schedule: %v\n", err)
 	}
 
 	for {
 		for _, entry := range schedules {
 			if ShouldTrigger(entry) {
-				go func(e ScheduleEntry) { // Run requests concurrently
+				// Run requests concurrently
+				go func(e ScheduleEntry) {
 					if err := SendPostRequest(e); err != nil {
-						fmt.Println("Failed to send request:", err)
+						log.Printf("Failed to send request for %s: %v\n", e.DataCollectionFilePath, err)
 					}
 				}(entry)
 			}
 		}
-		time.Sleep(1 * time.Minute) // Check every minute
+		// Check every minute
+		time.Sleep(1 * time.Minute)
 	}
 }
 
 // main is the entry point of the scheduler application.
-// It starts the scheduler using a predefined JSON file.
 func main() {
 	fmt.Println("Starting scheduler...")
 	StartScheduler("scheduler/scheduler.json")
