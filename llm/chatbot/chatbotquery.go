@@ -24,6 +24,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+
+	"github.com/joho/godotenv"
 )
 
 type PromptPayload struct {
@@ -89,9 +91,10 @@ var (
 
 // Add these type definitions:
 type DeepSeekRequest struct {
-	Model    string        `json:"model"`
-	Messages []ChatMessage `json:"messages"`
-	Stream   bool          `json:"stream"`
+	Model     string        `json:"model"`
+	Messages  []ChatMessage `json:"messages"`
+	Stream    bool          `json:"stream"`
+	MaxTokens int           `json:"max_tokens,omitempty"`
 }
 
 type ChatMessage struct {
@@ -117,28 +120,11 @@ func initPineconeIndex(apiKey, host string) error {
 		Host: host,
 	})
 	if err != nil {
-		return fmt.Errorf("failed to initialize Pinecone index: %v", err)
+		return fmt.Errorf("failed to initialize Pinecone index2: %v", err)
 	}
 
 	index = idx
 	return nil
-}
-
-func getPineconeIndex(apiKey, host string) (*pinecone.IndexConnection, error) {
-	indexMutex.RLock()
-	currentIndex := index
-	indexMutex.RUnlock()
-
-	if currentIndex == nil {
-		if err := initPineconeIndex(apiKey, host); err != nil {
-			return nil, err
-		}
-		indexMutex.RLock()
-		currentIndex = index
-		indexMutex.RUnlock()
-	}
-
-	return currentIndex, nil
 }
 
 func NewWorkerPool(numWorkers int) *WorkerPool {
@@ -190,7 +176,11 @@ func processQueryWithStreaming(job *QueryJob) (*QueryResult, error) {
 
 	//pinecone operations
 	// Embedding the user's prompt
-	queryVector, err := embedQuery(job.Prompt, os.Getenv("PINECONE_API_KEY"))
+
+	// Initialize ENVs
+	pineApiKey := os.Getenv("PINECONE_API_KEY")
+
+	queryVector, err := embedQuery(job.Prompt, pineApiKey)
 	if err != nil {
 		log.Println("Failed to embed query:", err)
 		return nil, err
@@ -302,7 +292,8 @@ func callDeepSeekAPIWithStreaming(job *QueryJob) (string, error) {
 				Content: job.Prompt,
 			},
 		},
-		Stream: true,
+		Stream:    true,
+		MaxTokens: 512, // Set fixed limit of 768 tokens
 	}
 
 	jsonData, err := json.Marshal(request)
@@ -389,50 +380,131 @@ func callDeepSeekAPIWithStreaming(job *QueryJob) (string, error) {
 }
 
 func processCourseQueryWithStreaming(job *QueryJob, coursehash string) (*QueryResult, error) {
-	// Very similar to your "/coursechat" logic: get Pinecone host from coursehash,
-	// embed the prompt, search, gather context, then call e.g. callDeepSeekAPIWithStreaming
-	// but keep the partial-chunk logic.
-	// Return a final QueryResult containing the entire response.
 	log.Println("processCourseQueryWithStreaming -> original prompt:", job.Prompt)
 
-	//pinecone operations
-	// Embedding the user's prompt
-	queryVector, err := embedQuery(job.Prompt, os.Getenv("PINECONE_API_KEY"))
+	// 1) Retrieve Pinecone host for this coursehash and re-initialize the index.
+	hoststring := getPineconeHost(coursehash)
+
+	// Initialize ENVs
+	pineApiKey := os.Getenv("PINECONE_API_KEY")
+
+	if err := initPineconeIndex(pineApiKey, hoststring); err != nil {
+		log.Println("Failed to initialize Pinecone index:", err)
+		return nil, err
+	}
+
+	// 2) Get user parameters from MongoDB based on idhash in the job context
+	idhash, ok := job.Context["idhash"].(string)
+	if !ok {
+		log.Println("Error: No valid idhash found in job context")
+		return nil, fmt.Errorf("missing or invalid idhash in job context")
+	}
+
+	userParams := getUserParams(idhash)
+	log.Println("User parameters for idhash", idhash, ":", prettifyStruct(userParams))
+
+	// 3) Embed the user's prompt
+
+	queryVector, err := embedQuery(job.Prompt, pineApiKey)
 	if err != nil {
 		log.Println("Failed to embed query:", err)
 		return nil, err
 	}
-
 	log.Println("Query vector:", queryVector)
 
-	//google search operations
+	// 4) Perform a similarity search in Pinecone
+	ctx := context.Background()
+	searchLimit := uint32(2) // Number of similar documents to retrieve
+	searchRes, err := index.QueryByVectorValues(ctx, &pinecone.QueryByVectorValuesRequest{
+		Vector:          queryVector,
+		TopK:            searchLimit,
+		IncludeValues:   true,
+		IncludeMetadata: true,
+	})
+	if err != nil {
+		log.Println("Failed to perform similarity search:", err)
+		return nil, err
+	}
+	log.Println("Search results:", prettifyStruct(searchRes))
 
+	// 5) Fetch the matching vectors to gather context
+	var contextData []interface{}
+	if len(searchRes.Matches) > 0 {
+		vectorIds := make([]string, len(searchRes.Matches))
+		for i, match := range searchRes.Matches {
+			vectorIds[i] = match.Vector.Id
+		}
+		fetchRes, err := index.FetchVectors(ctx, vectorIds)
+		if err != nil {
+			log.Println("Failed to fetch vectors:", err)
+			return nil, err
+		}
+		log.Println("Fetched vectors:", prettifyStruct(fetchRes))
+
+		for _, vector := range fetchRes.Vectors {
+			if vector.Metadata != nil {
+				log.Println("Vector metadata:", vector.Metadata)
+				contextData = append(contextData, vector.Metadata)
+			} else {
+				log.Println("No metadata found for vector ID:", vector.Id)
+			}
+		}
+	}
+
+	contextString := prettifyStruct(contextData)
+	log.Println("Context string:", contextString)
+
+	// 6) As an example, also do a Google search for outside context
 	searchInfo, err := utils.Search(job.Prompt)
 	if err != nil {
 		log.Printf("Search error: %v\n", err)
 		return nil, err
 	}
 
-	// 2) Build a combined prompt that includes the search info
+	// 7) Build a combined prompt that includes user parameters, fetched Pinecone context, and any external search info
 	combinedPrompt := fmt.Sprintf(`
-		You are a financial analyst. Use the following external search information to answer user questions:
+		You are a financial analyst. 
+		
+		Adapt your teaching style to these user parameters:
+		- Experience Level: %s
+		- Age: %s
+		- Questioning Style: %s
+		- Interaction Speed: %s
+		- Feedback Style: %s
+		- Socratic Depth: %s
+		
+		Always include as many relevant external search information as possible. Use the format [Title](URL) in your response:
+		%s
+
+		Relevant Pinecone context:
+		%s
+
+		External search information:
 		%s
 
 		The user's prompt is:
 		%s
 	`,
-		prettifyStruct(searchInfo), // or however you want to embed
+		userParams.ExperienceLevel,
+		userParams.Age,
+		userParams.QuestioningStyle,
+		userParams.InteractionSpeed,
+		userParams.FeedbackStyle,
+		userParams.SocraticDepth,
+		prettifyStruct(searchInfo),
+		contextString,
+		prettifyStruct(searchInfo), // Added search info here
 		job.Prompt,
 	)
-
-	// 3) Reassign job.Prompt to include the search info
 	job.Prompt = combinedPrompt
 
-	// A simplified example, reusing callDeepSeekAPIWithStreaming:
+	// 8) Stream final results from DeepSeek
 	response, err := callDeepSeekAPIWithStreaming(job)
 	if err != nil {
 		return nil, err
 	}
+
+	// 9) Return the final QueryResult
 	return &QueryResult{
 		JobID:   job.ID,
 		Content: response,
@@ -441,13 +513,46 @@ func processCourseQueryWithStreaming(job *QueryJob, coursehash string) (*QueryRe
 }
 
 func ChatbotQuery() http.Handler {
+	// Load environment variables from .env file
+	err := godotenv.Load(".env")
+	if err != nil {
+		// Try a few other common locations
+		alternativePaths := []string{"../.env", "../../.env", "../config/.env", "./config/.env"}
+		loaded := false
+		for _, path := range alternativePaths {
+			if err := godotenv.Load(path); err == nil {
+				log.Printf("Loaded environment from %s", path)
+				loaded = true
+				break
+			}
+		}
+		if !loaded {
+			log.Println("Warning: .env file not found. Proceeding with system environment variables.")
+		}
+	}
+
 	router := gin.Default()
 	router.Use(corsMiddleware())
 
+	// Initialize ENVs
+	pineApiKey := os.Getenv("PINECONE_API_KEY")
+	pineHost := os.Getenv("PINECONE_HOST")
+
+	// Log the key (first few characters only for security)
+	if pineApiKey != "" {
+		visiblePart := pineApiKey
+		if len(pineApiKey) > 4 {
+			visiblePart = pineApiKey[:4] + "..."
+		}
+		log.Printf("Pinecone API Key found: %s", visiblePart)
+	} else {
+		log.Println("Warning: PINECONE_API_KEY is empty")
+	}
+
 	// Initialize Pinecone index
 	if err := initPineconeIndex(
-		os.Getenv("PINECONE_API_KEY"),
-		os.Getenv("PINECONE_HOST"),
+		pineApiKey,
+		pineHost,
 	); err != nil {
 		log.Fatalf("Failed to initialize Pinecone index: %v", err)
 	}
@@ -575,13 +680,20 @@ func getUserParams(s string) UserParams {
 func getPineconeHost(coursehash string) string {
 	//connects to mongo db and gets the pinecone host based on the coursehash
 	MONGO_DB_LOGGER_PASSWORD := os.Getenv("MONGO_DB_LOGGER_PASSWORD")
+	if MONGO_DB_LOGGER_PASSWORD == "" {
+		log.Println("Warning: MONGO_DB_LOGGER_PASSWORD environment variable not set. Using default Pinecone host.")
+		return "https://main-uajrq2f.svc.aped-4627-b74a.pinecone.io" // Default fallback host
+	}
+
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
 	opts := options.Client().ApplyURI("mongodb+srv://kobenaidun:" + MONGO_DB_LOGGER_PASSWORD + "@cluster0.z9znpv9.mongodb.net/?retryWrites=true&w=majority").SetServerAPIOptions(serverAPI)
+
 	// Create a new client and connect to the server
 	client, err := mongo.Connect(context.TODO(), opts)
 	if err != nil {
-		log.Println("Couldn't connect to database")
-		panic(err)
+		log.Println("Error connecting to MongoDB:", err)
+		log.Println("Using default Pinecone host instead.")
+		return "https://main-uajrq2f.svc.aped-4627-b74a.pinecone.io" // Default fallback host
 	}
 
 	defer client.Disconnect(context.TODO())
@@ -593,15 +705,16 @@ func getPineconeHost(coursehash string) string {
 	var hostdoc bson.M
 	err = collectioncli.FindOne(context.TODO(), bson.M{"CourseHash": coursehash}).Decode(&hostdoc)
 	if err != nil {
-		log.Println("Error finding pinecone host:", err)
-		panic(err)
+		log.Println("Error finding Pinecone host for coursehash", coursehash, ":", err)
+		log.Println("Using default Pinecone host instead.")
+		return "https://main-uajrq2f.svc.aped-4627-b74a.pinecone.io" // Default fallback host
 	}
 
 	// Ensure type assertion is safe
 	hoststring, ok := hostdoc["PineconeHost"].(string)
 	if !ok {
-		log.Println("Error asserting PineconeHost to string")
-		panic("Error asserting PineconeHost to string")
+		log.Println("Error: PineconeHost field is not a string. Using default host.")
+		return "https://main-uajrq2f.svc.aped-4627-b74a.pinecone.io" // Default fallback host
 	}
 
 	return hoststring
@@ -678,19 +791,23 @@ func handleCourseWebSocketConnection(conn *websocket.Conn, wp *WorkerPool) {
 }
 
 func main() {
-	// Check required environment variables
-	requiredEnvVars := []string{
-		"PINECONE_API_KEY",
-		"PINECONE_HOST",
-		"MONGO_DB_LOGGER_PASSWORD",
-		"DEEPSEEK_API_KEY",
-		"PASS_KEY",
-	}
-
-	for _, envVar := range requiredEnvVars {
-		if os.Getenv(envVar) == "" {
-			log.Fatalf("%s environment variable is required", envVar)
+	// Load environment variables from .env file
+	if err := godotenv.Load(); err != nil {
+		// Try alternative locations
+		locations := []string{".env", "../.env", "../../.env", "config/.env", "../config/.env"}
+		loaded := false
+		for _, loc := range locations {
+			if err := godotenv.Load(loc); err == nil {
+				log.Printf("Loaded environment variables from %s", loc)
+				loaded = true
+				break
+			}
 		}
+		if !loaded {
+			log.Println("Warning: No .env file found. Using environment variables from system.")
+		}
+	} else {
+		log.Println("Loaded environment variables from .env in current directory")
 	}
 
 	// Initialize Gin router
@@ -699,11 +816,27 @@ func main() {
 	// Add CORS middleware
 	router.Use(corsMiddleware())
 
-	// Initialize LLM handler
-	LLMHandler(router)
+	// Initialize ENVs
+	pineApiKey := os.Getenv("PINECONE_API_KEY")
+	pineHost := os.Getenv("PINECONE_HOST")
+
+	// If environment variables are empty, set default values or warn
+	if pineApiKey == "" {
+		log.Println("ERROR: PINECONE_API_KEY environment variable is not set")
+		// Optionally exit the program
+		// os.Exit(1)
+	}
+
+	if pineHost == "" {
+		log.Println("WARNING: PINECONE_HOST environment variable is not set, using default host")
+		pineHost = "https://api.pinecone.io" // Default value, adjust if needed
+	}
+
+	fmt.Println("pineApiKey:", pineApiKey)
+	fmt.Println("pineHost:", pineHost)
 
 	// Instead of wrapping your entire sub-engine, register routes:
-	RegisterChatbotRoutes(router)
+	RegisterChatbotRoutes(router, pineApiKey, pineHost)
 
 	// Start server
 	port := os.Getenv("PORT")
@@ -716,14 +849,14 @@ func main() {
 	}
 }
 
-func RegisterChatbotRoutes(r *gin.Engine) {
+func RegisterChatbotRoutes(r *gin.Engine, pineApiKey, pineHost string) {
 	// 1) Use the same CORS middleware if needed
 	r.Use(corsMiddleware())
 
 	// 2) Initialize Pinecone index once
 	if err := initPineconeIndex(
-		os.Getenv("PINECONE_API_KEY"),
-		os.Getenv("PINECONE_HOST"),
+		pineApiKey,
+		pineHost,
 	); err != nil {
 		log.Fatalf("Failed to initialize Pinecone index: %v", err)
 	}
