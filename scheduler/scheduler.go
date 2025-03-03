@@ -8,7 +8,9 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
 	"sync"
+	"syscall"
 	"time"
 )
 
@@ -56,7 +58,7 @@ func ShouldTrigger(entry ScheduleEntry) bool {
 		return true // First-time execution
 	}
 
-	nextRun := lastRun.Add(time.Duration(entry.Schedule) * 24 * time.Hour
+	nextRun := lastRun.Add(time.Duration(entry.Schedule) * 24 * time.Hour)
 	return time.Now().After(nextRun)
 }
 
@@ -73,11 +75,16 @@ func SendPostRequest(entry ScheduleEntry) error {
 		resp, err := http.Post("http://localhost:8080/aggregator", "application/json", bytes.NewBuffer(data))
 		if err == nil {
 			defer resp.Body.Close()
+
+			// Log the response status and body
+			body, _ := ioutil.ReadAll(resp.Body)
+			log.Printf("Response for %s: Status=%d, Body=%s\n", entry.DataCollectionFilePath, resp.StatusCode, string(body))
+
 			if resp.StatusCode >= 200 && resp.StatusCode < 300 {
 				mu.Lock()
 				lastRunTimes[entry.DataCollectionFilePath] = time.Now()
 				mu.Unlock()
-				fmt.Printf("Triggered request for %s\n", entry.DataCollectionFilePath)
+				log.Printf("Triggered request for %s\n", entry.DataCollectionFilePath)
 				return nil
 			}
 			err = fmt.Errorf("received non-200 status code: %d", resp.StatusCode)
@@ -95,26 +102,31 @@ func SendPostRequest(entry ScheduleEntry) error {
 }
 
 // StartScheduler initializes the scheduling process.
-func StartScheduler(scheduleFilePath string) {
+func StartScheduler(scheduleFilePath string, stopChan chan struct{}) {
 	schedules, err := LoadScheduleConfig(scheduleFilePath)
 	if err != nil {
-		// Exit on critical error
-		log.Fatalf("Error loading schedule: %v\n", err)
+		log.Fatalf("Error loading schedule: %v\n", err) // Exit on critical error
 	}
 
 	for {
-		for _, entry := range schedules {
-			if ShouldTrigger(entry) {
-				// Run requests concurrently
-				go func(e ScheduleEntry) {
-					if err := SendPostRequest(e); err != nil {
-						log.Printf("Failed to send request for %s: %v\n", e.DataCollectionFilePath, err)
-					}
-				}(entry)
+		select {
+		case <-stopChan:
+			log.Println("Shutting down scheduler gracefully...")
+			return
+		default:
+			for _, entry := range schedules {
+				if ShouldTrigger(entry) {
+					// Run requests concurrently
+					go func(e ScheduleEntry) {
+						if err := SendPostRequest(e); err != nil {
+							log.Printf("Failed to send request for %s: %v\n", e.DataCollectionFilePath, err)
+						}
+					}(entry)
+				}
 			}
+			// Check every minute
+			time.Sleep(1 * time.Minute)
 		}
-		// Check every minute
-		time.Sleep(1 * time.Minute)
 	}
 }
 
@@ -133,6 +145,19 @@ func main() {
 		log.Fatalf("Config file does not exist: %s\n", filePath)
 	}
 
-	fmt.Println("Starting scheduler with config file:", filePath)
-	StartScheduler(filePath)
+	// Channel to signal graceful shutdown
+	stopChan := make(chan struct{})
+
+	// Handle interrupt signals (e.g., Ctrl+C)
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
+	go func() {
+		<-sigChan
+		log.Println("Received interrupt signal. Initiating shutdown...")
+		close(stopChan)
+	}()
+
+	log.Println("Starting scheduler with config file:", filePath)
+	StartScheduler(filePath, stopChan)
+	log.Println("Scheduler has stopped.")
 }
