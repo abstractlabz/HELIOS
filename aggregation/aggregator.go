@@ -1,4 +1,4 @@
-package main
+package aggregation
 
 import (
 	"context"
@@ -445,20 +445,4 @@ func deleteSegment(topic, segment string) error {
 
 	log.Printf("Deleted segment '%s' from topic '%s'", segment, topic)
 	return nil
-}
-
-
-// To test the http requests
-func main() {
-    fmt.Println("Starting Aggregator Service (Mock Mode)...")
-
-    // Mocking the endpoint instead of running the real server
-    http.HandleFunc("/aggregator", func(w http.ResponseWriter, r *http.Request) {
-        fmt.Println("Mock Aggregator: Received request")
-        w.WriteHeader(http.StatusOK)
-        w.Write([]byte(`{"message": "Mocked success"}`))
-    })
-
-    fmt.Println("Mock aggregator running on http://localhost:8080")
-    http.ListenAndServe(":8080", nil)
 }
