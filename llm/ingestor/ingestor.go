@@ -261,7 +261,7 @@ func embedTexts(texts []string) ([][]float32, error) {
 // Kafka messages from the "alert_ingestor" topic.
 func StartIngestor() error {
 	// Create the worker pool (5 workers, 100 job buffer)
-	workerPool := utils.NewWorkerPool(5, 100, ingest)
+	workerPool := utils.NewWorkerPool(25, 500, ingest)
 	workerPool.Start()
 
 	// Pull Kafka messages into this channel

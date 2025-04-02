@@ -839,10 +839,7 @@ func main() {
 	RegisterChatbotRoutes(router, pineApiKey, pineHost)
 
 	// Start server
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
+	port := "6002"
 	log.Printf("Server starting on port %s", port)
 	if err := http.ListenAndServe(":"+port, router); err != nil {
 		log.Fatal(err)

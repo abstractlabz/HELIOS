@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/signal"
 	"regexp"
 	"strings"
+	"syscall"
 	"time"
 
 	"math/big"
@@ -99,6 +101,10 @@ func processFinancialsItem(job interface{}) interface{} {
 }
 
 func StartFinancialsProcessor() error {
+	// Create a channel to listen for interrupt signals
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+
 	// Load processor config
 	config, err := loadProcessorConfig("config.json")
 	if err != nil {
@@ -118,6 +124,31 @@ func StartFinancialsProcessor() error {
 	// Listen for alerts from data aggregator
 	alertBuffer := make(chan kafka.Message)
 	go utils.ConsumeToBuffer(alertBuffer, "alert_financials", "financials-processor-group", "../../.env")
+
+	// Add benchmarking variables
+	startTime := time.Now()
+	var tickersRequested int
+	var tickersProcessed int
+	processingActive := false
+
+	// Create a function to output benchmark information
+	outputBenchmark := func() {
+		duration := time.Since(startTime)
+		if tickersRequested > 0 {
+			log.Printf("BENCHMARK: Processed %d/%d tickers in %v (%.2f tickers/second)",
+				tickersProcessed, tickersRequested, duration, float64(tickersProcessed)/duration.Seconds())
+		} else {
+			log.Printf("BENCHMARK: No tickers were processed in this session")
+		}
+	}
+
+	// Handle interrupt signals
+	go func() {
+		<-sigs
+		log.Println("Received shutdown signal. Outputting final benchmark before exit...")
+		outputBenchmark()
+		os.Exit(0)
+	}()
 
 	// Process alerts and distribute work
 	go func() {
@@ -142,10 +173,20 @@ func StartFinancialsProcessor() error {
 				continue
 			}
 
+			// Start benchmarking when processing begins
+			if !processingActive {
+				startTime = time.Now()
+				tickersRequested = 0
+				tickersProcessed = 0
+				processingActive = true
+				log.Printf("Started processing benchmark at %v", startTime)
+			}
+
 			// Process all tickers from our data list
 			log.Printf("Processing financials for all tickers, triggered by segment: %s", config.Segment)
 			for _, item := range dataList {
 				workerPool.Submit(item.Value)
+				tickersRequested++
 			}
 		}
 	}()
@@ -153,6 +194,18 @@ func StartFinancialsProcessor() error {
 	// Process results
 	inference_topic := "alert_llm"
 	for result := range workerPool.ResultsChan {
+		if processingActive {
+			tickersProcessed++
+
+			// If we've processed all tickers in this batch
+			if tickersProcessed >= tickersRequested {
+				outputBenchmark()
+
+				// Reset for next batch
+				processingActive = false
+			}
+		}
+
 		if result == nil {
 			continue
 		}
