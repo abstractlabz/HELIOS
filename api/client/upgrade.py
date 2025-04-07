@@ -322,5 +322,56 @@ def set_user_params():
 
     return jsonify({"message": "User params set successfully"}), 200
 
+#adds an element to a list of portfolio ids on the user document
+@app.route('/add-portfolio-id', methods=['POST'])
+def add_portfolio_id():
+    data = request.json
+    id_hash = data.get('id_hash')
+    portfolio_id = data.get('portfolio_id')
+
+    if not id_hash:
+        return jsonify({"error": "ID hash is required"}), 400
+
+    if not portfolio_id:
+        return jsonify({"error": "Portfolio ID is required"}), 400
+
+    userlist.update_one({'id_hash': id_hash}, {'$push': {'portfolio_ids': portfolio_id}})
+
+    return jsonify({"message": "Portfolio ID added successfully"}), 200
+
+#removes an element from a list of portfolio ids on the user document
+@app.route('/remove-portfolio-id', methods=['POST'])
+def remove_portfolio_id():
+    data = request.json
+    id_hash = data.get('id_hash')
+    portfolio_id = data.get('portfolio_id')
+
+    if not id_hash:
+        return jsonify({"error": "ID hash is required"}), 400
+
+    if not portfolio_id:
+        return jsonify({"error": "Portfolio ID is required"}), 400
+
+    userlist.update_one({'id_hash': id_hash}, {'$pull': {'portfolio_ids': portfolio_id}})
+
+    return jsonify({"message": "Portfolio ID removed successfully"}), 200
+
+
+@app.route('/get-portfolio-ids', methods=['GET'])
+def get_portfolio_ids():
+    id_hash = request.args.get('id_hash')
+
+    if not id_hash:
+        return jsonify({"error": "ID hash is required"}), 400
+
+    user_doc = userlist.find_one({'id_hash': id_hash}, {'portfolio_ids': 1, '_id': 0})
+    
+    # If user not found or no portfolio_ids field, return empty array
+    if not user_doc or 'portfolio_ids' not in user_doc:
+        return jsonify({"portfolio_ids": []}), 200
+    
+    # Return the portfolio_ids in the expected format
+    return jsonify({"portfolio_ids": user_doc['portfolio_ids']}), 200
+
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=5000)

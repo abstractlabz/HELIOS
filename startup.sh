@@ -27,7 +27,11 @@ start_service() {
     if [ "$service_type" = "go" ]; then
         /app/bin/${service_name} >> ${log_file} 2>&1 &
     else
-        python3 ${service_name}.py >> ${log_file} 2>&1 &
+        if [ "$service_name" = "upgrade" ]; then
+            FLASK_APP=${service_name}.py FLASK_ENV=production python3 -m flask run --host=0.0.0.0 --port=5000 >> ${log_file} 2>&1 &
+        else
+            python3 ${service_name}.py >> ${log_file} 2>&1 &
+        fi
     fi
     sleep 2 # Give each service time to initialize
 }
@@ -46,11 +50,11 @@ start_service "chatbot" "/app/llm/chatbot" "go"
 
 # Start Python services
 cd /app/api/client
-python3 upgrade.py >> /app/logs/upgrade.log 2>&1 &
-python3 upgrade-webhook.py >> /app/logs/webhook.log 2>&1 &
+start_service "upgrade" "/app/api/client" "python"
+start_service "upgrade-webhook" "/app/api/client" "python"
 
 cd /app/api/discord
-python3 bot-cli.py >> /app/logs/discord.log 2>&1 &
+start_service "bot-cli" "/app/api/discord" "python"
 
 # Monitor all services
 echo "All services started. Monitoring logs..."
