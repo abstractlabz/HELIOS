@@ -40,8 +40,8 @@ func main() {
 	aggregation.SetupEndpoints(router, HELIOS_API_KEY)
 
 	// Start the server
-	log.Println("Starting server on :8080")
-	if err := router.Run(":8080"); err != nil {
+	log.Println("Starting server on :8081")
+	if err := router.Run(":8081"); err != nil {
 		log.Fatal("Failed to start server:", err)
 	}
 }

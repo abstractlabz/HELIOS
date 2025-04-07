@@ -42,7 +42,7 @@ start_service "news" "/app/processors/news" "go"
 start_service "inferencer" "/app/llm/inferencer" "go"
 start_service "ingestor" "/app/llm/ingestor" "go"
 start_service "chatbot" "/app/llm/chatbot" "go"
-start_service "scheduler" "/app/scheduler" "go"
+#start_service "scheduler" "/app/scheduler" "go"
 
 # Start Python services
 cd /app/api/client

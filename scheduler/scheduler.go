@@ -33,7 +33,7 @@ type RequestPayload struct {
 var (
 	lastRunTimes = make(map[string]time.Time) // Key is "topic:segment"
 	mu           sync.Mutex
-	apiEndpoint  = "http://localhost:8080/api/collect"
+	apiEndpoint  = "http://localhost:8081/api/collect"
 )
 
 // getEntryKey generates a unique key for the entry for tracking last run times

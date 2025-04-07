@@ -71,7 +71,7 @@ COPY startup.sh /app/
 RUN chmod +x /app/startup.sh
 
 # Expose necessary ports
-EXPOSE 8080
+EXPOSE 8081
 EXPOSE 5000
 EXPOSE 6002
 EXPOSE 8035
