@@ -3,3 +3,6 @@ pymongo
 stripe
 flask-cors
 python-dotenv
+types-flask
+types-flask-cors
+types-stripe

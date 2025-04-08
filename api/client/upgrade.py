@@ -5,6 +5,7 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import stripe
 from flask_cors import CORS
+from bson import ObjectId
 
 app = Flask(__name__)
 CORS(app)
@@ -17,6 +18,9 @@ db = client['User']  # Your MongoDB database
 userlist = db['UserInformation']  # Your MongoDB collection name
 course_db = client['Courses']
 user_params_collection = course_db['UserParams']
+integrations_db = client['Integrations']
+portfolio_list = integrations_db['Portfolios']
+schwab_tokens_list = integrations_db['SchwabTokens']
 
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")  # Set your Stripe API key
 
@@ -345,6 +349,7 @@ def remove_portfolio_id():
     data = request.json
     id_hash = data.get('id_hash')
     portfolio_id = data.get('portfolio_id')
+    portfolio_user_id = data.get('portfolio_user_id')
 
     if not id_hash:
         return jsonify({"error": "ID hash is required"}), 400
@@ -353,6 +358,12 @@ def remove_portfolio_id():
         return jsonify({"error": "Portfolio ID is required"}), 400
 
     userlist.update_one({'id_hash': id_hash}, {'$pull': {'portfolio_ids': portfolio_id}})
+
+    #delete the document with the object id that is the same as the portfolio_id
+    portfolio_list.delete_one({'_id': ObjectId(portfolio_id)})
+
+    #delete the document with the user_id the same as the id_hash
+    schwab_tokens_list.delete_one({'user_id': portfolio_user_id})
 
     return jsonify({"message": "Portfolio ID removed successfully"}), 200
 
