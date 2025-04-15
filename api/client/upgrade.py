@@ -47,8 +47,8 @@ def generate_self_signed_cert(cert_file, key_file):
         f.write(crypto.dump_privatekey(crypto.FILETYPE_PEM, k))
 
 # Generate SSL certificates if they don't exist
-CERT_FILE = "cert.crt"
-KEY_FILE = "key.key"
+CERT_FILE = "server.crt"
+KEY_FILE = "server.key"
 generate_self_signed_cert(CERT_FILE, KEY_FILE)
 
 MONGO_PASS = str(os.getenv("MONGO_DB_LOGGER_PASSWORD")) or ""
@@ -427,5 +427,5 @@ def get_portfolio_ids():
     return jsonify({"portfolio_ids": user_doc['portfolio_ids']}), 200
 
 if __name__ == '__main__':
-    # Run with SSL
-    app.run(host='0.0.0.0', port=5000, ssl_context=(CERT_FILE, KEY_FILE))
+    # This will be run by gunicorn in production
+    app.run(host='0.0.0.0', port=5000)

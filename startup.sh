@@ -28,7 +28,20 @@ start_service() {
         /app/bin/${service_name} >> ${log_file} 2>&1 &
     else
         if [ "$service_name" = "upgrade" ]; then
-            FLASK_APP=${service_name}.py FLASK_ENV=production python3 -m flask run --host=0.0.0.0 --port=5000 >> ${log_file} 2>&1 &
+            # Run upgrade service with gunicorn in production mode
+            gunicorn \
+                --bind 0.0.0.0:5000 \
+                --workers 4 \
+                --worker-class sync \
+                --timeout 120 \
+                --keep-alive 5 \
+                --certfile /app/api/client/server.crt \
+                --keyfile /app/api/client/server.key \
+                --access-logfile /app/logs/upgrade-access.log \
+                --error-logfile /app/logs/upgrade-error.log \
+                --log-level info \
+                --ssl-version TLSv1_2 \
+                upgrade:app >> ${log_file} 2>&1 &
         else
             python3 ${service_name}.py >> ${log_file} 2>&1 &
         fi

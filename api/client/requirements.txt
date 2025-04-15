@@ -7,3 +7,5 @@ types-flask
 types-flask-cors
 types-stripe
 pyOpenSSL
+waitress
+gunicorn

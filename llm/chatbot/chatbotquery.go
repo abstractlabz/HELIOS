@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"context"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -80,6 +81,10 @@ type ConnectionManager struct {
 
 var upgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool {
+		log.Printf("WebSocket connection attempt from origin: %s", r.Header.Get("Origin"))
+		log.Printf("Request headers: %v", r.Header)
+		log.Printf("Request method: %s", r.Method)
+		log.Printf("Request URL: %s", r.URL.String())
 		return true // Adjust based on your security needs
 	},
 }
@@ -562,12 +567,23 @@ func ChatbotQuery() http.Handler {
 
 	// WebSocket endpoint for streaming results
 	router.GET("/chatbot/ws", func(c *gin.Context) {
+		log.Printf("Received WebSocket upgrade request from %s", c.Request.RemoteAddr)
+		log.Printf("Request headers: %v", c.Request.Header)
+		log.Printf("Request method: %s", c.Request.Method)
+		log.Printf("Request URL: %s", c.Request.URL.String())
+
+		// Set WebSocket headers
+		c.Writer.Header().Set("Upgrade", "websocket")
+		c.Writer.Header().Set("Connection", "Upgrade")
+
 		conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 		if err != nil {
 			log.Printf("Failed to upgrade connection: %v", err)
 			return
 		}
 		defer conn.Close()
+
+		log.Printf("WebSocket connection established with %s", c.Request.RemoteAddr)
 
 		// Handle WebSocket connection
 		handleWebSocketConnection(conn, wp)
@@ -600,8 +616,9 @@ func corsMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization, Upgrade, Connection")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE")
+		c.Writer.Header().Set("Access-Control-Expose-Headers", "Upgrade, Connection")
 
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(204)
@@ -721,6 +738,8 @@ func getPineconeHost(coursehash string) string {
 }
 
 func handleWebSocketConnection(conn *websocket.Conn, wp *WorkerPool) {
+	log.Printf("New WebSocket connection established from %s", conn.RemoteAddr().String())
+
 	for {
 		// Read message from WebSocket
 		_, message, err := conn.ReadMessage()
@@ -728,6 +747,8 @@ func handleWebSocketConnection(conn *websocket.Conn, wp *WorkerPool) {
 			log.Printf("Error reading websocket message: %v", err)
 			break
 		}
+
+		log.Printf("Received WebSocket message: %s", string(message))
 
 		// Parse the query
 		var query QueryJob
@@ -838,11 +859,22 @@ func main() {
 	// Instead of wrapping your entire sub-engine, register routes:
 	RegisterChatbotRoutes(router, pineApiKey, pineHost)
 
-	// Start server
-	port := "6002"
-	log.Printf("Server starting on port %s", port)
-	if err := http.ListenAndServe(":"+port, router); err != nil {
-		log.Fatal(err)
+	// Create TLS config
+	tlsConfig := &tls.Config{
+		MinVersion: tls.VersionTLS12,
+	}
+
+	// Create HTTPS server
+	server := &http.Server{
+		Addr:      ":6002",
+		Handler:   router,
+		TLSConfig: tlsConfig,
+	}
+
+	// Start server with TLS using local certificate files
+	log.Printf("Server starting on port 6002 with TLS")
+	if err := server.ListenAndServeTLS("server.crt", "server.key"); err != nil {
+		log.Fatal("Failed to start server:", err)
 	}
 }
 
@@ -864,12 +896,23 @@ func RegisterChatbotRoutes(r *gin.Engine, pineApiKey, pineHost string) {
 
 	// 4) WebSocket endpoint at /chatbot/ws
 	r.GET("/chatbot/ws", func(c *gin.Context) {
+		log.Printf("Received WebSocket upgrade request from %s", c.Request.RemoteAddr)
+		log.Printf("Request headers: %v", c.Request.Header)
+		log.Printf("Request method: %s", c.Request.Method)
+		log.Printf("Request URL: %s", c.Request.URL.String())
+
+		// Set WebSocket headers
+		c.Writer.Header().Set("Upgrade", "websocket")
+		c.Writer.Header().Set("Connection", "Upgrade")
+
 		conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 		if err != nil {
 			log.Printf("Failed to upgrade connection: %v", err)
 			return
 		}
 		defer conn.Close()
+
+		log.Printf("WebSocket connection established with %s", c.Request.RemoteAddr)
 
 		// Handle WebSocket connection
 		handleWebSocketConnection(conn, wp)

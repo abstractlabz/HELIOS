@@ -2,7 +2,7 @@
 FROM golang:1.23-alpine
 
 # Install Python and other dependencies
-RUN apk add --no-cache gcc musl-dev git python3 py3-pip python3-dev
+RUN apk add --no-cache gcc musl-dev git python3 py3-pip python3-dev openssl-dev
 
 # Set working directory
 WORKDIR /app
@@ -27,18 +27,23 @@ COPY api/discord/requirements.txt ./api/discord/
 # Install Python dependencies in virtual environment
 RUN . /app/venv/bin/activate && \
     pip3 install --no-cache-dir -r api/client/requirements.txt && \
-    pip3 install --no-cache-dir -r api/discord/requirements.txt
+    pip3 install --no-cache-dir -r api/discord/requirements.txt && \
+    pip3 install --no-cache-dir gunicorn[gevent]
 
 # Copy entire codebase
 COPY . .
 
 # Create necessary directories
-RUN mkdir -p /app/logs /app/config
+RUN mkdir -p /app/logs /app/config /app/ssl && \
+    chmod 755 /app/ssl
 
 # Set environment variables
 ENV GIN_MODE=release
 ENV CONFIG_PATH=/app/config 
 ENV LOG_PATH=/app/logs
+ENV SSL_CERT_PATH=/app/ssl
+ENV FLASK_ENV=production
+ENV FLASK_APP=/app/api/client/upgrade.py
 ENV KAFKA_BOOTSTRAP_SERVERS=${KAFKA_BOOTSTRAP_SERVERS}
 ENV KAFKA_KEY=${KAFKA_KEY}
 ENV KAFKA_SECRET=${KAFKA_SECRET}
