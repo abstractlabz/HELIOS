@@ -6,9 +6,51 @@ from pymongo.server_api import ServerApi
 import stripe
 from flask_cors import CORS
 from bson import ObjectId
+from OpenSSL import crypto
+import ssl
+import socket
 
 app = Flask(__name__)
 CORS(app)
+
+# SSL Certificate Generation
+def generate_self_signed_cert(cert_file, key_file):
+    # Check if certificate files already exist
+    if os.path.exists(cert_file) and os.path.exists(key_file):
+        return
+    
+    # Create a key pair
+    k = crypto.PKey()
+    k.generate_key(crypto.TYPE_RSA, 2048)
+    
+    # Create a self-signed cert
+    cert = crypto.X509()
+    cert.get_subject().C = "US"
+    cert.get_subject().ST = "Massachusetts"
+    cert.get_subject().L = "Boston"
+    cert.get_subject().O = "Fineas.ai"
+    cert.get_subject().OU = "Fineas.ai"
+    cert.get_subject().CN = socket.gethostname()
+    cert.set_serial_number(1000)
+    cert.gmtime_adj_notBefore(0)
+    cert.gmtime_adj_notAfter(10*365*24*60*60)  # Valid for 10 years
+    cert.set_issuer(cert.get_subject())
+    cert.set_pubkey(k)
+    cert.sign(k, 'sha256')
+    
+    # Save certificate
+    with open(cert_file, "wb") as f:
+        f.write(crypto.dump_certificate(crypto.FILETYPE_PEM, cert))
+    
+    # Save private key
+    with open(key_file, "wb") as f:
+        f.write(crypto.dump_privatekey(crypto.FILETYPE_PEM, k))
+
+# Generate SSL certificates if they don't exist
+CERT_FILE = "cert.crt"
+KEY_FILE = "key.key"
+generate_self_signed_cert(CERT_FILE, KEY_FILE)
+
 MONGO_PASS = str(os.getenv("MONGO_DB_LOGGER_PASSWORD")) or ""
 REDIRECT_DOMAIN = str(os.getenv("REDIRECT_DOMAIN")) or ""
 uri = "mongodb+srv://kobenaidun:"+MONGO_PASS+"@cluster0.z9znpv9.mongodb.net/?retryWrites=true&w=majority"
@@ -385,4 +427,5 @@ def get_portfolio_ids():
     return jsonify({"portfolio_ids": user_doc['portfolio_ids']}), 200
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    # Run with SSL
+    app.run(host='0.0.0.0', port=5000, ssl_context=(CERT_FILE, KEY_FILE))

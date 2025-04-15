@@ -293,7 +293,7 @@ func callDeepSeekAPIWithStreaming(job *QueryJob) (string, error) {
 			},
 		},
 		Stream:    true,
-		MaxTokens: 512, // Set fixed limit of 768 tokens
+		MaxTokens: 768, // Set fixed limit of 768 tokens
 	}
 
 	jsonData, err := json.Marshal(request)
