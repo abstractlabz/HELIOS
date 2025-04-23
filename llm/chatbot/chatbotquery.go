@@ -98,7 +98,9 @@ var upgrader = websocket.Upgrader{
 		origin := r.Header.Get("Origin")
 		log.Printf("WebSocket connection attempt from origin: %s", origin)
 		// Allow connections from test-fineas.netlify.app
-		return origin == "https://test-fineas.netlify.app"
+		// Allow connections from app.fineas.ai
+		// Allow connections from localhost:3000
+		return origin == "https://test-fineas.netlify.app" || origin == "https://app.fineas.ai" || origin == "http://localhost:3000"
 	},
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
@@ -624,6 +626,8 @@ func prettifyStruct(obj interface{}) string {
 func corsMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "https://test-fineas.netlify.app")
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "https://app.fineas.ai")
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization, Upgrade, Connection, Sec-WebSocket-Key, Sec-WebSocket-Version, Sec-WebSocket-Extensions")
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE")
