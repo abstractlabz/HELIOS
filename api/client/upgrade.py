@@ -5,9 +5,52 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import stripe
 from flask_cors import CORS
+from bson import ObjectId
+from OpenSSL import crypto
+import ssl
+import socket
 
 app = Flask(__name__)
 CORS(app)
+
+# SSL Certificate Generation
+def generate_self_signed_cert(cert_file, key_file):
+    # Check if certificate files already exist
+    if os.path.exists(cert_file) and os.path.exists(key_file):
+        return
+    
+    # Create a key pair
+    k = crypto.PKey()
+    k.generate_key(crypto.TYPE_RSA, 2048)
+    
+    # Create a self-signed cert
+    cert = crypto.X509()
+    cert.get_subject().C = "US"
+    cert.get_subject().ST = "Massachusetts"
+    cert.get_subject().L = "Boston"
+    cert.get_subject().O = "Fineas.ai"
+    cert.get_subject().OU = "Fineas.ai"
+    cert.get_subject().CN = socket.gethostname()
+    cert.set_serial_number(1000)
+    cert.gmtime_adj_notBefore(0)
+    cert.gmtime_adj_notAfter(10*365*24*60*60)  # Valid for 10 years
+    cert.set_issuer(cert.get_subject())
+    cert.set_pubkey(k)
+    cert.sign(k, 'sha256')
+    
+    # Save certificate
+    with open(cert_file, "wb") as f:
+        f.write(crypto.dump_certificate(crypto.FILETYPE_PEM, cert))
+    
+    # Save private key
+    with open(key_file, "wb") as f:
+        f.write(crypto.dump_privatekey(crypto.FILETYPE_PEM, k))
+
+# Generate SSL certificates if they don't exist
+CERT_FILE = "server.crt"
+KEY_FILE = "server.key"
+generate_self_signed_cert(CERT_FILE, KEY_FILE)
+
 MONGO_PASS = str(os.getenv("MONGO_DB_LOGGER_PASSWORD")) or ""
 REDIRECT_DOMAIN = str(os.getenv("REDIRECT_DOMAIN")) or ""
 uri = "mongodb+srv://kobenaidun:"+MONGO_PASS+"@cluster0.z9znpv9.mongodb.net/?retryWrites=true&w=majority"
@@ -17,6 +60,9 @@ db = client['User']  # Your MongoDB database
 userlist = db['UserInformation']  # Your MongoDB collection name
 course_db = client['Courses']
 user_params_collection = course_db['UserParams']
+integrations_db = client['Integrations']
+portfolio_list = integrations_db['Portfolios']
+schwab_tokens_list = integrations_db['SchwabTokens']
 
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")  # Set your Stripe API key
 
@@ -322,5 +368,64 @@ def set_user_params():
 
     return jsonify({"message": "User params set successfully"}), 200
 
+#adds an element to a list of portfolio ids on the user document
+@app.route('/add-portfolio-id', methods=['POST'])
+def add_portfolio_id():
+    data = request.json
+    id_hash = data.get('id_hash')
+    portfolio_id = data.get('portfolio_id')
+
+    if not id_hash:
+        return jsonify({"error": "ID hash is required"}), 400
+
+    if not portfolio_id:
+        return jsonify({"error": "Portfolio ID is required"}), 400
+
+    userlist.update_one({'id_hash': id_hash}, {'$push': {'portfolio_ids': portfolio_id}})
+
+    return jsonify({"message": "Portfolio ID added successfully"}), 200
+
+#removes an element from a list of portfolio ids on the user document
+@app.route('/remove-portfolio-id', methods=['POST'])
+def remove_portfolio_id():
+    data = request.json
+    id_hash = data.get('id_hash')
+    portfolio_id = data.get('portfolio_id')
+    portfolio_user_id = data.get('portfolio_user_id')
+
+    if not id_hash:
+        return jsonify({"error": "ID hash is required"}), 400
+
+    if not portfolio_id:
+        return jsonify({"error": "Portfolio ID is required"}), 400
+
+    userlist.update_one({'id_hash': id_hash}, {'$pull': {'portfolio_ids': portfolio_id}})
+
+    #delete the document with the object id that is the same as the portfolio_id
+    portfolio_list.delete_one({'_id': ObjectId(portfolio_id)})
+
+    #delete the document with the user_id the same as the id_hash
+    schwab_tokens_list.delete_one({'user_id': portfolio_user_id})
+
+    return jsonify({"message": "Portfolio ID removed successfully"}), 200
+
+
+@app.route('/get-portfolio-ids', methods=['GET'])
+def get_portfolio_ids():
+    id_hash = request.args.get('id_hash')
+
+    if not id_hash:
+        return jsonify({"error": "ID hash is required"}), 400
+
+    user_doc = userlist.find_one({'id_hash': id_hash}, {'portfolio_ids': 1, '_id': 0})
+    
+    # If user not found or no portfolio_ids field, return empty array
+    if not user_doc or 'portfolio_ids' not in user_doc:
+        return jsonify({"portfolio_ids": []}), 200
+    
+    # Return the portfolio_ids in the expected format
+    return jsonify({"portfolio_ids": user_doc['portfolio_ids']}), 200
+
 if __name__ == '__main__':
-    app.run()
+    # This will be run by gunicorn in production
+    app.run(host='0.0.0.0', port=5000)

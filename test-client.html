@@ -37,7 +37,7 @@
         let ws;
 
         function connect() {
-            ws = new WebSocket('ws://localhost:8080/chatbot/ws');
+            ws = new WebSocket('ws://localhost:8081/chatbot/ws');
 
             ws.onopen = () => {
                 appendMessage('System', 'Connected to chat server');

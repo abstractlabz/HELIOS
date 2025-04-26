@@ -1,14 +1,12 @@
 [
     {
-        "data_collection_file_path": "data/data_tickers.json",
-        "schedule": 1
+        "topic": "alert_financials",
+        "segment": "financials",
+        "schedule": 7.0
     },
     {
-        "data_collection_file_path": "processors/financials/config.json",
-        "schedule": 7
-    },
-    {
-        "data_collection_file_path": "processors/news/config.json",
-        "schedule": 3
+        "topic": "alert_financials",
+        "segment": "news",
+        "schedule": 7.0
     }
 ]
