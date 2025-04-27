@@ -767,8 +767,8 @@ func handleWebSocketConnection(conn *websocket.Conn, wp *WorkerPool, connManager
 	log.Printf("New WebSocket connection established from %s", conn.RemoteAddr().String())
 
 	// Set read and write deadlines
-	conn.SetReadDeadline(time.Now().Add(60 * time.Second))
-	conn.SetWriteDeadline(time.Now().Add(60 * time.Second))
+	conn.SetReadDeadline(time.Now().Add(600 * time.Second))
+	conn.SetWriteDeadline(time.Now().Add(600 * time.Second))
 
 	// Set up ping/pong handler
 	conn.SetPingHandler(func(string) error {
@@ -969,7 +969,7 @@ func main() {
 		// Add connection management settings
 		ReadTimeout:    30 * time.Second,
 		WriteTimeout:   30 * time.Second,
-		IdleTimeout:    120 * time.Second,
+		IdleTimeout:    600 * time.Second,
 		MaxHeaderBytes: 1 << 20, // 1MB
 	}
 
@@ -1049,7 +1049,7 @@ func NewConnectionManager(maxConns int) *ConnectionManager {
 }
 
 func (cm *ConnectionManager) cleanupRoutine() {
-	ticker := time.NewTicker(5 * time.Minute)
+	ticker := time.NewTicker(30 * time.Second)
 	defer ticker.Stop()
 
 	for range ticker.C {
