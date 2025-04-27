@@ -426,6 +426,51 @@ def get_portfolio_ids():
     # Return the portfolio_ids in the expected format
     return jsonify({"portfolio_ids": user_doc['portfolio_ids']}), 200
 
+@app.route('/track-credit-usage', methods=['POST'])
+def track_credit_usage():
+    data = request.json
+    id_hash = data.get('id_hash')
+    feature_type = data.get('feature_type')  # 'analysis', 'chat', 'courses', or 'portfolio'
+
+    if not id_hash:
+        return make_response(jsonify({'error': 'ID hash is required'}), 400)
+    
+    if not feature_type or feature_type not in ['analysis', 'chat', 'courses', 'portfolio']:
+        return make_response(jsonify({'error': 'Valid feature_type is required (analysis, chat, courses, portfolio)'}), 400)
+
+    # Initialize credit usage tracking if it doesn't exist
+    user = userlist.find_one({'id_hash': id_hash})
+    if not user:
+        return make_response(jsonify({'error': 'User not found'}), 404)
+
+    # Initialize credit_usage field if it doesn't exist
+    if 'credit_usage' not in user:
+        userlist.update_one(
+            {'id_hash': id_hash},
+            {'$set': {'credit_usage': {
+                'analysis': 0,
+                'chat': 0,
+                'courses': 0,
+                'portfolio': 0
+            }}}
+        )
+
+    # Increment the specific feature's credit usage
+    result = userlist.update_one(
+        {'id_hash': id_hash},
+        {'$inc': {f'credit_usage.{feature_type}': 1}}
+    )
+
+    if result.modified_count == 0:
+        return make_response(jsonify({'error': 'Failed to update credit usage'}), 500)
+
+    # Get updated user document
+    updated_user = userlist.find_one({'id_hash': id_hash}, {'_id': 0})
+    return jsonify({
+        'message': 'Credit usage updated successfully',
+        'credit_usage': updated_user.get('credit_usage', {})
+    })
+
 if __name__ == '__main__':
     # This will be run by gunicorn in production
     app.run(host='0.0.0.0', port=5000)

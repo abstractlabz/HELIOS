@@ -263,7 +263,9 @@ func processQueryWithStreaming(job *QueryJob) (*QueryResult, error) {
 	}
 
 	combinedPrompt := fmt.Sprintf(`
-		You are a financial analyst. Use the following external search information to answer user questions:
+		You are a financial analyst. Use the following external search information to answer user questions.
+		You will also include only the most relevant links and descriptions from the search results. As much as possible
+		if relevant, include the links and descriptions in your response in the format [Title](URL).
 		%s
 
 		The user's prompt is:
