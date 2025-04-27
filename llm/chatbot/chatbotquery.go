@@ -840,7 +840,7 @@ func handleWebSocketConnection(conn *websocket.Conn, wp *WorkerPool, connManager
 		select {
 		case wp.jobQueue <- &query:
 			// Job submitted successfully
-		case <-time.After(5 * time.Second):
+		case <-time.After(10 * time.Second):
 			log.Printf("Timeout submitting job to worker pool")
 			conn.WriteMessage(websocket.TextMessage, []byte(`{"error": "Server busy, please try again"}`))
 		}
