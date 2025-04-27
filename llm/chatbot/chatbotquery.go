@@ -575,7 +575,7 @@ func ChatbotQuery() http.Handler {
 	// Create connection manager with limits
 	connManager := NewConnectionManager(1000) // Maximum concurrent connections
 
-	wp := NewWorkerPool(5)
+	wp := NewWorkerPool(20)
 	wp.Start()
 
 	// WebSocket endpoint for streaming results
@@ -1010,7 +1010,7 @@ func RegisterChatbotRoutes(r *gin.Engine, pineApiKey, pineHost string, connManag
 	}
 
 	// 3) Start your WorkerPool
-	wp := NewWorkerPool(5)
+	wp := NewWorkerPool(20)
 	wp.Start()
 
 	// 4) WebSocket endpoint at /chatbot/ws
