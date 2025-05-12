@@ -4,8 +4,10 @@ import (
 	"crypto/tls"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/IBM/sarama"
+	"github.com/segmentio/kafka-go"
 )
 
 // KafkaConfig holds credentials (configuration) for connecting to the Kafka cluster.
@@ -61,4 +63,22 @@ func CreateKafkaProducer(cfg KafkaConfig) (sarama.SyncProducer, error) {
 
 	log.Println("Kafka producer initialized successfully")
 	return producer, nil
+}
+
+// NewKafkaWriter creates a Kafka writer for the given topic.
+func NewKafkaWriter(topic string) *kafka.Writer {
+	broker := os.Getenv("KAFKA_BROKER")
+	if broker == "" {
+		broker = "localhost:9092" // fallback
+	}
+	return kafka.NewWriter(kafka.WriterConfig{
+		Brokers: []string{broker},
+		Topic:   topic,
+		Async:   false,
+	})
+}
+
+// LogError is a consistent error logging helper.
+func LogError(message string, err error) {
+	log.Printf("❌ %s: %v\n", message, err)
 }
