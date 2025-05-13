@@ -438,27 +438,48 @@ def track_credit_usage():
     if not feature_type or feature_type not in ['analysis', 'chat', 'courses', 'portfolio']:
         return make_response(jsonify({'error': 'Valid feature_type is required (analysis, chat, courses, portfolio)'}), 400)
 
-    # Initialize credit usage tracking if it doesn't exist
+    # Get current UTC timestamp
+    current_time = datetime.utcnow()
+    
+    # Create log document
+    log_entry = {
+        'timestamp': current_time,
+        'feature_type': feature_type,
+        'day': current_time.day,
+        'month': current_time.month,
+        'year': current_time.year,
+        'hour': current_time.hour,
+        'minute': current_time.minute,
+        'second': current_time.second
+    }
+
+    # Initialize credit_usage and credit_logs if they don't exist
     user = userlist.find_one({'id_hash': id_hash})
     if not user:
         return make_response(jsonify({'error': 'User not found'}), 404)
 
-    # Initialize credit_usage field if it doesn't exist
-    if 'credit_usage' not in user:
+    # Initialize credit_usage and credit_logs fields if they don't exist
+    if 'credit_usage' not in user or 'credit_logs' not in user:
         userlist.update_one(
             {'id_hash': id_hash},
-            {'$set': {'credit_usage': {
-                'analysis': 0,
-                'chat': 0,
-                'courses': 0,
-                'portfolio': 0
-            }}}
+            {'$set': {
+                'credit_usage': {
+                    'analysis': 0,
+                    'chat': 0,
+                    'courses': 0,
+                    'portfolio': 0
+                },
+                'credit_logs': []
+            }}
         )
 
-    # Increment the specific feature's credit usage
+    # Update both credit_usage and add new log entry
     result = userlist.update_one(
         {'id_hash': id_hash},
-        {'$inc': {f'credit_usage.{feature_type}': 1}}
+        {
+            '$inc': {f'credit_usage.{feature_type}': 1},
+            '$push': {'credit_logs': log_entry}
+        }
     )
 
     if result.modified_count == 0:
@@ -468,7 +489,8 @@ def track_credit_usage():
     updated_user = userlist.find_one({'id_hash': id_hash}, {'_id': 0})
     return jsonify({
         'message': 'Credit usage updated successfully',
-        'credit_usage': updated_user.get('credit_usage', {})
+        'credit_usage': updated_user.get('credit_usage', {}),
+        'latest_log': log_entry
     })
 
 if __name__ == '__main__':
