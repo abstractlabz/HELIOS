@@ -13,8 +13,11 @@ import (
 	"syscall"
 	"time"
 
+	"crypto/tls"
+
 	"github.com/0xPCDefenders/HELIOS/utils"
 	"github.com/segmentio/kafka-go"
+	"github.com/segmentio/kafka-go/sasl/plain"
 	"golang.org/x/time/rate"
 )
 
@@ -41,24 +44,26 @@ type DescriptionRequest struct {
 
 // These are subject to change based on actual kafka configurations
 const (
-	baseURL           = "https://api.finnworlds.com/api/v1"
-	maxRetries        = 3
-	retryDelay        = time.Second * 1
-	defaultBatchSize  = 25
-	defaultRateLimit  = 5
-	kafkaBatchSize    = 50
-	kafkaFlushTimeout = 100 * time.Millisecond
-	apiKeyEnv         = "FINNWORLDS_API_KEY"
+	baseURL          = "https://api.finnworlds.com/api/v1"
+	maxRetries       = 3
+	retryDelay       = time.Second * 1
+	defaultBatchSize = 14
+	defaultRateLimit = 1
+	maxWorkers       = 2
+	apiKeyEnv        = "FINNWORLDS_API_KEY"
 )
 
 // startDescriptionProcessor initializes the processor with configuration, loads tickers,
 // and begins listening to Kafka alerts. It coordinates batch execution, rate limiting,
 // and sends processed messages to the LLM system.
 func startDescriptionProcessor(ctx context.Context) error {
+	log.Println("Starting description processor...")
+
 	config, err := loadProcessorConfig("config.json")
 	if err != nil {
 		return fmt.Errorf("config load failed: %w", err)
 	}
+	log.Printf("Loaded configuration: topic=%s, segment=%s", config.Topic, config.Segment)
 
 	if config.BatchSize <= 0 {
 		config.BatchSize = defaultBatchSize
@@ -68,13 +73,15 @@ func startDescriptionProcessor(ctx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("data list load failed: %w", err)
 	}
+	log.Printf("Loaded %d tickers from data list", len(tickerData))
 
 	rateLimiter := rate.NewLimiter(rate.Limit(config.APIRateLimit), 1)
-	kafkaWriter := utils.NewKafkaWriter("alert_llm")
-	defer kafkaWriter.Close()
+	log.Println("Initialized rate limiter")
 
 	alertChannel := make(chan kafka.Message)
+	log.Println("Starting Kafka consumer...")
 	go utils.ConsumeToBuffer(alertChannel, config.Topic, "description-processor-group", "../../.env")
+	log.Println("Kafka consumer started, waiting for messages...")
 
 	for {
 		select {
@@ -87,14 +94,16 @@ func startDescriptionProcessor(ctx context.Context) error {
 				log.Println("Alert channel closed")
 				return nil
 			}
+			log.Printf("Received alert message: %s", string(alert.Value))
 
 			var request DescriptionRequest
 			if err := json.Unmarshal(alert.Value, &request); err != nil {
 				utils.LogError("alert unmarshal failed", err)
 				continue
 			}
+			log.Printf("Processing request for segments: %v", request.SegmentTargets)
 
-			if err := processSegment(ctx, config, tickerData, rateLimiter, kafkaWriter, request); err != nil {
+			if err := processSegment(ctx, config, tickerData, rateLimiter, request); err != nil {
 				utils.LogError("segment processing failed", err)
 			}
 		}
@@ -108,7 +117,6 @@ func processSegment(
 	config ProcessorConfig,
 	tickerData DataList,
 	rateLimiter *rate.Limiter,
-	kafkaWriter *kafka.Writer,
 	request DescriptionRequest,
 ) error {
 	// Segment validation
@@ -120,8 +128,10 @@ func processSegment(
 		}
 	}
 	if !segmentMatch {
+		log.Printf("Segment mismatch: got %v, want %s", request.SegmentTargets, config.Segment)
 		return nil
 	}
+	log.Printf("Segment match confirmed, proceeding with processing")
 
 	// Benchmark Setup
 	startTime := time.Now()
@@ -143,57 +153,67 @@ func processSegment(
 	// Build batches
 	allTickers := getAllTickers(tickerData)
 	if len(allTickers) == 0 {
+		log.Println("No tickers found in data list")
 		return nil
 	}
+	log.Printf("Building batches from %d tickers", len(allTickers))
 	tickerBatches := buildTickerBatches(allTickers, config.BatchSize)
+	log.Printf("Created %d batches of size %d", len(tickerBatches), config.BatchSize)
 
-	// Initiating the workerpool
-	workerPool := utils.NewWorkerPool(5, len(tickerBatches), func(job interface{}) interface{} {
+	// Initiating the workerpool with fewer workers
+	log.Printf("Starting worker pool with %d workers", maxWorkers)
+	workerPool := utils.NewWorkerPool(maxWorkers, len(tickerBatches), func(job interface{}) interface{} {
 		return processBatch(job.([]string), rateLimiter)
 	})
 	workerPool.Start()
 
-	// Kafka buffering and main loop
-	kafkaMessageBuffer := make([]kafka.Message, 0, kafkaBatchSize)
-	flushTimer := time.NewTicker(kafkaFlushTimeout)
-	defer flushTimer.Stop()
+	// Submit jobs to worker pool
+	log.Println("Submitting batches to worker pool")
+	for _, batch := range tickerBatches {
+		workerPool.Submit(batch)
+	}
+	log.Println("All batches submitted to worker pool")
 
+	// Kafka buffering and main loop
 	for {
 		select {
 		// Results from workers
 		case result, ok := <-workerPool.ResultsChan:
 			if !ok {
+				log.Println("Worker pool results channel closed")
 				processingActive = false
-				flushKafkaMessages(kafkaWriter, kafkaMessageBuffer)
 				return nil
 			}
 			if result == nil {
+				log.Println("Received nil result from worker")
 				continue
 			}
 
 			batch := result.([]map[string]interface{})
 			batchesProcessed++
 			tickersProcessed += len(batch)
+			log.Printf("Processed batch %d/%d with %d tickers", batchesProcessed, len(tickerBatches), len(batch))
 
+			// Process results
+			inference_topic := "alert_llm"
 			for _, row := range batch {
-				kafkaMessageBuffer = append(kafkaMessageBuffer, buildKafkaMessage(config, row))
-				if len(kafkaMessageBuffer) >= kafkaBatchSize {
-					flushKafkaMessages(kafkaWriter, kafkaMessageBuffer)
-					kafkaMessageBuffer = kafkaMessageBuffer[:0]
+				message := map[string]interface{}{
+					"topic":           config.Topic,
+					"segment":         config.Segment,
+					"prompt_template": config.PromptTemplate,
+					"ticker":          row["ticker"],
+					"data":            row["data"],
+					"timestamp":       time.Now().Unix(),
 				}
-			}
-
-		// Periodic flush
-		case <-flushTimer.C:
-			if len(kafkaMessageBuffer) > 0 {
-				flushKafkaMessages(kafkaWriter, kafkaMessageBuffer)
-				kafkaMessageBuffer = kafkaMessageBuffer[:0]
+				messageBytes, _ := json.Marshal(message)
+				if err := utils.ProduceMessage(string(messageBytes), inference_topic); err != nil {
+					log.Printf("Error sending result to RAG system: %v", err)
+				}
 			}
 
 		// Shutdown and cancellation
 		case <-ctx.Done():
-			log.Println("processSegment: context cancelled – flushing Kafka before exit")
-			flushKafkaMessages(kafkaWriter, kafkaMessageBuffer)
+			log.Println("processSegment: context cancelled")
 			processingActive = false // avoid double benchmark
 			return nil
 		}
@@ -208,39 +228,49 @@ func processBatch(tickers []string, rateLimiter *rate.Limiter) interface{} {
 	executionCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	// Honour global rate limit before issuing the three API calls
-	if err := rateLimiter.Wait(executionCtx); err != nil {
-		return nil
-	}
-
-	// Fetch data from the three finnworld api endpoints
-	informationMap := fetchAPIWithRetry(executionCtx, "information",    tickers)
-	dividendsMap   := fetchAPIWithRetry(executionCtx, "dividends",      tickers)
-	ratingsMap     := fetchAPIWithRetry(executionCtx, "companyratings", tickers)
-
-	// Build per‑ticker payloads, guarding against nil maps
+	// Process each ticker individually
 	processedTickers := make([]map[string]interface{}, 0, len(tickers))
 
 	for _, ticker := range tickers {
-		combinedData := make(map[string]interface{})
+		// Honour global rate limit before each API call
+		if err := rateLimiter.Wait(executionCtx); err != nil {
+			log.Printf("Rate limit wait failed for ticker %s: %v", ticker, err)
+			continue
+		}
 
-		// information
-		if informationMap != nil {
-			if entry, ok := informationMap[ticker]; ok {
-				combinedData["information"] = entry
-			}
+		// Add delay between API calls to avoid rate limiting
+		time.Sleep(2 * time.Second)
+
+		// Fetch data from the three finnworld api endpoints
+		information, err := fetchSingleTicker(executionCtx, "information", ticker)
+		if err != nil {
+			log.Printf("Failed to fetch information for %s: %v", ticker, err)
 		}
-		// dividends
-		if dividendsMap != nil {
-			if entry, ok := dividendsMap[ticker]; ok {
-				combinedData["dividends"] = entry
-			}
+
+		time.Sleep(2 * time.Second)
+
+		dividends, err := fetchSingleTicker(executionCtx, "dividends", ticker)
+		if err != nil {
+			log.Printf("Failed to fetch dividends for %s: %v", ticker, err)
 		}
-		// analyst ratings
-		if ratingsMap != nil {
-			if entry, ok := ratingsMap[ticker]; ok {
-				combinedData["companyRatings"] = entry
-			}
+
+		time.Sleep(2 * time.Second)
+
+		ratings, err := fetchSingleTicker(executionCtx, "companyratings", ticker)
+		if err != nil {
+			log.Printf("Failed to fetch ratings for %s: %v", ticker, err)
+		}
+
+		// Build combined data for this ticker
+		combinedData := make(map[string]interface{})
+		if information != nil {
+			combinedData["information"] = information
+		}
+		if dividends != nil {
+			combinedData["dividends"] = dividends
+		}
+		if ratings != nil {
+			combinedData["companyRatings"] = ratings
 		}
 
 		processedTickers = append(processedTickers, map[string]interface{}{
@@ -252,90 +282,145 @@ func processBatch(tickers []string, rateLimiter *rate.Limiter) interface{} {
 	return processedTickers
 }
 
-// fetchAPIWithRetry wraps fetchEndpointBatch with retry logic (3 attempts),
-// returning nil if all attempts fail. Used to guard against transient network/API failures.
-func fetchAPIWithRetry(ctx context.Context, endpoint string, tickers []string) map[string]interface{} {
-	var lastError error
-	for attempt := 0; attempt < maxRetries; attempt++ {
-		result, err := fetchEndpointBatch(ctx, endpoint, tickers)
-		if err == nil {
-			return result
-		}
-		lastError = err
-		time.Sleep(retryDelay)
+// fetchSingleTicker sends a GET request to the specified Finnworlds endpoint for a single ticker,
+// unmarshals the JSON response, and returns the data object.
+func fetchSingleTicker(ctx context.Context, endpoint string, ticker string) (map[string]interface{}, error) {
+	// Error handling #1: API key present
+	apiKey := os.Getenv(apiKeyEnv)
+	if apiKey == "" {
+		return nil, fmt.Errorf("API key not set in %s", apiKeyEnv)
 	}
-	utils.LogError("API fetch failed after retries", lastError)
-	return nil
-}
 
-// fetchEndpointBatch sends a batched GET request to the specified Finnworlds endpoint,
-// unmarshals the JSON response, and builds a ticker-keyed map of data objects.
-// Returns only valid entries that include recognizable tickers.
-func fetchEndpointBatch(ctx context.Context, endpoint string, tickers []string) (map[string]interface{}, error) {
-    // Error handling #1: API key present
-    apiKey := os.Getenv(apiKeyEnv)
-    if apiKey == "" {
-        return nil, fmt.Errorf("API key not set in %s", apiKeyEnv)
-    }
+	// Error handling #2: non-empty ticker
+	if ticker == "" {
+		return nil, fmt.Errorf("empty ticker provided")
+	}
 
-    // Error handling #2: non‑empty ticker list
-    if len(tickers) == 0 {
-        return nil, nil
-    }
+	// Build and execute HTTP request
+	httpClient := &http.Client{Timeout: 10 * time.Second}
 
-    // Build and execute HTTP request
-    httpClient := &http.Client{Timeout: 10 * time.Second}
-    requestURL := fmt.Sprintf("%s/%s?key=%s&ticker=%s",
-        baseURL, endpoint, apiKey, strings.Join(tickers, ","))
+	// Add required parameters based on endpoint
+	var requestURL string
+	switch endpoint {
+	case "information":
+		requestURL = fmt.Sprintf("%s/%s?key=%s&ticker=%s",
+			baseURL, endpoint, apiKey, ticker)
+	case "dividends":
+		// First get the dividends list
+		requestURL = fmt.Sprintf("%s/dividendslist?key=%s&ticker=%s",
+			baseURL, apiKey, ticker)
+	case "companyratings":
+		requestURL = fmt.Sprintf("%s/%s?key=%s&ticker=%s",
+			baseURL, endpoint, apiKey, ticker)
+	default:
+		return nil, fmt.Errorf("unknown endpoint: %s", endpoint)
+	}
 
-    httpRequest, err := http.NewRequestWithContext(ctx, http.MethodGet, requestURL, nil)
-    if err != nil {
-        return nil, err
-    }
+	log.Printf("Making API request to: %s", requestURL)
 
-    httpResponse, err := httpClient.Do(httpRequest)
-    if err != nil {
-        return nil, err
-    }
-    defer httpResponse.Body.Close()
+	httpRequest, err := http.NewRequestWithContext(ctx, http.MethodGet, requestURL, nil)
+	if err != nil {
+		return nil, err
+	}
 
-    if httpResponse.StatusCode != http.StatusOK {
-        return nil, fmt.Errorf("status %d", httpResponse.StatusCode)
-    }
+	httpResponse, err := httpClient.Do(httpRequest)
+	if err != nil {
+		return nil, err
+	}
+	defer httpResponse.Body.Close()
 
-    // Parse JSON payload
-    responseBytes, err := io.ReadAll(httpResponse.Body)
-    if err != nil {
-        return nil, err
-    }
+	if httpResponse.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(httpResponse.Body)
+		return nil, fmt.Errorf("status %d: %s", httpResponse.StatusCode, string(body))
+	}
 
-    var rawResponse map[string]interface{}
-    if err := json.Unmarshal(responseBytes, &rawResponse); err != nil {
-        return nil, err
-    }
+	// Parse JSON payload
+	responseBytes, err := io.ReadAll(httpResponse.Body)
+	if err != nil {
+		return nil, err
+	}
 
-    resultArray, ok := extractResultsArray(rawResponse)
-    if !ok {
-        return nil, fmt.Errorf("invalid response format – ‘results’ array not found")
-    }
+	log.Printf("Received API response: %s", string(responseBytes))
 
-    // Build ticker‑keyed map
-    processedResults := make(map[string]interface{}, len(resultArray))
-    for _, genericRecord := range resultArray {
-        recordMap, isMap := genericRecord.(map[string]interface{})
-        if !isMap || recordMap == nil {
-            continue // skip malformed entries
-        }
+	var rawResponse map[string]interface{}
+	if err := json.Unmarshal(responseBytes, &rawResponse); err != nil {
+		return nil, fmt.Errorf("JSON unmarshal error: %v", err)
+	}
 
-        tickerSymbol := extractTicker(recordMap)
-        if tickerSymbol == "" {
-            continue // skip if we can’t determine ticker
-        }
+	// Check for error in response
+	if status, ok := rawResponse["status"].(map[string]interface{}); ok {
+		if code, ok := status["code"].(float64); ok && code != 200 {
+			message, _ := status["message"].(string)
+			details, _ := status["details"].(string)
+			return nil, fmt.Errorf("API error: %s - %s", message, details)
+		}
+	}
 
-        processedResults[tickerSymbol] = recordMap
-    }
+	// For dividends, we need to make a second request to get actual dividend data
+	if endpoint == "dividends" {
+		// Extract dividend IDs from the list response
+		dividendList, ok := rawResponse["results"].([]interface{})
+		if !ok {
+			return nil, fmt.Errorf("invalid dividends list response format")
+		}
 
-    return processedResults, nil
+		// Get actual dividend data for the ticker
+		for _, item := range dividendList {
+			if dividendMap, ok := item.(map[string]interface{}); ok {
+				if id, ok := dividendMap["id"].(string); ok {
+					// Make request for specific dividend data
+					divURL := fmt.Sprintf("%s/dividends?key=%s&id=%s",
+						baseURL, apiKey, id)
+
+					divReq, err := http.NewRequestWithContext(ctx, http.MethodGet, divURL, nil)
+					if err != nil {
+						continue
+					}
+
+					divResp, err := httpClient.Do(divReq)
+					if err != nil {
+						continue
+					}
+
+					if divResp.StatusCode == http.StatusOK {
+						divBody, _ := io.ReadAll(divResp.Body)
+						var divData map[string]interface{}
+						if err := json.Unmarshal(divBody, &divData); err == nil {
+							divResp.Body.Close()
+							return divData, nil
+						}
+					}
+					divResp.Body.Close()
+				}
+			}
+		}
+		return nil, fmt.Errorf("no dividend data found for ticker %s", ticker)
+	}
+
+	// For information endpoint, extract data from the result field
+	if endpoint == "information" {
+		if result, ok := rawResponse["result"].(map[string]interface{}); ok {
+			return result, nil
+		}
+		return nil, fmt.Errorf("invalid information response format")
+	}
+
+	// For company ratings, extract data from the result.output.analysts array
+	if endpoint == "companyratings" {
+		if result, ok := rawResponse["result"].(map[string]interface{}); ok {
+			if output, ok := result["output"].(map[string]interface{}); ok {
+				if analysts, ok := output["analysts"].([]interface{}); ok {
+					return map[string]interface{}{
+						"analysts":  analysts,
+						"consensus": output["analyst_consensus"],
+					}, nil
+				}
+			}
+		}
+		return nil, fmt.Errorf("invalid company ratings response format")
+	}
+
+	return nil, fmt.Errorf("no data found for ticker %s", ticker)
 }
 
 // Helper functions
@@ -410,7 +495,7 @@ func extractTicker(record map[string]interface{}) string {
 // timestamp, prompt template, and enriched data for the LLM processor.
 func buildKafkaMessage(config ProcessorConfig, data map[string]interface{}) kafka.Message {
 	message := map[string]interface{}{
-		"topic":           config.Topic,
+		"topic":           "alert_llm",
 		"segment":         config.Segment,
 		"prompt_template": config.PromptTemplate,
 		"ticker":          data["ticker"],
@@ -499,4 +584,28 @@ func main() {
 		utils.LogError("processor failed", err)
 		os.Exit(1)
 	}
+}
+
+// NewKafkaWriter creates a Kafka writer for the given topic.
+func NewKafkaWriter(topic string) *kafka.Writer {
+	broker := os.Getenv("KAFKA_BOOTSTRAP_SERVERS")
+	if broker == "" {
+		broker = "pkc-p11xm.us-east-1.aws.confluent.cloud:9092" // fallback
+	}
+
+	dialer := &kafka.Dialer{
+		SASLMechanism: plain.Mechanism{
+			Username: os.Getenv("KAFKA_KEY"),
+			Password: os.Getenv("KAFKA_SECRET"),
+		},
+		TLS: &tls.Config{
+			MinVersion: tls.VersionTLS12,
+		},
+	}
+
+	return kafka.NewWriter(kafka.WriterConfig{
+		Brokers: []string{broker},
+		Topic:   topic,
+		Dialer:  dialer,
+	})
 }

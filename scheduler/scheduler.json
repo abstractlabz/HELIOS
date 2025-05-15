@@ -1,12 +1,7 @@
 [
     {
-        "topic": "alert_financials",
-        "segment": "financials",
-        "schedule": 7.0
-    },
-    {
-        "topic": "alert_financials",
-        "segment": "news",
+        "topic": "alert_stock_description",
+        "segment": "stock_description",
         "schedule": 7.0
     }
 ]
