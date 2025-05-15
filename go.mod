@@ -15,6 +15,7 @@ require (
 	github.com/polygon-io/client-go v1.16.9
 	github.com/segmentio/kafka-go v0.4.47
 	go.mongodb.org/mongo-driver v1.17.2
+	golang.org/x/time v0.5.0
 	google.golang.org/protobuf v1.34.1
 )
 

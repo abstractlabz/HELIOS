@@ -4,11 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
 	"sync"
+	"syscall"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -49,7 +51,7 @@ func LoadScheduleConfig(filePath string) ([]ScheduleEntry, error) {
 	}
 	defer file.Close()
 
-	data, err := ioutil.ReadAll(file)
+	data, err := io.ReadAll(file)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read config file: %w", err)
 	}
@@ -110,6 +112,11 @@ func SendPostRequest(entry ScheduleEntry, apiKey string) error {
 
 		if err == nil {
 			defer resp.Body.Close()
+
+			// Log the response status and body
+			body, _ := io.ReadAll(resp.Body)
+			log.Printf("Response for %s:%s: Status=%d, Body=%s\n", entry.Topic, entry.Segment, resp.StatusCode, string(body))
+			
 			if resp.StatusCode >= 200 && resp.StatusCode < 300 {
 				entryKey := getEntryKey(entry)
 				mu.Lock()
@@ -132,28 +139,32 @@ func SendPostRequest(entry ScheduleEntry, apiKey string) error {
 	return fmt.Errorf("failed after %d retries", maxRetries)
 }
 
-// StartScheduler initializes the scheduling process.
-func StartScheduler(scheduleFilePath string, apiKey string) {
+// StartScheduler initializes the scheduling process. Has graceful shutdown functionality
+func StartScheduler(scheduleFilePath string, apiKey string, stopChan chan struct{}) {
 	schedules, err := LoadScheduleConfig(scheduleFilePath)
 	if err != nil {
-		// Exit on critical error
-		log.Fatalf("Error loading schedule: %v\n", err)
+		log.Fatalf("Error loading schedule: %v\n", err) // Exit on critical error
 	}
 
 	for {
-		for _, entry := range schedules {
-			if ShouldTrigger(entry) {
-				// Run requests concurrently
-				go func(e ScheduleEntry) {
-					if err := SendPostRequest(e, apiKey); err != nil {
-						log.Printf("Failed to send request for %s:%s: %v\n", e.Topic, e.Segment, err)
-					}
-				}(entry)
+		select {
+		case <-stopChan:
+			log.Println("Shutting down scheduler gracefully...")
+			return
+		default:
+			for _, entry := range schedules {
+				if ShouldTrigger(entry) {
+					go func(e ScheduleEntry) {
+						if err := SendPostRequest(e, apiKey); err != nil {
+							log.Printf("Failed to send request for %s:%s: %v\n", e.Topic, e.Segment, err)
+						}
+					}(entry)
+				}
 			}
+			time.Sleep(1 * time.Minute)
 		}
-		// Check every minute
-		time.Sleep(1 * time.Minute)
 	}
+	
 }
 
 // main is the entry point of the scheduler application.
@@ -182,6 +193,19 @@ func main() {
 		log.Fatalf("Config file does not exist: %s\n", filePath)
 	}
 
+	// Channel to signal graceful shutdown
+	stopChan := make(chan struct{})
+
+	// Handle interrupt signals (e.g., Ctrl+C)
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
+
+	go func() {
+	<-sigChan
+	log.Println("Received interrupt signal. Initiating shutdown...")
+	close(stopChan)
+	}()
+
 	fmt.Println("Starting scheduler with config file:", filePath)
-	StartScheduler(filePath, apiKey)
+	StartScheduler(filePath, apiKey, stopChan)
 }

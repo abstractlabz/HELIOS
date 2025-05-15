@@ -1,0 +1,8 @@
+[
+    {
+      "topic": "alert_stock_description",
+      "segment": "stock_description",
+      "data_list": "../../data/data_tickers.json",
+      "prompt_template": "# Provide a comprehensive and analytical description of [ASSET_NAME]. Focus on combining fundamental metrics (like P/E ratio, revenue growth), technical indicators (like RSI, moving averages), and sentiment analysis if available. Represent all numbers to two decimal points (.00) and use short scales (K, M, B, T). Replace [ASSET_NAME] with the company's ticker or full name throughout. Ignore missing information instead of mentioning it. Output structured findings clearly so an LLM can easily generate a final news article or stock recommendation.\n\n## Overview:\n- Company Name: [ASSET_NAME]\n- Sector/Industry: [SECTOR]\n\n## Fundamentals:\n- P/E Ratio: [PE_RATIO]\n- Revenue Growth (YoY): [REVENUE_GROWTH]\n\n## Technical Indicators:\n- Relative Strength Index (RSI): [RSI_VALUE]\n- Moving Averages (50D/200D): [MA50]/[MA200]\n\n## Sentiment (if available):\n- Overall Sentiment: [SENTIMENT] (e.g., bullish, bearish, neutral)\n\n*Annotations and available links should be included if applicable. Maintain a clean, readable structure.*"
+    }
+  ]
