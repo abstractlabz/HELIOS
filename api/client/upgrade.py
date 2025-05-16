@@ -80,7 +80,7 @@ def upgrade_membership():
     if not user:
         user = {
             'id_hash': id_hash,
-            'credits': 25,
+            'credits': 10,
             'ismember': False
         }
         user['_id'] = userlist.insert_one(user).inserted_id
@@ -175,7 +175,7 @@ def get_user_info():
         # insert a new user document if not found
         user = {
             'id_hash': id_hash,
-            'credits': 25,
+            'credits': 10,
             'ismember': False
         }
         if email:
@@ -232,25 +232,19 @@ def enforce_credits():
     
     user = userlist.find_one({'id_hash': id_hash})
 
-    if user:
-        # User found, check credits
-        if user['credits'] > 0:
-            # Decrement credits
-            new_credits = user['credits'] - 1
-            userlist.update_one({'id_hash': id_hash}, {'$set': {'credits': new_credits}})
-            user['credits'] = new_credits  # Update local copy for response
-        elif not user.get('ismember', False):
-            # No credits left and not a member
-            return make_response(jsonify({'error': 'Ran out of credits'}), 402)  # 402 Payment Required
-    else:
-        # User not found, insert a new document with default values
-        user = {
-            'id_hash': id_hash,
-            'credits': 25,
-            'ismember': False,
-            'stripe_customer_id': ''
-        }
-        userlist.insert_one(user)
+    if not user:
+        # User not found - this should be an error since user creation happens in get-user-info
+        return make_response(jsonify({'error': 'User not found. Please ensure user exists before enforcing credits.'}), 404)
+
+    # User found, check credits
+    if user['credits'] > 0:
+        # Decrement credits
+        new_credits = user['credits'] - 1
+        userlist.update_one({'id_hash': id_hash}, {'$set': {'credits': new_credits}})
+        user['credits'] = new_credits  # Update local copy for response
+    elif not user.get('ismember', False):
+        # No credits left and not a member
+        return make_response(jsonify({'error': 'Ran out of credits'}), 402)  # 402 Payment Required
     
     # Return the document, but without MongoDB's internal ID
     user.pop('_id', None)

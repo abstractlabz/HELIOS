@@ -80,7 +80,7 @@ func startDescriptionProcessor(ctx context.Context) error {
 
 	alertChannel := make(chan kafka.Message)
 	log.Println("Starting Kafka consumer...")
-	go utils.ConsumeToBuffer(alertChannel, config.Topic, "description-processor-group", "../../.env")
+	go utils.ConsumeToBuffer(alertChannel, "alert_financials", "description-processor-group", "../../.env")
 	log.Println("Kafka consumer started, waiting for messages...")
 
 	for {
