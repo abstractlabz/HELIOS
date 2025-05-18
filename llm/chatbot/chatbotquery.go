@@ -31,10 +31,12 @@ type PromptPayload struct {
 }
 
 type QueryJob struct {
-	ID      string
-	Prompt  string
-	Conn    *websocket.Conn
-	Context map[string]interface{}
+	ID            string
+	Prompt        string
+	PromptContext string `json:"prompt_context"`
+	Conn          *websocket.Conn
+	Context       map[string]interface{}
+	writeMu       sync.Mutex
 }
 
 type QueryResult struct {
@@ -61,8 +63,8 @@ func NewWorkerPool(numWorkers int) *WorkerPool {
 		workers: numWorkers,
 		// Increased buffer so you can handle occasional bursts:
 		jobQueue: make(chan *QueryJob, 200),
-		// Match your HTTP client timeout:
-		timeout: 90 * time.Second,
+		// Increased timeout to accommodate article scraping:
+		timeout: 180 * time.Second,
 	}
 }
 
@@ -97,9 +99,13 @@ func (wp *WorkerPool) worker() {
 		} else {
 			final.Content = response
 		}
+
+		// Use mutex to synchronize the final write
+		job.writeMu.Lock()
 		if writeErr := job.Conn.WriteJSON(final); writeErr != nil {
 			log.Printf("Error writing final JSON to websocket: %v", writeErr)
 		}
+		job.writeMu.Unlock()
 
 		cancel()
 	}
@@ -110,15 +116,18 @@ func (wp *WorkerPool) worker() {
 //
 
 func processQueryWithStreaming(ctx context.Context, job *QueryJob) (string, error) {
-	// (All of your embedding + Pinecone search + prompt construction here,
-	//  exactly as before—omitted for brevity.)
+	// Only use the prompt for search, not the context
 	searchInfo, err := utils.Search(job.Prompt)
 	if err != nil {
 		log.Printf("Error searching: %v", err)
 		return "", err
 	}
 
-	prompt := fmt.Sprintf("Here is the search information: %s\n\n%s", searchInfo, job.Prompt)
+	// Combine search results, prompt context, and prompt for the final LLM query
+	prompt := fmt.Sprintf("Context: %s\n\nSearch Information: %s\n\nUser Query: %s",
+		job.PromptContext,
+		searchInfo,
+		job.Prompt)
 
 	job.Prompt = prompt
 
@@ -135,7 +144,7 @@ func callOpenAIWithStreaming(ctx context.Context, job *QueryJob) (string, error)
 	reqBody := map[string]interface{}{
 		"model": "gpt-4o",
 		"messages": []map[string]string{
-			{"role": "system", "content": "You are a financial analyst. Answer the user's question as directly as possible and use as much of the search information provided as possible in your answer when relevant. Embed the search information in your answer in the format [title](url)."},
+			{"role": "system", "content": "You are a financial analyst. Use the provided context and search information to answer the user's query. When referencing information from the search results, cite them in the format [title](url). Prioritize using the search information when it's relevant, but also consider the provided context. Be direct and concise in your responses."},
 			{"role": "user", "content": job.Prompt},
 		},
 		"stream":      true,
@@ -148,7 +157,8 @@ func callOpenAIWithStreaming(ctx context.Context, job *QueryJob) (string, error)
 	req.Header.Set("Authorization", "Bearer "+apiKey)
 	req.Header.Set("Content-Type", "application/json")
 
-	client := &http.Client{Timeout: 90 * time.Second}
+	// Increased timeout for OpenAI client
+	client := &http.Client{Timeout: 180 * time.Second}
 	resp, err := client.Do(req)
 	if err != nil {
 		return "", err
@@ -184,14 +194,17 @@ func callOpenAIWithStreaming(ctx context.Context, job *QueryJob) (string, error)
 			}
 			fullResponse.WriteString(piece)
 
-			// stream partial back immediately:
+			// Use mutex to synchronize streaming writes
+			job.writeMu.Lock()
 			if err := job.Conn.WriteJSON(&QueryResult{
 				JobID:   job.ID,
 				Content: piece,
 				Final:   false,
 			}); err != nil {
+				job.writeMu.Unlock()
 				return "", err
 			}
+			job.writeMu.Unlock()
 		}
 	}
 	if err := scanner.Err(); err != nil {

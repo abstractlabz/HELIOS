@@ -125,7 +125,7 @@ func Search(query string) (SearchResponse, error) {
 func scrapeArticleContent(url string) (string, error) {
 	// Create a client with timeout and proper headers
 	client := &http.Client{
-		Timeout: 10 * time.Second,
+		Timeout: 30 * time.Second,
 		Transport: &http.Transport{
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		},
