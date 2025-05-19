@@ -220,10 +220,7 @@ func callOpenAIWithStreaming(ctx context.Context, job *QueryJob) (string, error)
 
 var upgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool {
-		origin := r.Header.Get("Origin")
-		return origin == "https://app.fineas.ai" ||
-			origin == "https://test-fineas.netlify.app" ||
-			origin == "http://localhost:3000"
+		return true
 	},
 }
 
