@@ -144,7 +144,7 @@ func callOpenAIWithStreaming(ctx context.Context, job *QueryJob) (string, error)
 	reqBody := map[string]interface{}{
 		"model": "gpt-4o",
 		"messages": []map[string]string{
-			{"role": "system", "content": "You are a financial analyst. Use the provided context and search information to answer the user's query. When referencing information from the search results, cite them in the format [title](url). Prioritize using the search information when it's relevant, but also consider the provided context. Be direct and concise in your responses."},
+			{"role": "system", "content": "You are a financial analyst. Use the provided context and search information to answer the user's query. When referencing information from the search results, cite them in the format [title](url). Prioritize using the search information when it's relevant, but also consider the provided context. Make sure to use as much of the article content from the search results in order to answer the user query as accurately as possible. Be direct and concise in your responses."},
 			{"role": "user", "content": job.Prompt},
 		},
 		"stream":      true,
@@ -243,7 +243,7 @@ func handleWebSocketConnection(conn *websocket.Conn, wp *WorkerPool) {
 		// enqueue with 10 s backpressure timeout
 		select {
 		case wp.jobQueue <- &job:
-		case <-time.After(10 * time.Second):
+		case <-time.After(30 * time.Second):
 			conn.WriteJSON(map[string]string{
 				"error": "Server busy, please try again",
 			})
@@ -277,9 +277,9 @@ func main() {
 		Handler:   router,
 		TLSConfig: tlsConfig,
 		// tune timeouts as needed:
-		ReadTimeout:  30 * time.Second,
-		WriteTimeout: 30 * time.Second,
-		IdleTimeout:  5 * time.Minute,
+		ReadTimeout:  60 * time.Second,
+		WriteTimeout: 60 * time.Second,
+		IdleTimeout:  60 * time.Second,
 	}
 
 	// graceful shutdown, TLS config, etc. (omitted)
