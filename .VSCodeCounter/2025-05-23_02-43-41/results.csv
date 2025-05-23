@@ -1,0 +1,37 @@
+"filename", "language", "Go Checksum File", "Docker", "Shell Script", "HTML", "Go", "JSON", "Markdown", "Go Module File", "JSON with Comments", "Properties", "Python", "pip requirements", "comment", "blank", "total"
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\Dockerfile", "Docker", 0, 52, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 17, 17, 86
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\README.md", "Markdown", 0, 0, 0, 0, 0, 0, 103, 0, 0, 0, 0, 0, 0, 45, 148
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\aggregation\README.md", "Markdown", 0, 0, 0, 0, 0, 0, 184, 0, 0, 0, 0, 0, 0, 84, 268
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\aggregation\aggregator.go", "Go", 0, 0, 0, 0, 327, 0, 0, 0, 0, 0, 0, 0, 55, 67, 449
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\api\client\requirements.txt", "pip requirements", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 11
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\api\client\retrieval.go", "Go", 0, 0, 0, 0, 82, 0, 0, 0, 0, 0, 0, 0, 8, 15, 105
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\api\client\upgrade-webhook.py", "Python", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 55, 0, 11, 8, 74
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\api\client\upgrade.py", "Python", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 345, 0, 50, 98, 493
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\api\discord\bot-cli.py", "Python", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 204, 0, 0, 29, 233
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\api\discord\requirements.txt", "pip requirements", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 3
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\client.properties", "Properties", 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 1, 5
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\cmd\main.go", "Go", 0, 0, 0, 0, 28, 0, 0, 0, 0, 0, 0, 0, 10, 10, 48
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\data\data_tickers.json", "JSON", 0, 0, 0, 0, 0, 4298, 0, 0, 0, 0, 0, 0, 0, 0, 4298
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\go.mod", "Go Module File", 0, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0, 0, 0, 5, 83
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\go.sum", "Go Checksum File", 270, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 271
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\llm\chatbot\chatbotquery.go", "Go", 0, 0, 0, 0, 231, 0, 0, 0, 0, 0, 0, 0, 39, 48, 318
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\llm\inferencer\inferencer.go", "Go", 0, 0, 0, 0, 281, 0, 0, 0, 0, 0, 0, 0, 17, 62, 360
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\llm\ingestor\ingestor.go", "Go", 0, 0, 0, 0, 220, 0, 0, 0, 0, 0, 0, 0, 36, 42, 298
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\processors\crypto\config.json", "JSON with Comments", 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 8
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\processors\crypto\cryptos_processor.go", "Go", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\processors\financials\config.json", "JSON with Comments", 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 8
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\processors\financials\financials_processor.go", "Go", 0, 0, 0, 0, 270, 0, 0, 0, 0, 0, 0, 0, 42, 64, 376
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\processors\news\config.json", "JSON with Comments", 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 8
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\processors\news\news_processor.go", "Go", 0, 0, 0, 0, 176, 0, 0, 0, 0, 0, 0, 0, 18, 40, 234
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\processors\stocks\config.json", "JSON with Comments", 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 8
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\processors\stocks\stocks_processor.go", "Go", 0, 0, 0, 0, 471, 0, 0, 0, 0, 0, 0, 0, 58, 83, 612
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\scheduler\scheduler.go", "Go", 0, 0, 0, 0, 150, 0, 0, 0, 0, 0, 0, 0, 25, 37, 212
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\scheduler\scheduler.json", "JSON", 0, 0, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 3, 15
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\startup.sh", "Shell Script", 0, 0, 59, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 12, 84
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\test-client.html", "HTML", 0, 0, 0, 83, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 93
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\utils\producer.go", "Go", 0, 0, 0, 0, 89, 0, 0, 0, 0, 0, 0, 0, 17, 21, 127
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\utils\reader.go", "Go", 0, 0, 0, 0, 52, 0, 0, 0, 0, 0, 0, 0, 8, 13, 73
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\utils\search.go", "Go", 0, 0, 0, 0, 149, 0, 0, 0, 0, 0, 0, 0, 28, 32, 209
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\utils\utils.go", "Go", 0, 0, 0, 0, 61, 0, 0, 0, 0, 0, 0, 0, 8, 16, 85
+"c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\utils\worker_pool.go", "Go", 0, 0, 0, 0, 56, 0, 0, 0, 0, 0, 0, 0, 9, 12, 77
+"Total", "-", 270, 52, 59, 83, 2643, 4310, 287, 78, 32, 4, 604, 14, 470, 875, 9781

@@ -1,16 +1,22 @@
 package utils
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"crypto/tls"
+
+	"bytes"
+	"io/ioutil"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/joho/godotenv"
@@ -39,9 +45,125 @@ type GoogleAPIResponse struct {
 	} `json:"items"`
 }
 
+// GenerateSearchQuery uses OpenAI to turn a user prompt into a focused web search query
+func GenerateSearchQuery(prompt string) (string, error) {
+	apiKey := os.Getenv("OPENAI_API_KEY")
+	if apiKey == "" {
+		return "", fmt.Errorf("OPENAI_API_KEY not set")
+	}
+
+	currentYear := time.Now().Year()
+	currentYearString := strconv.Itoa(currentYear)
+
+	reqBody := map[string]interface{}{
+		"model": "gpt-4o",
+		"messages": []map[string]string{
+			{"role": "system", "content": "You are a helpful assistant that optimizes user questions into concise, effective web search queries in order to get the most relevant results to answer the user question. Current year is " + currentYearString + ". Only output the search query, nothing else."},
+			{"role": "user", "content": prompt},
+		},
+		"max_tokens":  32,
+		"temperature": 0.2,
+	}
+	jsonData, _ := json.Marshal(reqBody)
+
+	req, _ := http.NewRequest("POST", "https://api.openai.com/v1/chat/completions", bytes.NewBuffer(jsonData))
+	req.Header.Set("Authorization", "Bearer "+apiKey)
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{Timeout: 10 * time.Second}
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := ioutil.ReadAll(resp.Body)
+		return "", fmt.Errorf("OpenAI API error: %s, %s", resp.Status, string(body))
+	}
+
+	var result struct {
+		Choices []struct {
+			Message struct {
+				Content string `json:"content"`
+			} `json:"message"`
+		} `json:"choices"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return "", err
+	}
+	if len(result.Choices) == 0 {
+		return "", fmt.Errorf("no choices returned from OpenAI")
+	}
+	return strings.TrimSpace(result.Choices[0].Message.Content), nil
+}
+
+// DecomposePrompt uses OpenAI to break down a user prompt into a list of focused web search queries
+func DecomposePrompt(prompt string) ([]string, error) {
+	apiKey := os.Getenv("OPENAI_API_KEY")
+	if apiKey == "" {
+		return nil, fmt.Errorf("OPENAI_API_KEY not set")
+	}
+
+	currentYear := time.Now().Year()
+	currentYearString := strconv.Itoa(currentYear)
+
+	systemPrompt := "You are a helpful assistant that breaks down complex user questions into a list of focused web search queries for all relevant parts of the user question. Only output a JSON array of search queries. Current year is " + currentYearString + "."
+
+	reqBody := map[string]interface{}{
+		"model": "gpt-4o",
+		"messages": []map[string]string{
+			{"role": "system", "content": systemPrompt},
+			{"role": "user", "content": prompt},
+		},
+		"max_tokens":  128,
+		"temperature": 0.2,
+	}
+	jsonData, _ := json.Marshal(reqBody)
+
+	req, _ := http.NewRequest("POST", "https://api.openai.com/v1/chat/completions", bytes.NewBuffer(jsonData))
+	req.Header.Set("Authorization", "Bearer "+apiKey)
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{Timeout: 10 * time.Second}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := ioutil.ReadAll(resp.Body)
+		return nil, fmt.Errorf("OpenAI API error: %s, %s", resp.Status, string(body))
+	}
+
+	var result struct {
+		Choices []struct {
+			Message struct {
+				Content string `json:"content"`
+			} `json:"message"`
+		} `json:"choices"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, err
+	}
+	if len(result.Choices) == 0 {
+		return nil, fmt.Errorf("no choices returned from OpenAI")
+	}
+
+	content := strings.TrimSpace(result.Choices[0].Message.Content)
+	// Try to parse as JSON array
+	var queries []string
+	if err := json.Unmarshal([]byte(content), &queries); err != nil {
+		// fallback: treat as single query
+		return []string{content}, nil
+	}
+	return queries, nil
+}
+
 // Search no longer depends on http.Request or http.ResponseWriter.
 // Instead, you can call it directly with a query string.
-func Search(query string) (SearchResponse, error) {
+func Search(prompt string) (SearchResponse, error) {
 	// Load environment variables (e.g., GOOGLE_API_KEY, GOOGLE_CSE_ID)
 	// Adjust the path to .env if needed
 	if err := godotenv.Load("../../.env"); err != nil {
@@ -49,76 +171,149 @@ func Search(query string) (SearchResponse, error) {
 		// Not fatal, in case your environment variables are already set
 	}
 
-	log.Printf("Received search query: %s", query)
-
-	apiKey := os.Getenv("GOOGLE_API_KEY")
-	cx := os.Getenv("GOOGLE_CSE_ID")
-	if apiKey == "" || cx == "" {
-		return SearchResponse{}, fmt.Errorf("GOOGLE_API_KEY or GOOGLE_CSE_ID environment variable missing")
+	// Validate query is not empty
+	prompt = strings.TrimSpace(prompt)
+	if prompt == "" {
+		log.Printf("Empty search query received, skipping API call")
+		return SearchResponse{
+			Results: []SearchResult{
+				{
+					Title:   "No search query provided",
+					URL:     "",
+					Snippet: "Please provide a search query to get results.",
+					Date:    time.Now().Format("2006-01-02"),
+				},
+			},
+		}, nil
 	}
 
-	numResults := 10
-	apiURL := "https://customsearch.googleapis.com/customsearch/v1"
+	log.Printf("Received user prompt: %s", prompt)
 
-	// Build the request URL
-	reqURL, err := url.Parse(apiURL)
-	if err != nil {
-		return SearchResponse{}, fmt.Errorf("error parsing API URL: %v", err)
+	// Decompose prompt into search queries
+	queries, err := DecomposePrompt(prompt)
+	if err != nil || len(queries) == 0 {
+		log.Printf("Error decomposing prompt, falling back to single query: %v", err)
+		queries = []string{prompt}
 	}
 
-	queryParams := reqURL.Query()
-	queryParams.Set("key", apiKey)
-	queryParams.Set("cx", cx)
-	queryParams.Set("q", query)
-	queryParams.Set("num", fmt.Sprintf("%d", numResults))
-	reqURL.RawQuery = queryParams.Encode()
+	var allResults []SearchResult
+	for _, query := range queries {
+		log.Printf("Running search for: %s", query)
+		searchQuery, err := GenerateSearchQuery(query)
+		if err != nil {
+			log.Printf("Error generating search query: %v", err)
+			searchQuery = query
+		}
+		log.Printf("Using search query: %s", searchQuery)
 
-	// Make the API request
-	resp, err := http.Get(reqURL.String())
-	if err != nil {
-		return SearchResponse{}, fmt.Errorf("error making API request: %v", err)
-	}
-	defer resp.Body.Close()
+		apiKey := os.Getenv("GOOGLE_API_KEY")
+		cx := os.Getenv("GOOGLE_CSE_ID")
+		if apiKey == "" || cx == "" {
+			return SearchResponse{}, fmt.Errorf("GOOGLE_API_KEY or GOOGLE_CSE_ID environment variable missing")
+		}
 
-	// Check the response status
-	if resp.StatusCode != http.StatusOK {
-		return SearchResponse{}, fmt.Errorf("Google API returned status code %d", resp.StatusCode)
-	}
+		numResults := 10
+		apiURL := "https://customsearch.googleapis.com/customsearch/v1"
 
-	// Parse the API response
-	var apiResponse GoogleAPIResponse
-	if err = json.NewDecoder(resp.Body).Decode(&apiResponse); err != nil {
-		return SearchResponse{}, fmt.Errorf("error parsing API response: %v", err)
-	}
+		// Build the request URL
+		reqURL, err := url.Parse(apiURL)
+		if err != nil {
+			return SearchResponse{}, fmt.Errorf("error parsing API URL: %v", err)
+		}
 
-	// Extract search results
-	var searchResults []SearchResult
-	for i, item := range apiResponse.Items {
-		// Only scrape content for the first 3 articles
-		var articleContent string
-		if i < 3 {
-			content, err := scrapeArticleContent(item.Link)
-			if err != nil {
-				log.Printf("Warning: Could not scrape content from %s: %v", item.Link, err)
-				articleContent = "" // Set empty string if scraping fails
-			} else {
-				articleContent = content
+		queryParams := reqURL.Query()
+		queryParams.Set("key", apiKey)
+		queryParams.Set("cx", cx)
+		queryParams.Set("q", searchQuery)
+		queryParams.Set("num", fmt.Sprintf("%d", numResults))
+		reqURL.RawQuery = queryParams.Encode()
+
+		// Make the API request
+		resp, err := http.Get(reqURL.String())
+		if err != nil {
+			log.Printf("error making API request: %v", err)
+			continue
+		}
+		defer resp.Body.Close()
+
+		if resp.StatusCode != http.StatusOK {
+			log.Printf("Google API returned status code %d", resp.StatusCode)
+			continue
+		}
+
+		var apiResponse GoogleAPIResponse
+		if err = json.NewDecoder(resp.Body).Decode(&apiResponse); err != nil {
+			log.Printf("error parsing API response: %v", err)
+			continue
+		}
+
+		numToScrape := 6
+		if len(apiResponse.Items) < numToScrape {
+			numToScrape = len(apiResponse.Items)
+		}
+
+		type scrapeResult struct {
+			idx     int
+			content string
+		}
+		scrapeCh := make(chan scrapeResult, numToScrape)
+		var wg sync.WaitGroup
+
+		for i := 0; i < numToScrape; i++ {
+			wg.Add(1)
+			go func(idx int, link string) {
+				defer wg.Done()
+				scrapeCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+				defer cancel()
+				contentCh := make(chan string, 1)
+				go func() {
+					content, err := scrapeArticleContent(link)
+					if err != nil {
+						log.Printf("Warning: Could not scrape content from %s: %v", link, err)
+						contentCh <- ""
+					} else {
+						contentCh <- content
+					}
+				}()
+				select {
+				case content := <-contentCh:
+					scrapeCh <- scrapeResult{idx: idx, content: content}
+				case <-scrapeCtx.Done():
+					log.Printf("Scrape timeout for %s", link)
+					scrapeCh <- scrapeResult{idx: idx, content: ""}
+				}
+			}(i, apiResponse.Items[i].Link)
+		}
+
+		articleContents := make([]string, numToScrape)
+		go func() {
+			wg.Wait()
+			close(scrapeCh)
+		}()
+		for res := range scrapeCh {
+			articleContents[res.idx] = res.content
+			if len(articleContents) == numToScrape {
+				break
 			}
 		}
 
-		searchResults = append(searchResults, SearchResult{
-			Title:          item.Title,
-			URL:            item.Link,
-			Snippet:        item.Snippet,
-			Date:           "", // Google doesn't provide date
-			ArticleContent: articleContent,
-		})
+		for i, item := range apiResponse.Items {
+			var articleContent string
+			if i < numToScrape {
+				articleContent = articleContents[i]
+			}
+			allResults = append(allResults, SearchResult{
+				Title:          item.Title,
+				URL:            item.Link,
+				Snippet:        item.Snippet,
+				Date:           "",
+				ArticleContent: articleContent,
+			})
+		}
 	}
 
-	log.Printf("Total results found: %d", len(searchResults))
-
-	// Return a structured SearchResponse
-	return SearchResponse{Results: searchResults}, nil
+	log.Printf("Total results found: %d", len(allResults))
+	return SearchResponse{Results: allResults}, nil
 }
 
 // scrapeArticleContent fetches and extracts the main content from a webpage
@@ -169,20 +364,11 @@ func scrapeArticleContent(url string) (string, error) {
 	// Extract text content
 	var content strings.Builder
 
-	// Try to find the main content area with more specific selectors
-	mainContent := doc.Find("article, main, .content, .article, .post, #content, .main, .story-body, .article-body, .post-content, .entry-content")
-	if mainContent.Length() > 0 {
-		mainContent.Each(func(i int, s *goquery.Selection) {
-			content.WriteString(s.Text())
-			content.WriteString("\n")
-		})
-	} else {
-		// Fallback to body text if no main content area is found
-		doc.Find("body").Each(func(i int, s *goquery.Selection) {
-			content.WriteString(s.Text())
-			content.WriteString("\n")
-		})
-	}
+	// Always extract all visible text from the <body> after removing unwanted elements
+	doc.Find("body").Each(func(i int, s *goquery.Selection) {
+		content.WriteString(s.Text())
+		content.WriteString("\n")
+	})
 
 	// Clean up the content
 	cleanedContent := strings.TrimSpace(content.String())
