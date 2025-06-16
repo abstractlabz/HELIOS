@@ -1,0 +1,88 @@
+Date : 2025-06-09 23:14:22
+Directory : c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS
+Total : 35 files,  8586 codes, 469 comments, 896 blanks, all 9951 lines
+
+Languages
++--------------------+------------+------------+------------+------------+------------+
+| language           | files      | code       | comment    | blank      | total      |
++--------------------+------------+------------+------------+------------+------------+
+| JSON               |          2 |      4,310 |          0 |          3 |      4,313 |
+| Go                 |         16 |      2,793 |        378 |        583 |      3,754 |
+| Python             |          3 |        604 |         61 |        135 |        800 |
+| Markdown           |          2 |        287 |          0 |        129 |        416 |
+| Go Checksum File   |          1 |        270 |          0 |          1 |        271 |
+| HTML               |          1 |         83 |          0 |         10 |         93 |
+| Go Module File     |          1 |         78 |          0 |          5 |         83 |
+| Shell Script       |          1 |         59 |         13 |         12 |         84 |
+| Docker             |          1 |         52 |         17 |         17 |         86 |
+| JSON with Comments |          4 |         32 |          0 |          0 |         32 |
+| pip requirements   |          2 |         14 |          0 |          0 |         14 |
+| Properties         |          1 |          4 |          0 |          1 |          5 |
++--------------------+------------+------------+------------+------------+------------+
+
+Directories
++------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                       | files      | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                          |         35 |      8,586 |        469 |        896 |      9,951 |
+| . (Files)                                                                                                  |          7 |        649 |         30 |         91 |        770 |
+| aggregation                                                                                                |          2 |        511 |         55 |        151 |        717 |
+| api                                                                                                        |          6 |        700 |         69 |        150 |        919 |
+| api\client                                                                                                 |          4 |        493 |         69 |        121 |        683 |
+| api\discord                                                                                                |          2 |        207 |          0 |         29 |        236 |
+| cmd                                                                                                        |          1 |         28 |         10 |         10 |         48 |
+| data                                                                                                       |          1 |      4,298 |          0 |          0 |      4,298 |
+| llm                                                                                                        |          3 |        732 |         92 |        152 |        976 |
+| llm\chatbot                                                                                                |          1 |        231 |         39 |         48 |        318 |
+| llm\inferencer                                                                                             |          1 |        281 |         17 |         62 |        360 |
+| llm\ingestor                                                                                               |          1 |        220 |         36 |         42 |        298 |
+| processors                                                                                                 |          8 |        949 |        119 |        187 |      1,255 |
+| processors\crypto                                                                                          |          2 |          8 |          1 |          0 |          9 |
+| processors\financials                                                                                      |          2 |        278 |         42 |         64 |        384 |
+| processors\news                                                                                            |          2 |        184 |         18 |         40 |        242 |
+| processors\stocks                                                                                          |          2 |        479 |         58 |         83 |        620 |
+| scheduler                                                                                                  |          2 |        162 |         25 |         40 |        227 |
+| utils                                                                                                      |          5 |        557 |         69 |        115 |        741 |
++------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++------------------------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| filename                                                                                                   | language           | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\Dockerfile                                    | Docker             |         52 |         17 |         17 |         86 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\README.md                                     | Markdown           |        103 |          0 |         45 |        148 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\aggregation\README.md                         | Markdown           |        184 |          0 |         84 |        268 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\aggregation\aggregator.go                     | Go                 |        327 |         55 |         67 |        449 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\api\client\requirements.txt                   | pip requirements   |         11 |          0 |          0 |         11 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\api\client\retrieval.go                       | Go                 |         82 |          8 |         15 |        105 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\api\client\upgrade-webhook.py                 | Python             |         55 |         11 |          8 |         74 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\api\client\upgrade.py                         | Python             |        345 |         50 |         98 |        493 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\api\discord\bot-cli.py                        | Python             |        204 |          0 |         29 |        233 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\api\discord\requirements.txt                  | pip requirements   |          3 |          0 |          0 |          3 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\client.properties                             | Properties         |          4 |          0 |          1 |          5 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\cmd\main.go                                   | Go                 |         28 |         10 |         10 |         48 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\data\data_tickers.json                        | JSON               |      4,298 |          0 |          0 |      4,298 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\go.mod                                        | Go Module File     |         78 |          0 |          5 |         83 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\go.sum                                        | Go Checksum File   |        270 |          0 |          1 |        271 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\llm\chatbot\chatbotquery.go                   | Go                 |        231 |         39 |         48 |        318 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\llm\inferencer\inferencer.go                  | Go                 |        281 |         17 |         62 |        360 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\llm\ingestor\ingestor.go                      | Go                 |        220 |         36 |         42 |        298 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\processors\crypto\config.json                 | JSON with Comments |          8 |          0 |          0 |          8 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\processors\crypto\cryptos_processor.go        | Go                 |          0 |          1 |          0 |          1 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\processors\financials\config.json             | JSON with Comments |          8 |          0 |          0 |          8 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\processors\financials\financials_processor.go | Go                 |        270 |         42 |         64 |        376 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\processors\news\config.json                   | JSON with Comments |          8 |          0 |          0 |          8 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\processors\news\news_processor.go             | Go                 |        176 |         18 |         40 |        234 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\processors\stocks\config.json                 | JSON with Comments |          8 |          0 |          0 |          8 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\processors\stocks\stocks_processor.go         | Go                 |        471 |         58 |         83 |        612 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\scheduler\scheduler.go                        | Go                 |        150 |         25 |         37 |        212 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\scheduler\scheduler.json                      | JSON               |         12 |          0 |          3 |         15 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\startup.sh                                    | Shell Script       |         59 |         13 |         12 |         84 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\test-client.html                              | HTML               |         83 |          0 |         10 |         93 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\utils\producer.go                             | Go                 |         89 |         17 |         21 |        127 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\utils\reader.go                               | Go                 |         52 |          8 |         13 |         73 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\utils\search.go                               | Go                 |        299 |         27 |         53 |        379 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\utils\utils.go                                | Go                 |         61 |          8 |         16 |         85 |
+| c:\Users\paako\OneDrive\CompSci\Code\Current Projects\HELIOS\utils\worker_pool.go                          | Go                 |         56 |          9 |         12 |         77 |
+| Total                                                                                                      |                    |      8,586 |        469 |        896 |      9,951 |
++------------------------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+

@@ -159,7 +159,7 @@ func callOpenAIWithStreaming(ctx context.Context, job *QueryJob) (string, error)
 	reqBody := map[string]interface{}{
 		"model": "gpt-4o",
 		"messages": []map[string]string{
-			{"role": "system", "content": "You are a financial analyst. Use the provided context and search information to answer the user's query. Use as many relevant numbers, data points, and other relevant facts from the article content as possible. When referencing information from the search results, cite them in the format [title](url). Prioritize using the search information when it's relevant, but also consider the provided context. Make sure to use as much of the article content from the search results in order to answer the user query as accurately as possible. Be direct and concise in your responses."},
+			{"role": "system", "content": "You are a financial analyst. Use the provided context and search information to answer the user's query. Use facts from the search results to directly answer the user's query. When referencing information from the search results, cite them in the format [title](url). Prioritize using the search information when it's relevant, but also consider the provided context. Make sure to use as much of the article content from the search results in order to answer the user query as accurately as possible. Be direct and concise in your responses."},
 			{"role": "user", "content": job.Prompt},
 		},
 		"stream":      true,

@@ -52,13 +52,12 @@ func GenerateSearchQuery(prompt string) (string, error) {
 		return "", fmt.Errorf("OPENAI_API_KEY not set")
 	}
 
-	currentYear := time.Now().Year()
-	currentYearString := strconv.Itoa(currentYear)
+	currentDateString := time.Now().Format("2006-01-02")
 
 	reqBody := map[string]interface{}{
 		"model": "gpt-4o",
 		"messages": []map[string]string{
-			{"role": "system", "content": "You are a helpful assistant that optimizes user questions into concise, effective web search queries in order to get the most relevant results to answer the user question. Current year is " + currentYearString + ". Only output the search query, nothing else."},
+			{"role": "system", "content": "You are a helpful assistant that optimizes user questions into concise, effective web search queries in order to get the most relevant results to answer the user question. Make sure the search query is relevant to the current date. Current date is " + currentDateString + ". Only output the search query, nothing else."},
 			{"role": "user", "content": prompt},
 		},
 		"max_tokens":  32,
@@ -226,6 +225,17 @@ func Search(prompt string) (SearchResponse, error) {
 		queryParams.Set("cx", cx)
 		queryParams.Set("q", searchQuery)
 		queryParams.Set("num", fmt.Sprintf("%d", numResults))
+
+		// Calculate date range for the last month
+		now := time.Now()
+		oneMonthAgo := now.AddDate(0, -1, 0)
+		dateRange := fmt.Sprintf("date:r:%s:%s",
+			oneMonthAgo.Format("20060102"),
+			now.Format("20060102"))
+
+		// Add date filtering to prioritize recent articles
+		queryParams.Set("sort", dateRange)      // Sort by date within the last month
+		queryParams.Set("dateRestrict", "m[1]") // Restrict to articles from the last month
 		reqURL.RawQuery = queryParams.Encode()
 
 		// Make the API request
