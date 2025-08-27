@@ -9,3 +9,6 @@ types-stripe
 pyOpenSSL
 waitress
 gunicorn
+openai>=1.30.0
+pypdf>=4.2.0
+requests>=2.31.0

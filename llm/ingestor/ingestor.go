@@ -224,7 +224,7 @@ func splitText(text string, chunkSize int) []string {
 	return chunks
 }
 
-// embedTexts simulates calling an embedding API. Your logic might differ.
+// calling pinecone embedding API.
 func embedTexts(texts []string) ([][]float32, error) {
 	// This is an example using Pinecone's inference endpoint:
 	ctx := context.Background()

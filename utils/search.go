@@ -160,8 +160,6 @@ func DecomposePrompt(prompt string) ([]string, error) {
 	return queries, nil
 }
 
-// Search no longer depends on http.Request or http.ResponseWriter.
-// Instead, you can call it directly with a query string.
 func Search(prompt string) (SearchResponse, error) {
 	// Load environment variables (e.g., GOOGLE_API_KEY, GOOGLE_CSE_ID)
 	// Adjust the path to .env if needed

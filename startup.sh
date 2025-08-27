@@ -28,6 +28,14 @@ start_service() {
         /app/bin/${service_name} >> ${log_file} 2>&1 &
     else
         if [ "$service_name" = "upgrade" ]; then
+            # Optionally enable TLS if requested and certs exist
+            TLS_ARGS=""
+            if [ "${ENABLE_TLS}" = "true" ] && [ -f /app/api/client/server.crt ] && [ -f /app/api/client/server.key ]; then
+                TLS_ARGS="--certfile /app/api/client/server.crt --keyfile /app/api/client/server.key --ssl-version TLSv1_2"
+                echo "[startup] Enabling TLS for upgrade service"
+            else
+                echo "[startup] Running upgrade service without TLS (HTTP)"
+            fi
             # Run upgrade service with gunicorn in production mode
             gunicorn \
                 --bind 0.0.0.0:5000 \
@@ -35,12 +43,10 @@ start_service() {
                 --worker-class sync \
                 --timeout 120 \
                 --keep-alive 5 \
-                --certfile /app/api/client/server.crt \
-                --keyfile /app/api/client/server.key \
                 --access-logfile /app/logs/upgrade-access.log \
                 --error-logfile /app/logs/upgrade-error.log \
                 --log-level info \
-                --ssl-version TLSv1_2 \
+                $TLS_ARGS \
                 upgrade:app >> ${log_file} 2>&1 &
         else
             python3 ${service_name}.py >> ${log_file} 2>&1 &

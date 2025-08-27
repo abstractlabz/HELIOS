@@ -13,11 +13,8 @@ import (
 	"syscall"
 	"time"
 
-	"crypto/tls"
-
 	"github.com/0xPCDefenders/HELIOS/utils"
 	"github.com/segmentio/kafka-go"
-	"github.com/segmentio/kafka-go/sasl/plain"
 	"golang.org/x/time/rate"
 )
 
@@ -584,28 +581,4 @@ func main() {
 		utils.LogError("processor failed", err)
 		os.Exit(1)
 	}
-}
-
-// NewKafkaWriter creates a Kafka writer for the given topic.
-func NewKafkaWriter(topic string) *kafka.Writer {
-	broker := os.Getenv("KAFKA_BOOTSTRAP_SERVERS")
-	if broker == "" {
-		broker = "pkc-p11xm.us-east-1.aws.confluent.cloud:9092" // fallback
-	}
-
-	dialer := &kafka.Dialer{
-		SASLMechanism: plain.Mechanism{
-			Username: os.Getenv("KAFKA_KEY"),
-			Password: os.Getenv("KAFKA_SECRET"),
-		},
-		TLS: &tls.Config{
-			MinVersion: tls.VersionTLS12,
-		},
-	}
-
-	return kafka.NewWriter(kafka.WriterConfig{
-		Brokers: []string{broker},
-		Topic:   topic,
-		Dialer:  dialer,
-	})
 }

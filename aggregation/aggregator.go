@@ -260,7 +260,7 @@ func CreateKafkaTopicAndMongoDB(topicName string) error {
 
 	// Create MongoDB database
 	if err := createMongoDatabase(topicName); err != nil {
-		// Note: In production, you might want to delete the Kafka topic if MongoDB creation fails
+		// Note: In production delete the Kafka topic if MongoDB creation fails
 		return err
 	}
 
