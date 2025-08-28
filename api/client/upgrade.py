@@ -121,6 +121,21 @@ def _sanitize_json_response(s: str) -> str:
         return s[start:end+1]
     return s
 
+def _to_jsonable(obj: Any) -> Any:
+    """Recursively convert Mongo/ObjectId and datetime values to JSON-safe types."""
+    try:
+        if isinstance(obj, ObjectId):
+            return str(obj)
+    except Exception:
+        pass
+    if isinstance(obj, datetime):
+        return obj.isoformat()
+    if isinstance(obj, dict):
+        return {k: _to_jsonable(v) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [_to_jsonable(v) for v in obj]
+    return obj
+
 @app.route('/upgrade_membership', methods=['POST'])
 def upgrade_membership():
     data = request.json
@@ -208,39 +223,48 @@ def session_status():
   session = stripe.checkout.Session.retrieve(request.args.get('session_id'))
   return jsonify(status=session.status, customer_email=session.customer_details.email, metadata=session.metadata)
 
+from flask import request, jsonify
+from datetime import datetime
+
 @app.route('/get-user-info', methods=['GET'])
 def get_user_info():
-    id_hash = request.args.get('id_hash', None)
-    email = request.args.get('email', None)
-    
-    if not id_hash:
-        return make_response(jsonify({'error': 'ID hash is required as a query parameter'}), 400)
-    
-    # Retrieve user document based on id_hash
-    user = userlist.find_one({'id_hash': id_hash}, {'_id': 0})  # Exclude the MongoDB-generated ID from the response
-    
-    if user:
-        if email:
-            if 'email' not in user:
-                user['email'] = email
-                user['signup_date'] = datetime.now()
-                userlist.update_one({'id_hash': id_hash}, {'$set': {'email': email, 'signup_date': datetime.now()}})
+    id_hash = request.args.get('id_hash')
+    email = request.args.get('email')
 
-    if not user:
-        # insert a new user document if not found
-        user = {
-            'id_hash': id_hash,
-            'credits': 10,
-            'ismember': False
-        }
+    if not id_hash:
+        return jsonify({'error': 'ID hash is required as a query parameter'}), 400
+
+    user = userlist.find_one({'id_hash': id_hash}, {'_id': 0})
+
+    if user:
+        if email and 'email' not in user:
+            now = datetime.utcnow()
+            user['email'] = email
+            user['signup_date'] = now
+            userlist.update_one({'id_hash': id_hash}, {'$set': {'email': email, 'signup_date': now}})
+    else:
+        now = datetime.utcnow()
+        user = {'id_hash': id_hash, 'credits': 10, 'ismember': False}
         if email:
             user['email'] = email
-            user['signup_date'] = datetime.now()
+            user['signup_date'] = now
         userlist.insert_one(user)
-        
-        return jsonify({'user': user}), 200
-    
-    return jsonify({'user': user}), 200
+
+    # serialize response safely (ObjectId, datetime, etc.)
+    safe_user = _to_jsonable(user)
+    return jsonify({'user': safe_user}), 200
+
+@app.route('/update-profile-picture', methods=['POST'])
+def update_profile_picture():
+    data = request.json or {}
+    id_hash = data.get('id_hash')
+    picture_url = data.get('picture_url')
+
+    if not id_hash or not picture_url:
+        return jsonify({'error': 'id_hash and picture_url are required'}), 400
+
+    userlist.update_one({'id_hash': id_hash}, {'$set': {'picture_url': picture_url}})
+    return jsonify({'success': True}), 200
 
 @app.route('/cancel-subscription', methods=['POST'])
 def cancel_subscription():
