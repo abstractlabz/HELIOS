@@ -1,5 +1,6 @@
 # pyright: reportMissingImports=false, reportMissingTypeStubs=false
 from datetime import datetime
+import time
 import os
 import io
 import json as _json
@@ -78,6 +79,18 @@ stripe.api_key = os.getenv("STRIPE_SECRET_KEY")  # Set your Stripe API key
 
 # Initialize OpenAI client lazily inside endpoint to avoid import errors if key missing
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY") or ""
+# Course content rewrite configuration (to avoid timeouts/OOM). Defaults disable rewrites.
+COURSE_REWRITE_MAX = int(os.getenv("COURSE_REWRITE_MAX", "1"))
+try:
+    COURSE_REWRITE_TIMEOUT_S = float(os.getenv("COURSE_REWRITE_TIMEOUT_S", "15"))
+except Exception:
+    COURSE_REWRITE_TIMEOUT_S = 15.0
+
+# Request-level time budget to avoid Gunicorn worker timeouts (Gunicorn default ~30s)
+try:
+    COURSE_REQUEST_TIME_BUDGET_S = float(os.getenv("COURSE_REQUEST_TIME_BUDGET_S", "18"))
+except Exception:
+    COURSE_REQUEST_TIME_BUDGET_S = 18.0
 
 def _extract_text_from_pdf_bytes(pdf_bytes: bytes) -> str:
     reader = PdfReader(io.BytesIO(pdf_bytes))
@@ -90,7 +103,7 @@ def _extract_text_from_pdf_bytes(pdf_bytes: bytes) -> str:
             continue
     return "\n".join([t for t in text_parts if t])
 
-def _chunk_text(text: str, max_chars: int = 4000, overlap: int = 200) -> List[str]:
+def _chunk_text(text: str, max_chars: int = 2500, overlap: int = 150) -> List[str]:
     if max_chars <= 0:
         return [text]
     chunks: List[str] = []
@@ -120,6 +133,21 @@ def _sanitize_json_response(s: str) -> str:
     if start != -1 and end != -1 and end > start:
         return s[start:end+1]
     return s
+
+def _count_words(text: str) -> int:
+    try:
+        return len([w for w in (text or "").split() if w.strip()])
+    except Exception:
+        return 0
+
+def _trim_to_word_limit(text: str, max_words: int) -> str:
+    if not isinstance(text, str):
+        return text
+    words = [w for w in text.split() if w.strip()]
+    if len(words) <= max_words:
+        return text
+    trimmed = " ".join(words[:max_words])
+    return trimmed.strip()
 
 def _to_jsonable(obj: Any) -> Any:
     """Recursively convert Mongo/ObjectId and datetime values to JSON-safe types."""
@@ -497,6 +525,7 @@ def course_create():
             return make_response(jsonify({'error': 'Failed to obtain PDF bytes', 'trace_id': trace_id}), 400)
 
         # Extract and chunk text
+        request_start_time = time.time()
         try:
             try:
                 _reader = PdfReader(io.BytesIO(pdf_bytes))
@@ -511,7 +540,7 @@ def course_create():
         if not extracted_text:
             return make_response(jsonify({'error': 'Unable to extract text from PDF', 'trace_id': trace_id}), 400)
 
-        chunks = _chunk_text(extracted_text, max_chars=5000, overlap=250)
+        chunks = _chunk_text(extracted_text, max_chars=3000, overlap=200)
         if chunks:
             first_len = len(chunks[0])
             last_len = len(chunks[-1])
@@ -521,12 +550,12 @@ def course_create():
         app.logger.info(f"[course-create] trace_id={trace_id} chunks_count={len(chunks)} first_chunk_len={first_len} last_chunk_len={last_len}")
         # Prepare a compressed corpus to stay within context limits
         # Concatenate first N chunks if too many
-        max_chunks = 8
+        max_chunks = 4
         selected_chunks = chunks[:max_chunks]
         corpus = "\n\n".join([f"[Chunk {i+1}]\n" + c for i, c in enumerate(selected_chunks)])
         # Limit corpus length hard cap
-        if len(corpus) > 45000:
-            corpus = corpus[:45000]
+        if len(corpus) > 20000:
+            corpus = corpus[:20000]
         app.logger.info(f"[course-create] trace_id={trace_id} selected_chunks={len(selected_chunks)} corpus_len={len(corpus)}")
 
         if not OPENAI_API_KEY:
@@ -565,11 +594,12 @@ def course_create():
                     }
                 ]
             },
-            "source_corpus": corpus[:30000],
+            "source_corpus": corpus[:15000],
             "notes": [
                 "Use the source_corpus to ground the content.",
                 "Ensure modules are coherent and sequential.",
-                "Use concise, skimmable language for content.",
+                "Use concise, skimmable, beginner-friendly language that assumes no prior knowledge.",
+                "For each contentList item, write a clear mini-lesson of 300-500 words that explains the topic at hand in simple terms, includes definitions, everyday analogies, and a short step-by-step where relevant.",
                 "Set each module.contentList length to items_per_module by default.",
                 "If a pdf_url was provided, include it as module.pdfUrl and contentList[i].pdfUrl where relevant.",
                 "Do not include any text outside of the JSON object."
@@ -577,14 +607,16 @@ def course_create():
         }
 
         model_name = os.getenv("OPENAI_MODEL", "gpt-4o")
-        app.logger.info(f"[course-create] trace_id={trace_id} invoking LLM model={model_name} items_per_module={items_per_module}")
+        initial_timeout = float(os.getenv("COURSE_INITIAL_TIMEOUT_S", str(max(5.0, min(COURSE_REWRITE_TIMEOUT_S, COURSE_REQUEST_TIME_BUDGET_S)))))
+        app.logger.info(f"[course-create] trace_id={trace_id} invoking LLM model={model_name} items_per_module={items_per_module} initial_timeout_s={initial_timeout}")
         completion = client.chat.completions.create(
             model=model_name,
             temperature=0.4,
             messages=[
                 {"role": "system", "content": system_instructions},
                 {"role": "user", "content": _json.dumps(user_instructions)}
-            ]
+            ],
+            timeout=initial_timeout
         )
 
         content = completion.choices[0].message.content if completion and completion.choices else ""
@@ -602,7 +634,7 @@ def course_create():
             app.logger.error(f"[course-create] trace_id={trace_id} json_parse_error: {str(e)}", exc_info=True)
             return make_response(jsonify({'error': f'Failed to parse LLM JSON: {str(e)}', 'trace_id': trace_id}), 502)
 
-        # Post-process: enforce items_per_module length where possible
+        # Post-process: enforce items_per_module length and 300-500 word, beginner-friendly content per item
         try:
             modules = course_obj.get('modules', [])
             if isinstance(modules, list):
@@ -618,6 +650,50 @@ def course_create():
                             while len(m['contentList']) < items_per_module:
                                 m['contentList'].append(last_item)
                             app.logger.info(f"[course-create] trace_id={trace_id} padded contentList to {items_per_module}")
+
+                        # Enforce 300-500 words per content item
+                        rewrites_used = 0
+                        for item in m['contentList']:
+                            try:
+                                content_text = item.get('content', '') if isinstance(item, dict) else ''
+                                word_count = _count_words(content_text)
+                                if word_count == 0:
+                                    continue
+                                if word_count < 300:
+                                    # Ask LLM to expand to 300-500 words, beginner-friendly
+                                    time_spent = time.time() - request_start_time
+                                    time_left = COURSE_REQUEST_TIME_BUDGET_S - time_spent
+                                    if COURSE_REWRITE_MAX > 0 and rewrites_used < COURSE_REWRITE_MAX and time_left > 2.0:
+                                        rewrite_prompt = {
+                                            "instruction": "Rewrite this explanation to be beginner-friendly and 300-500 words. Use simple language, define terms, and include a short step-by-step and a relatable analogy. Return ONLY the rewritten text.",
+                                            "topic": item.get('title') or m.get('title') or '',
+                                            "original_text": content_text,
+                                            "target_word_range": "300-500"
+                                        }
+                                        try:
+                                            per_call_timeout = max(3.0, min(COURSE_REWRITE_TIMEOUT_S, time_left - 1.0))
+                                            expansion = client.chat.completions.create(
+                                                model=model_name,
+                                                temperature=0.3,
+                                                messages=[
+                                                    {"role": "system", "content": "You improve course content for beginners."},
+                                                    {"role": "user", "content": _json.dumps(rewrite_prompt)}
+                                                ],
+                                                timeout=per_call_timeout
+                                            )
+                                            new_text = (expansion.choices[0].message.content or '').strip()
+                                            # Safety trim to 520 words max
+                                            new_text = _trim_to_word_limit(new_text, 520)
+                                            item['content'] = new_text
+                                            rewrites_used += 1
+                                        except Exception:
+                                            # Fallback: leave as-is on failure
+                                            pass
+                                elif word_count > 500:
+                                    # Trim softly to ~500 words (keep to 520 max to avoid abrupt cut)
+                                    item['content'] = _trim_to_word_limit(content_text, 520)
+                            except Exception:
+                                continue
             # Attach pdfUrl if available
             if pdf_url:
                 for m in course_obj.get('modules', []) or []:
