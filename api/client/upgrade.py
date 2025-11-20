@@ -435,6 +435,8 @@ def get_chat_names():
     chat_names = chat_name_collection.find({"id_hash": id_hash}, {'_id': 0})
     return jsonify([chat['chatname'] for chat in chat_names])
 
+
+#Task: Need to fix timeout error
 @app.route('/course-create', methods=['POST'])
 def course_create():
     """

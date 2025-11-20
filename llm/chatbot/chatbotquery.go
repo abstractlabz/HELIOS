@@ -278,12 +278,15 @@ func main() {
 
 	router := gin.Default()
 	router.GET("/chatbot/ws", func(c *gin.Context) {
-		conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
-		if err != nil {
-			return
-		}
-		handleWebSocketConnection(conn, wp)
-	})
+    conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
+    if err != nil {
+        log.Printf("WebSocket upgrade error: %v\n", err)
+        return
+    }
+    log.Println("WebSocket client connected")
+    handleWebSocketConnection(conn, wp)
+})
+
 
 	// 4) Create a TLS server on :6002
 	tlsConfig := &tls.Config{MinVersion: tls.VersionTLS12}
@@ -310,7 +313,7 @@ func main() {
 		}
 	}()
 
-	log.Println("Server listening on wss://llm.fineasapp.io:2087/chatbot/ws")
+	log.Println("Server listening on ws://localhost:6002/chatbot/ws")
 	if err := srv.ListenAndServeTLS("server.crt", "server.key"); err != nil && err != http.ErrServerClosed {
 		log.Fatalf("ListenAndServeTLS: %v", err)
 	}
