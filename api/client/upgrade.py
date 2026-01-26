@@ -19,6 +19,18 @@ import socket
 import requests  # type: ignore
 from pypdf import PdfReader  # type: ignore
 from openai import OpenAI
+from jobs import process_course_job
+from openai import OpenAI
+
+from redis import Redis
+from rq import Queue
+from rq.job import Job
+from time import sleep
+
+REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+redis_conn = Redis.from_url(REDIS_URL)
+
+course_queue = Queue("course-jobs", connection=redis_conn)
 
 app = Flask(__name__)
 CORS(app)
@@ -435,6 +447,279 @@ def get_chat_names():
     chat_names = chat_name_collection.find({"id_hash": id_hash}, {'_id': 0})
     return jsonify([chat['chatname'] for chat in chat_names])
 
+
+#Task: Need to fix timeout error
+
+@app.route('/course-create', methods=['POST'])
+def course_create():
+    """
+    Synchronous version (still may hit timeout if job is long).
+    Uses the same parsing as before, then calls process_course_job().
+    """
+    try:
+        items_per_module_default = 5
+        trace_id = str(uuid.uuid4())
+        app.logger.info(f"[course-create] trace_id={trace_id} incoming request content_type={request.content_type}")
+
+        pdf_bytes: Optional[bytes] = None
+        prompt: str = ""
+        pdf_url: Optional[str] = None
+        items_per_module: int = items_per_module_default
+        cohort_passwords: Dict[str, str] = {}
+
+        # --------- PARSE INPUT (your old code) ----------
+        if request.content_type and 'multipart/form-data' in request.content_type:
+            uploaded = request.files.get('pdf')
+            if not uploaded:
+                app.logger.warning(f"[course-create] trace_id={trace_id} missing file field 'pdf'")
+                return make_response(jsonify({'error': 'PDF file field "pdf" is required', 'trace_id': trace_id}), 400)
+            pdf_bytes = uploaded.read()
+            prompt = request.form.get('prompt', '')
+            items_per_module = int(request.form.get('items_per_module', items_per_module_default))
+            # Optional cohort_passwords mapping (JSON string)
+            cp_raw = request.form.get('cohort_passwords')
+            if cp_raw:
+                try:
+                    parsed = _json.loads(cp_raw)
+                    if isinstance(parsed, dict):
+                        # sanitize: only keep non-empty trimmed keys, coerce values to strings
+                        cohort_passwords = {
+                            str(k).strip(): str(v) if v is not None else ''
+                            for k, v in parsed.items() if str(k).strip()
+                        }
+                        app.logger.info(f"[course-create] trace_id={trace_id} cohort_passwords_keys={list(cohort_passwords.keys())}")
+                    else:
+                        app.logger.warning(f"[course-create] trace_id={trace_id} cohort_passwords not a dict; type={type(parsed)}")
+                except Exception as e:
+                    app.logger.warning(f"[course-create] trace_id={trace_id} cohort_passwords parse error: {str(e)}")
+            app.logger.info(
+                f"[course-create] trace_id={trace_id} mode=file filename={getattr(uploaded, 'filename', '')} "
+                f"size_bytes={len(pdf_bytes)} items_per_module={items_per_module}"
+            )
+        else:
+            data = request.json or {}
+            pdf_url = data.get('pdf_url')
+            prompt = data.get('prompt', '')
+            items_per_module = int(data.get('items_per_module', items_per_module_default))
+            # Optional cohort_passwords mapping (dict or JSON string)
+            cp = data.get('cohort_passwords')
+            try:
+                if isinstance(cp, str) and cp:
+                    parsed = _json.loads(cp)
+                    if isinstance(parsed, dict):
+                        cohort_passwords = {
+                            str(k).strip(): str(v) if v is not None else ''
+                            for k, v in parsed.items() if str(k).strip()
+                        }
+                elif isinstance(cp, dict):
+                    cohort_passwords = {
+                        str(k).strip(): str(v) if v is not None else ''
+                        for k, v in cp.items() if str(k).strip()
+                    }
+                if cohort_passwords:
+                    app.logger.info(f"[course-create] trace_id={trace_id} cohort_passwords_keys={list(cohort_passwords.keys())}")
+            except Exception as e:
+                app.logger.warning(f"[course-create] trace_id={trace_id} cohort_passwords parse error (json mode): {str(e)}")
+            if not pdf_url:
+                app.logger.warning(f"[course-create] trace_id={trace_id} missing pdf_url in JSON body")
+                return make_response(jsonify({'error': 'pdf_url is required in JSON body when not uploading a file', 'trace_id': trace_id}), 400)
+            try:
+                app.logger.info(f"[course-create] trace_id={trace_id} downloading pdf_url={pdf_url}")
+                resp = requests.get(pdf_url, timeout=60)
+                resp.raise_for_status()
+                pdf_bytes = resp.content
+                app.logger.info(f"[course-create] trace_id={trace_id} downloaded size_bytes={len(pdf_bytes)} status_code={resp.status_code}")
+            except Exception as e:
+                app.logger.error(f"[course-create] trace_id={trace_id} download error: {str(e)}", exc_info=True)
+                return make_response(jsonify({'error': f'Failed to download PDF from url: {str(e)}', 'trace_id': trace_id}), 400)
+
+        # --------- BASIC VALIDATION ----------
+        if not prompt:
+            app.logger.warning(f"[course-create] trace_id={trace_id} missing prompt")
+            return make_response(jsonify({'error': 'prompt is required', 'trace_id': trace_id}), 400)
+        if not pdf_bytes:
+            app.logger.error(f"[course-create] trace_id={trace_id} pdf_bytes empty")
+            return make_response(jsonify({'error': 'Failed to obtain PDF bytes', 'trace_id': trace_id}), 400)
+
+        # --------- HEAVY WORK MOVED TO jobs.py ----------
+        course_obj = process_course_job(
+            pdf_bytes=pdf_bytes,
+            prompt=prompt,
+            items_per_module=items_per_module,
+            pdf_url=pdf_url,
+            cohort_passwords=cohort_passwords,
+            trace_id=trace_id,
+        )
+
+        app.logger.info(f"[course-create] trace_id={trace_id} success returning course")
+        return jsonify({"course": course_obj, "trace_id": trace_id}), 200
+
+    except Exception as e:
+        app.logger.error(
+            f"[course-create] trace_id={trace_id if 'trace_id' in locals() else 'n/a'} unhandled_error: {str(e)}",
+            exc_info=True,
+        )
+        return make_response(
+            jsonify(
+                {
+                    "error": str(e),
+                    "trace_id": trace_id if "trace_id" in locals() else None,
+                }
+            ),
+            500,
+        )
+
+
+
+@app.route('/course-create-start', methods=['POST'])
+def course_create_start():
+    """
+    Async version: parse inputs, enqueue job, return task_id quickly.
+    """
+    try:
+        items_per_module_default = 5
+        trace_id = str(uuid.uuid4())
+        app.logger.info(f"[course-create-start] trace_id={trace_id} incoming request content_type={request.content_type}")
+
+        pdf_bytes: Optional[bytes] = None
+        prompt: str = ""
+        pdf_url: Optional[str] = None
+        items_per_module: int = items_per_module_default
+        cohort_passwords: Dict[str, str] = {}
+
+        # same parsing logic as /course-create
+        if request.content_type and 'multipart/form-data' in request.content_type:
+            uploaded = request.files.get('pdf')
+            if not uploaded:
+                app.logger.warning(f"[course-create-start] trace_id={trace_id} missing file field 'pdf'")
+                return make_response(jsonify({'error': 'PDF file field "pdf" is required', 'trace_id': trace_id}), 400)
+            pdf_bytes = uploaded.read()
+            prompt = request.form.get('prompt', '')
+            items_per_module = int(request.form.get('items_per_module', items_per_module_default))
+
+            cp_raw = request.form.get('cohort_passwords')
+            if cp_raw:
+                try:
+                    parsed = _json.loads(cp_raw)
+                    if isinstance(parsed, dict):
+                        cohort_passwords = {
+                            str(k).strip(): str(v) if v is not None else ''
+                            for k, v in parsed.items() if str(k).strip()
+                        }
+                        app.logger.info(f"[course-create-start] trace_id={trace_id} cohort_passwords_keys={list(cohort_passwords.keys())}")
+                except Exception as e:
+                    app.logger.warning(f"[course-create-start] trace_id={trace_id} cohort_passwords parse error: {str(e)}")
+        else:
+            data = request.json or {}
+            pdf_url = data.get('pdf_url')
+            prompt = data.get('prompt', '')
+            items_per_module = int(data.get('items_per_module', items_per_module_default))
+
+            cp = data.get('cohort_passwords')
+            try:
+                if isinstance(cp, str) and cp:
+                    parsed = _json.loads(cp)
+                    if isinstance(parsed, dict):
+                        cohort_passwords = {
+                            str(k).strip(): str(v) if v is not None else ''
+                            for k, v in parsed.items() if str(k).strip()
+                        }
+                elif isinstance(cp, dict):
+                    cohort_passwords = {
+                        str(k).strip(): str(v) if v is not None else ''
+                        for k, v in cp.items() if str(k).strip()
+                    }
+                if cohort_passwords:
+                    app.logger.info(f"[course-create-start] trace_id={trace_id} cohort_passwords_keys={list(cohort_passwords.keys())}")
+            except Exception as e:
+                app.logger.warning(f"[course-create-start] trace_id={trace_id} cohort_passwords parse error (json mode): {str(e)}")
+
+        if not prompt:
+            return make_response(jsonify({'error': 'prompt is required', 'trace_id': trace_id}), 400)
+        if not pdf_bytes and not pdf_url:
+            return make_response(jsonify({'error': 'Provide either multipart "pdf" or JSON \"pdf_url\"', 'trace_id': trace_id}), 400)
+
+        # enqueue background job
+        job = course_queue.enqueue(
+            process_course_job,
+            pdf_bytes=pdf_bytes,
+            prompt=prompt,
+            items_per_module=items_per_module,
+            pdf_url=pdf_url,
+            cohort_passwords=cohort_passwords,
+            trace_id=trace_id,
+            job_timeout=int(os.getenv("JOB_TIMEOUT_S", "600")),
+            result_ttl=86400,  # keep result for 1 day
+        )
+
+        app.logger.info(f"[course-create-start] trace_id={trace_id} enqueued job_id={job.id}")
+
+        return jsonify({
+            "task_id": job.id,
+            "status": "queued",
+            "trace_id": trace_id,
+        }), 202
+
+    except Exception as e:
+        app.logger.error(
+            f"[course-create-start] trace_id={trace_id if 'trace_id' in locals() else 'n/a'} unhandled_error: {e}",
+            exc_info=True,
+        )
+        return make_response(jsonify({'error': str(e), 'trace_id': trace_id if 'trace_id' in locals() else None}), 500)
+
+
+
+@app.route('/course-create-status/<task_id>', methods=['GET'])
+def course_create_status(task_id):
+    try:
+        job = Job.fetch(task_id, connection=redis_conn)
+    except Exception:
+        # No such job in Redis
+        return jsonify({
+            "status": "not_found",
+            "task_id": task_id,
+        }), 404
+
+    status = job.get_status()  # "queued", "started", "finished", "failed", etc.
+
+    # 1) Job still running or waiting
+    if status in ("queued", "started", "deferred"):
+        return jsonify({
+            "status": status,
+            "task_id": task_id,
+        }), 200
+
+    # 2) Job failed
+    if status == "failed":
+        return jsonify({
+            "status": "failed",
+            "task_id": task_id,
+            "error": str(job.exc_info) if job.exc_info else "Job failed",
+        }), 200
+
+    # 3) Job finished OK
+    if status == "finished":
+        result = job.result or {}
+        # result came from process_course_job() in jobs.py:
+        # return { "course": course_obj, "trace_id": trace_id }
+        course_obj = result.get("course")
+        trace_id = result.get("trace_id")
+
+        return jsonify({
+            "status": "done",
+            "task_id": task_id,
+            "course": course_obj,   # <-- SAME shape as old /course-create
+            "trace_id": trace_id,
+        }), 200
+
+    # 4) Fallback: some weird status
+    return jsonify({
+        "status": status,
+        "task_id": task_id,
+    }), 200
+
+
+'''
 @app.route('/course-create', methods=['POST'])
 def course_create():
     """
@@ -523,7 +808,7 @@ def course_create():
         if not pdf_bytes:
             app.logger.error(f"[course-create] trace_id={trace_id} pdf_bytes empty")
             return make_response(jsonify({'error': 'Failed to obtain PDF bytes', 'trace_id': trace_id}), 400)
-
+        #--------------------------------------------------------------------------------------------------------------
         # Extract and chunk text
         request_start_time = time.time()
         try:
@@ -735,7 +1020,7 @@ def course_create():
     except Exception as e:
         app.logger.error(f"[course-create] trace_id={trace_id if 'trace_id' in locals() else 'n/a'} unhandled_error: {str(e)}", exc_info=True)
         return make_response(jsonify({'error': str(e), 'trace_id': trace_id if 'trace_id' in locals() else None}), 500)
-
+'''
 
 @app.route('/save-course', methods=['POST'])
 def save_course():
@@ -1453,4 +1738,4 @@ def load_filtered_student_data():
 
 if __name__ == '__main__':
     # This will be run by gunicorn in production
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5001)
