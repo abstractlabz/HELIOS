@@ -73,7 +73,8 @@ RUN chmod +x /app/api/client/upgrade.py && \
 
 # Copy startup script
 COPY startup.sh /app/
-RUN chmod +x /app/startup.sh
+# Ensure script is executable and has Unix line endings
+RUN chmod +x /app/startup.sh && sed -i 's/\r$//' /app/startup.sh
 
 # Expose necessary ports
 EXPOSE 8081
@@ -81,5 +82,5 @@ EXPOSE 5000
 EXPOSE 6002
 EXPOSE 8035
 
-# Run the services
-CMD ["/app/startup.sh"]
+# Run services via sh to avoid shebang/line-ending exec issues
+CMD ["/bin/sh", "/app/startup.sh"]
